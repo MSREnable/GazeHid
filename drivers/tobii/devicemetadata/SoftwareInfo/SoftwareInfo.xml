@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SoftwareInfo xmlns="http://schemas.microsoft.com/windows/2010/08/DeviceMetadata/SoftwareInfo">
+  <DeviceCompanionApplications>
+    <Package>
+      <Identity Name="81c377cf-5d99-4fd7-b4cb-90f6b7ca8fbe" Publisher="CN=harishsk" />
+      <Applications>
+        <Application Id="App" />
+      </Applications>
+    </Package>
+  </DeviceCompanionApplications>
+  <PrivilegedApplications>
+    <Package>
+      <Identity Name="81c377cf-5d99-4fd7-b4cb-90f6b7ca8fbe" Publisher="CN=harishsk" AccessCustomDriver="true" />
+    </Package>
+  </PrivilegedApplications>
+</SoftwareInfo>

@@ -1,0 +1,2 @@
+MainPackage=D:\EnablingTech\lib\GazeHid\GazeHidTest\bin\x64\Debug\GazeHidTest_1.0.0.0_x64_Debug.appx
+SymbolPackage=D:\EnablingTech\lib\GazeHid\GazeHidTest\AppPackages\GazeHidTest_1.0.0.0_Debug_Test\GazeHidTest_1.0.0.0_x64_Debug.appxsym

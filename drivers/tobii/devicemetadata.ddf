@@ -1,0 +1,20 @@
+.Set CabinetNameTemplate=5e9ce6c4-db35-425f-9055-82c6214387fa.devicemetadata-ms
+.Set DiskDirectoryTemplate=CDROM
+.Set CompressionType=MSZIP
+.Set UniqueFiles="OFF"
+.Set Cabinet=on
+.Set DiskDirectory1=%OutDir%
+
+devicemetadata\PackageInfo.xml
+.Set DestinationDir=DeviceInfo
+devicemetadata\DeviceInfo\DeviceInfo.xml
+devicemetadata\DeviceInfo\device.ico
+.Set DestinationDir=DeviceInfo\en
+devicemetadata\DeviceInfo\en\DeviceInfo.xml
+devicemetadata\DeviceInfo\en\device.ico
+.Set DestinationDir=SoftwareInfo
+devicemetadata\SoftwareInfo\SoftwareInfo.xml
+.Set DestinationDir=WindowsInfo
+devicemetadata\WindowsInfo\WindowsInfo.xml
+.Set DestinationDir=WindowsInfo\en
+devicemetadata\WindowsInfo\en\WindowsInfo.xml

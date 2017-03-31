@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DeviceInfo xmlns="http://schemas.microsoft.com/windows/DeviceMetadata/DeviceInfo/2007/11/">
+  <DeviceCategoryList>
+    <DeviceCategory>Input</DeviceCategory>
+  </DeviceCategoryList>
+  <ModelName>EYEX</ModelName>
+  <Manufacturer>TOBII</Manufacturer>
+</DeviceInfo>

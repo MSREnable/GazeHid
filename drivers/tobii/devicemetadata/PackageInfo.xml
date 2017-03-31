@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageInfo xmlns="http://schemas.microsoft.com/windows/DeviceMetadata/PackageInfo/2007/11/">
+  <MetadataKey>
+    <HardwareIDList>
+      <HardwareID>DOID:ROOT\TOBIIHID</HardwareID>
+      <HardwareID>DOID:HID\VID_DEED&UP:FF03_U:0008</HardwareID>
+      <HardwareID>HID_DEVICE_UP:FF03_U:0008</HardwareID>
+      <HardwareID>HID_DEVICE_UPR:FF00-FFFF</HardwareID>
+    </HardwareIDList>
+    <Locale default="false">en</Locale>
+    <LastModifiedDate>2016-04-24T12:15:53.1352704Z</LastModifiedDate>
+    <MultipleLocale xmlns="http://schemas.microsoft.com/windows/2010/08/DeviceMetadata/PackageInfov2">true</MultipleLocale>
+  </MetadataKey>
+  <PackageStructure>
+    <Metadata MetadataID="http://schemas.microsoft.com/windows/DeviceMetadata/DeviceInfo/2007/11/">DeviceInfo</Metadata>
+    <Metadata MetadataID="http://schemas.microsoft.com/windows/DeviceMetadata/WindowsInfo/2007/11/">WindowsInfo</Metadata>
+    <Metadata MetadataID="http://schemas.microsoft.com/windows/2010/08/DeviceMetadata/SoftwareInfo">SoftwareInfo</Metadata>
+    <Metadata MetadataID="http://schemas.microsoft.com/windows/DeviceMetadata/PackageInfo/2007/11/">PackageInfo.xml</Metadata>
+  </PackageStructure>
+  <Relationships>
+    <ExperienceID>5e9ce6c4-db35-425f-9055-82c6214387fa</ExperienceID>
+  </Relationships>
+  <MetadataBuilderInformation>
+    <Application>Microsoft Device Metadata Package Authoring Tool</Application>
+    <Version>10.0.10586.15</Version>
+  </MetadataBuilderInformation>
+</PackageInfo>
