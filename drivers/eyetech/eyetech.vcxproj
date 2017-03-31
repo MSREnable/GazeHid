@@ -97,6 +97,9 @@
     <ClInclude Include="..\..\inc\Tracker.h" />
     <ClInclude Include="..\driver.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets" Condition="Exists('..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets')" />
