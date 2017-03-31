@@ -98,5 +98,13 @@
     <ClInclude Include="..\driver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets" Condition="Exists('..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets'))" />
+  </Target>
 </Project>

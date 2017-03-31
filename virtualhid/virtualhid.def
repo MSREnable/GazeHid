@@ -1,0 +1,4 @@
+LIBRARY virtualhid
+EXPORTS
+    CreateVirtualHid
+    CloseVirtualHid

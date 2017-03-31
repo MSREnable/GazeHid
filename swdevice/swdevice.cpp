@@ -100,7 +100,7 @@ int wmain(int argc, wchar_t* argv[])
     if (!FindEyeTracker(argc, argv, eyeTracker, MAX_PATH))
     {
         wprintf(L"Failed to find eye Tracker\n");
-        goto Cleanup;
+        return -1;
     }
 
 	createInfo.cbSize = sizeof(createInfo);
@@ -113,7 +113,11 @@ int wmain(int argc, wchar_t* argv[])
 	createInfo.pszDeviceLocation = NULL;
 	createInfo.pSecurityDescriptor = NULL;
 	hr = SwDeviceCreate(L"EyeTracker", eyeTracker, &createInfo, 0, NULL, OnSoftwareDeviceCreate, NULL, &hDevice);
-	CLEANUP_ON_FAIL(hr);
+	if (FAILED(hr))
+	{
+        wprintf(L"Failed to create software device for EyeTracker. hr=0x%08x\n", hr);
+        return -1;
+	}
 
 	wprintf(L"Press any key to exit...\n");
 	while (!_kbhit())
@@ -121,10 +125,6 @@ int wmain(int argc, wchar_t* argv[])
 		Sleep(1000);
 	}
 	
-Cleanup:
-	if (hDevice)
-	{
-		SwDeviceClose(hDevice);
-		hDevice = NULL;
-	}
+    SwDeviceClose(hDevice);
+    hDevice = NULL;
 }
