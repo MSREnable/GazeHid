@@ -68,7 +68,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);_UNICODE;UNICODE</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;..\..\..\..\external\TobiiGazeSdk-CApi-4.1.3.959-Win64\include;..\..\..\..\external\Tobii_stream_engine_windows_0.7.1.1164\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;$(SolutionDir)packages\Tobii.StreamEngine.Native.1.0.0.282\build\native\include\tobii</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);_UNICODE;UNICODE</PreprocessorDefinitions>
@@ -79,13 +79,13 @@
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\inc;..</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies);$(SDK_LIB_PATH)\mincore.lib;$(SDK_LIB_PATH)\user32.lib;TobiiGazeCore64.lib;stream_engine.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);$(SDK_LIB_PATH)\mincore.lib;$(SDK_LIB_PATH)\user32.lib;tobii_stream_engine.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);_UNICODE;UNICODE</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;..\..\..\..\external\TobiiGazeSdk-CApi-4.1.3.959-Win64\include;..\..\..\..\external\Tobii_stream_engine_windows_0.7.1.1164\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;$(SolutionDir)packages\Tobii.StreamEngine.Native.1.0.0.282\build\native\include\tobii</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);_UNICODE;UNICODE</PreprocessorDefinitions>
@@ -96,7 +96,7 @@
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\inc;..</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies);$(SDK_LIB_PATH)\mincore.lib;$(SDK_LIB_PATH)\user32.lib;TobiiGazeCore64.lib;stream_engine.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);$(SDK_LIB_PATH)\mincore.lib;$(SDK_LIB_PATH)\user32.lib;tobii_stream_engine.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -105,7 +105,7 @@
       </ExceptionHandling>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\..\..\external\Tobii_stream_engine_windows_0.7.1.1164\lib\x64;..\..\..\..\external\TobiiGazeSdk-CApi-4.1.3.959-Win64\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\Tobii.StreamEngine.Native.1.0.0.282\build\native\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>makecab /D OutDir=$(OutDir) /F devicemetadata.ddf
@@ -118,7 +118,7 @@
       </ExceptionHandling>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\..\..\external\Tobii_stream_engine_windows_0.7.1.1164\lib\x64;..\..\..\..\external\TobiiGazeSdk-CApi-4.1.3.959-Win64\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\Tobii.StreamEngine.Native.1.0.0.282\build\native\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <!--
     <PreBuildEvent>
@@ -134,14 +134,23 @@
   </ItemGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" Condition="'$(ConfigurationType)'=='Driver' or '$(ConfigurationType)'=='DynamicLibrary'" />
-    <FilesToPackage Include="..\..\..\..\external\TobiiGazeSdk-CApi-4.1.3.959-Win64\lib\TobiiGazeCore64.dll" />
-    <FilesToPackage Include="..\..\..\..\external\Tobii_stream_engine_windows_0.7.1.1164\lib\$(PlatformTarget)\stream_engine.dll" />
+    <FilesToPackage Include="$(SolutionDir)packages\Tobii.StreamEngine.Native.1.0.0.282\build\native\lib\$(Platform)\tobii_stream_engine.dll" />
     <!-- <FilesToPackage Include="$(OutDir)\5e9ce6c4-db35-425f-9055-82c6214387fa.devicemetadata-ms" /> -->
   </ItemGroup>
   <ItemGroup>
     <None Exclude="@(None)" Include="*.txt;*.htm;*.html" />
     <None Exclude="@(None)" Include="*.ico;*.cur;*.bmp;*.dlg;*.rct;*.gif;*.jpg;*.jpeg;*.wav;*.jpe;*.tiff;*.tif;*.png;*.rc2" />
     <None Exclude="@(None)" Include="*.def;*.bat;*.hpj;*.asmx" />
+    <None Include="packages.config" />
+    <None Include="Tobii\API-Reference.pdf" />
+    <None Include="Tobii\SDK-License.pdf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="..\..\packages\Tobii.StreamEngine.Native.1.0.0.282\build\Tobii.StreamEngine.Native.targets" Condition="Exists('..\..\packages\Tobii.StreamEngine.Native.1.0.0.282\build\Tobii.StreamEngine.Native.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Tobii.StreamEngine.Native.1.0.0.282\build\Tobii.StreamEngine.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Tobii.StreamEngine.Native.1.0.0.282\build\Tobii.StreamEngine.Native.targets'))" />
+  </Target>
 </Project>

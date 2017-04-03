@@ -17,6 +17,9 @@
       <Extensions>inf;inv;inx;mof;mc;</Extensions>
       <UniqueIdentifier>{161882E3-1C88-4B50-A3E4-AC0513E42847}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tobii">
+      <UniqueIdentifier>{e26ad66e-69d6-414c-a989-40c601928731}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Inf Include="TobiiHid.inx">
@@ -38,5 +41,15 @@
     <ResourceCompile Include="TobiiHid.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tobii\SDK-License.pdf">
+      <Filter>Tobii</Filter>
+    </None>
+    <None Include="Tobii\API-Reference.pdf">
+      <Filter>Tobii</Filter>
+    </None>
+    <None Include="packages.config" />
+    <None Include="@(NativeLibs)" />
   </ItemGroup>
 </Project>

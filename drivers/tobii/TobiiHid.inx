@@ -85,8 +85,7 @@ ServiceBinary="%12%\UMDF\TobiiHid.dll"
 TobiiHid.dll,,,0x00004000  ; COPYFLG_IN_USE_RENAME
 
 [TobiiDllCopy]
-TobiiGazeCore64.dll,,,0x00004000  ; COPYFLG_IN_USE_RENAME
-stream_engine.dll,,,0x00004000  ; COPYFLG_IN_USE_RENAME
+tobii_stream_engine.dll,,,0x00004000  ; COPYFLG_IN_USE_RENAME
 
 ;[CopyMetaData_EN-US]
 ;5e9ce6c4-db35-425f-9055-82c6214387fa.devicemetadata-ms,,,0x00000800 ;COPYFLG_NODECOMP
@@ -96,8 +95,7 @@ stream_engine.dll,,,0x00004000  ; COPYFLG_IN_USE_RENAME
 
 [SourceDisksFiles]
 TobiiHid.dll=1
-TobiiGazeCore64.dll=1
-stream_engine.dll=1
+tobii_stream_engine.dll=1
 ;5e9ce6c4-db35-425f-9055-82c6214387fa.devicemetadata-ms=1
 
 [DestinationDirs]
