@@ -65,25 +65,25 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;..\..\..\..\external\QuickLink2_x86_x64_2.7.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\..\..\external\QuickLink2_x86_x64_2.7.3.2\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(SDK_LIB_PATH)\user32.lib;QuickLink2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;..\..\..\..\external\QuickLink2_x86_x64_2.7.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\..\..\external\QuickLink2_x86_x64_2.7.3.2\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(SDK_LIB_PATH)\user32.lib;QuickLink2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
-    <FilesToPackage Include="..\..\..\..\external\QuickLink2_x86_x64_2.7.3.2\bin64\QuickLink2.dll" />
+    <FilesToPackage Include="$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\$(Platform)\QuickLink2.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\driver.c" />
