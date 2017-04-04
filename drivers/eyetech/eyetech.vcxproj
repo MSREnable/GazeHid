@@ -65,25 +65,25 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.4\build\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.4\build\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(SDK_LIB_PATH)\user32.lib;QuickLink2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DDK_INC_PATH);$(DDK_INC_PATH)\wdm;..\;..\..\inc;$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.4\build\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.4\build\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(SDK_LIB_PATH)\user32.lib;QuickLink2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
-    <FilesToPackage Include="$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.3\build\$(Platform)\QuickLink2.dll" />
+    <FilesToPackage Include="$(SolutionDir)packages\eyetechds.quicklink2.7.1.2.4\build\$(Platform)\QuickLink2.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\driver.c" />
@@ -102,12 +102,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets" Condition="Exists('..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets')" />
+    <Import Project="..\..\packages\eyetechds.quicklink2.7.1.2.4\build\eyetechds.quicklink2.targets" Condition="Exists('..\..\packages\eyetechds.quicklink2.7.1.2.4\build\eyetechds.quicklink2.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\eyetechds.quicklink2.7.1.2.3\build\eyetechds.quicklink2.targets'))" />
+    <Error Condition="!Exists('..\..\packages\eyetechds.quicklink2.7.1.2.4\build\eyetechds.quicklink2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\eyetechds.quicklink2.7.1.2.4\build\eyetechds.quicklink2.targets'))" />
   </Target>
 </Project>

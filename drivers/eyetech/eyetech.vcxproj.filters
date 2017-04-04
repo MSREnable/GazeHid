@@ -48,6 +48,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="@(NativeLibs)" />
+    <None Include="@(NativeLibs)" />
+    <None Include="@(NativeLibs)" />
     <None Include="packages.config" />
   </ItemGroup>
 </Project>
