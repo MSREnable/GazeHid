@@ -1,6 +1,6 @@
 #pragma once
 
-#define HID_USAGE_PAGE_EYE_HEAD_TRACKER      0x11
+#define HID_USAGE_PAGE_EYE_HEAD_TRACKER      0x12
 
 #define HID_USAGE_EYE_TRACKER        0x01
 #define HID_USAGE_HEAD_TRACKER       0x02

@@ -35,7 +35,7 @@ namespace GazeHidTest
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        const int HID_USAGE_PAGE_EYE_HEAD_TRACKER = 0x11;
+        const int HID_USAGE_PAGE_EYE_HEAD_TRACKER = 0x12;
         const int HID_USAGE_EYE_TRACKER = 0x01;
 
         const int HID_USAGE_TRACKING_DATA = 0x10;

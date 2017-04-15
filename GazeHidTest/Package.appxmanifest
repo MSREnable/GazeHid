@@ -26,7 +26,7 @@
     <Capability Name="internetClient" />
     <DeviceCapability Name="humaninterfacedevice">
       <Device Id="vidpid:DEED FEED">
-        <Function Type="usage:0011 0001" />
+        <Function Type="usage:0012 0001" />
       </Device>
     </DeviceCapability>
   </Capabilities>
