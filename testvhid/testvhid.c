@@ -110,6 +110,11 @@ GetLinkCollectionNodes(
 
 BOOLEAN
 TraverseLinkCollectionNodes(
+    ULONG currentNodeIdx
+);
+
+VOID
+DumpLinkCollectionNode(
     int currentNodeIdx
 );
 
@@ -293,12 +298,12 @@ FindMatchingDevice(
         goto cleanup;
     }
 
-    deviceInterfaceList = (PWSTR)malloc(deviceInterfaceListLength * sizeof(WCHAR));
+    deviceInterfaceList = (PWSTR)calloc(deviceInterfaceListLength, sizeof(WCHAR));
     if (deviceInterfaceList == NULL) {
         printf("Error allocating memory for device interface list.\n");
         goto cleanup;
     }
-    ZeroMemory(deviceInterfaceList, deviceInterfaceListLength * sizeof(WCHAR));
+    //ZeroMemory(deviceInterfaceList, deviceInterfaceListLength * sizeof(WCHAR));
 
     cr = CM_Get_Device_Interface_List(
             InterfaceGuid,
@@ -319,7 +324,7 @@ FindMatchingDevice(
     // Enumerate devices of this interface class
     //
     for (currentInterface = deviceInterfaceList;
-        *currentInterface;
+        *currentInterface && m_file == INVALID_HANDLE_VALUE;
         currentInterface += wcslen(currentInterface) + 1) {
 
         devHandle = CreateFile(currentInterface,
@@ -387,7 +392,12 @@ CheckIfOurDevice(
         {
             printf("\nSuccess: Found my device...\n");
             printf("Device Attributes - PID: 0x%x, VID: 0x%x \n", m_Attr.ProductID, m_Attr.VendorID);
+            bSuccess = TRUE;
         }
+    }
+    else
+    {
+        bSuccess = FALSE;
     }
 
     if (!bSuccess)
@@ -625,21 +635,21 @@ GetIndexedString(
     ULONG bufferLength;
 
     bufferLength = MAXIMUM_STRING_LENGTH;
-    buffer = malloc(bufferLength);
+    buffer = calloc(bufferLength, sizeof(BYTE));
     if (!buffer )
     {
-        printf("malloc failed\n");
+        printf("calloc failed\n");
         return FALSE;
     }
 
-    ZeroMemory(buffer, bufferLength);
+    //ZeroMemory(buffer, bufferLength);
 
     bSuccess = HidD_GetIndexedString(
         m_file,
         VHIDMINI_DEVICE_STRING_INDEX,  // IN ULONG  StringIndex,
         (PVOID) buffer,  //OUT PVOID  Buffer,
         bufferLength // IN ULONG  BufferLength
-        ) ;
+        );
 
     if (!bSuccess)
     {
@@ -664,10 +674,10 @@ GetStrings(
     ULONG bufferLength;
 
     bufferLength = MAXIMUM_STRING_LENGTH;
-    buffer = malloc(bufferLength);
+    buffer = calloc(bufferLength, sizeof(BYTE));
     if (!buffer )
     {
-        printf("malloc failed\n");
+        printf("calloc failed\n");
         return FALSE;
     }
 
@@ -766,12 +776,10 @@ GetValueCapsEX(
 {
     BOOLEAN bSuccess = TRUE;
 
-    USHORT inputValueCapsLength = m_Caps.NumberInputValueCaps;
-
-    if (inputValueCapsLength > 0)
+    if (length > 0)
     {
-        *ppValueCaps = malloc(length * sizeof(HIDP_VALUE_CAPS));
-        ZeroMemory(*ppValueCaps, length * sizeof(HIDP_VALUE_CAPS));
+        *ppValueCaps = calloc(length, sizeof(HIDP_VALUE_CAPS));
+        //ZeroMemory(*ppValueCaps, length * sizeof(HIDP_VALUE_CAPS));
 
         HidP_GetValueCaps(
             reportType,
@@ -826,11 +834,10 @@ GetButtonCapsEX(
 {
     BOOLEAN bSuccess = TRUE;
 
-
     if (length > 0)
     {
-        *ppButtonCaps = malloc(length * sizeof(HIDP_BUTTON_CAPS));
-        ZeroMemory(*ppButtonCaps, length * sizeof(HIDP_BUTTON_CAPS));
+        *ppButtonCaps = calloc(length, sizeof(HIDP_BUTTON_CAPS));
+        //ZeroMemory(*ppButtonCaps, length * sizeof(HIDP_BUTTON_CAPS));
 
         HidP_GetButtonCaps(
             reportType,
@@ -867,41 +874,36 @@ GetLinkCollectionNodes(
 )
 {
     printf("\nLinkCollectionNodes\n");
-    ULONG linkCollectionNodesLength = 0;
-    HidP_GetLinkCollectionNodes(
-        NULL,
-        &linkCollectionNodesLength,
-        m_pPpd
-    );
-    m_pLinkCollectionNodes = malloc(linkCollectionNodesLength * sizeof(HIDP_LINK_COLLECTION_NODE));
-    ZeroMemory(m_pLinkCollectionNodes, linkCollectionNodesLength * sizeof(HIDP_LINK_COLLECTION_NODE));
+    ULONG ulLinkCollectionNodesLength = m_Caps.NumberLinkCollectionNodes;
 
-    HidP_GetLinkCollectionNodes(
-        m_pLinkCollectionNodes,
-        &linkCollectionNodesLength,
-        m_pPpd
-    );
+    if (ulLinkCollectionNodesLength > 0)
+    {
+        m_pLinkCollectionNodes = calloc(ulLinkCollectionNodesLength, sizeof(HIDP_LINK_COLLECTION_NODE));
+        //ZeroMemory(m_pLinkCollectionNodes, linkCollectionNodesLength * sizeof(HIDP_LINK_COLLECTION_NODE));
 
-    TraverseLinkCollectionNodes(0);
+        HidP_GetLinkCollectionNodes(
+            m_pLinkCollectionNodes,
+            &ulLinkCollectionNodesLength,
+            m_pPpd
+        );
+
+        for (ULONG ulCurrentNodeIdx = 0; ulCurrentNodeIdx < ulLinkCollectionNodesLength; ++ulCurrentNodeIdx)
+        {
+            DumpLinkCollectionNode(ulCurrentNodeIdx);
+        }
+
+        //TraverseLinkCollectionNodes(0);
+    }
 
     return TRUE;
 }
 
 BOOLEAN
 TraverseLinkCollectionNodes(
-    int currentNodeIdx
+    ULONG currentNodeIdx
 )
 {
-    // ouptput info
-    printf("Index:              %8d\n", currentNodeIdx);
-    printf("Usage:                0x%04x\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsage);
-    printf("UsagePage:            0x%04x\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage);
-    printf("CollectionType:     %8d\n",   m_pLinkCollectionNodes[currentNodeIdx].CollectionType);
-    printf("Parent:             %8d\n",   m_pLinkCollectionNodes[currentNodeIdx].Parent);
-    printf("NumberOfChildren:   %8d\n",   m_pLinkCollectionNodes[currentNodeIdx].NumberOfChildren);
-    printf("FirstChild:         %8d\n",   m_pLinkCollectionNodes[currentNodeIdx].FirstChild);
-    printf("NextSibling:        %8d\n",   m_pLinkCollectionNodes[currentNodeIdx].NextSibling);
-    printf("\n");
+    DumpLinkCollectionNode(currentNodeIdx);
 
     if (m_pLinkCollectionNodes[currentNodeIdx].NumberOfChildren > 0)
     {
@@ -915,6 +917,31 @@ TraverseLinkCollectionNodes(
     }
 
     return TRUE;
+}
+
+VOID
+DumpLinkCollectionNode(
+    int currentNodeIdx
+)
+{
+    printf("Index:              %8d\n", currentNodeIdx);
+    printf("Usage:                0x%04x\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsage);
+    if (m_pLinkCollectionNodes[currentNodeIdx].LinkUsage == 0)
+    {
+        printf("Error: Invalid Usage, should not be 0\n");
+    }
+    printf("UsagePage:            0x%04x\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage);
+    if (m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage != HID_USAGE_PAGE_EYE_HEAD_TRACKER)
+    {
+        printf("Error: Invalid Usage Page, should be 0x%04x\n", HID_USAGE_PAGE_EYE_HEAD_TRACKER);
+    }
+    printf("CollectionType:     %8d\n", m_pLinkCollectionNodes[currentNodeIdx].CollectionType);
+    printf("IsAlias:            %8d\n", m_pLinkCollectionNodes[currentNodeIdx].IsAlias);
+    printf("Parent:             %8d\n", m_pLinkCollectionNodes[currentNodeIdx].Parent);
+    printf("NumberOfChildren:   %8d\n", m_pLinkCollectionNodes[currentNodeIdx].NumberOfChildren);
+    printf("FirstChild:         %8d\n", m_pLinkCollectionNodes[currentNodeIdx].FirstChild);
+    printf("NextSibling:        %8d\n", m_pLinkCollectionNodes[currentNodeIdx].NextSibling);
+    printf("\n");
 }
 
 
