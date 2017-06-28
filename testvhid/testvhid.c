@@ -45,16 +45,20 @@ PHIDP_BUTTON_CAPS           m_pOutputButtonCaps = NULL;
 
 PHIDP_LINK_COLLECTION_NODE  m_pLinkCollectionNodes = NULL;
 
+PCHAR                       m_pInputReport = NULL;
+PCHAR                       m_pFeatureReport = NULL;
+
+
 //
 // Function prototypes
 //
 BOOLEAN
 GetFeatureCapabilities(
-    );
+);
 
 BOOLEAN
 GetFeatureConfiguration(
-    );
+);
 
 BOOLEAN
 GetFeatureTrackerStatus(
@@ -68,19 +72,19 @@ SetFeatureTrackerControl(
 BOOLEAN
 CheckIfOurDevice(
     PHANDLE pHandle
-    );
+);
 
 BOOLEAN
 ReadInputData(
-    );
+);
 
 BOOLEAN
 GetIndexedString(
-    );
+);
 
 BOOLEAN
-GetStrings(
-    );
+GetWellKnownStrings(
+);
 
 BOOLEAN
 GetValueCaps(
@@ -121,7 +125,35 @@ DumpLinkCollectionNode(
 BOOLEAN
 FindMatchingDevice(
     _In_ LPGUID Guid
-    );
+);
+
+BOOLEAN
+GetReports(
+);
+
+VOID
+PrintUsageString(
+    USAGE usage
+);
+
+VOID
+PrintCollectionType
+(
+    int collectionType
+);
+
+VOID
+PrintReportType
+(
+    HIDP_REPORT_TYPE reportType
+);
+
+VOID
+PrintUsagePage
+(
+    USAGE usagePage
+);
+
 
 //
 // Implementation
@@ -130,7 +162,7 @@ INT __cdecl
 main(
     _In_ ULONG argc,
     _In_reads_(argc) PCHAR argv[]
-    )
+)
 {
     BOOLEAN found = FALSE;
     BOOLEAN bSuccess = FALSE;
@@ -138,7 +170,7 @@ main(
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(argv);
 
-    srand( (unsigned)time( NULL ) );
+    srand((unsigned)time(NULL));
 
     HidD_GetHidGuid(&m_hidguid);
 
@@ -169,6 +201,11 @@ main(
             goto cleanup;
         }
 
+        bSuccess = GetReports();
+        if (bSuccess == FALSE) {
+            goto cleanup;
+        }
+
         //
         // Get Strings
         //
@@ -177,7 +214,7 @@ main(
             goto cleanup;
         }
 
-        bSuccess = GetStrings();
+        bSuccess = GetWellKnownStrings();
         //if (bSuccess == FALSE) {
         //    goto cleanup;
         //}
@@ -185,6 +222,7 @@ main(
         //
         // Get/Set feature loopback
         //
+
         bSuccess = GetFeatureCapabilities();
         if (bSuccess == FALSE) {
             goto cleanup;
@@ -282,10 +320,10 @@ FindMatchingDevice(
     m_file = INVALID_HANDLE_VALUE;
 
     cr = CM_Get_Device_Interface_List_Size(
-            &deviceInterfaceListLength,
-            InterfaceGuid,
-            NULL,
-            CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
+        &deviceInterfaceListLength,
+        InterfaceGuid,
+        NULL,
+        CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
     if (cr != CR_SUCCESS) {
         printf("Error 0x%x retrieving device interface list size.\n", cr);
         goto cleanup;
@@ -306,17 +344,16 @@ FindMatchingDevice(
     //ZeroMemory(deviceInterfaceList, deviceInterfaceListLength * sizeof(WCHAR));
 
     cr = CM_Get_Device_Interface_List(
-            InterfaceGuid,
-            NULL,
-            deviceInterfaceList,
-            deviceInterfaceListLength,
-            CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
+        InterfaceGuid,
+        NULL,
+        deviceInterfaceList,
+        deviceInterfaceListLength,
+        CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
     if (cr != CR_SUCCESS) {
         printf("Error 0x%x retrieving device interface list.\n", cr);
         goto cleanup;
     }
 
-    //wprintf(L"%s\n", deviceInterfaceList);
     printf("Looking for our HID device (with UP=0x%04X "
         "and Usage=0x%02X)\n\n", HID_USAGE_PAGE_EYE_HEAD_TRACKER, HID_USAGE_EYE_TRACKER);
 
@@ -327,13 +364,14 @@ FindMatchingDevice(
         *currentInterface && m_file == INVALID_HANDLE_VALUE;
         currentInterface += wcslen(currentInterface) + 1) {
 
+        wprintf(L"%s\n", currentInterface);
         devHandle = CreateFile(currentInterface,
-                        GENERIC_READ | GENERIC_WRITE,
-                        FILE_SHARE_READ | FILE_SHARE_WRITE,
-                        NULL, // no SECURITY_ATTRIBUTES structure
-                        OPEN_EXISTING, // No special create flags
-                        0, // No special attributes
-                        NULL); // No template file
+            GENERIC_READ | GENERIC_WRITE,
+            FILE_SHARE_READ | FILE_SHARE_WRITE,
+            NULL, // no SECURITY_ATTRIBUTES structure
+            OPEN_EXISTING, // No special create flags
+            0, // No special attributes
+            NULL); // No template file
 
         if (INVALID_HANDLE_VALUE == devHandle) {
             printf("Warning: CreateFile failed: %d\n", GetLastError());
@@ -373,14 +411,14 @@ CheckIfOurDevice(
         bSuccess = FALSE;
     }
 
-    if (bSuccess && !HidP_GetCaps (m_pPpd, &m_Caps))
+    if (bSuccess && !HidP_GetCaps(m_pPpd, &m_Caps))
     {
         printf("ERROR: HidP_GetCaps failed \n");
         bSuccess = FALSE;
     }
 
     if (bSuccess &&
-        (m_Caps.UsagePage == HID_USAGE_PAGE_EYE_HEAD_TRACKER) && 
+        (m_Caps.UsagePage == HID_USAGE_PAGE_EYE_HEAD_TRACKER) &&
         (m_Caps.Usage == HID_USAGE_EYE_TRACKER))
     {
         if (!HidD_GetAttributes(pHandle, &m_Attr))
@@ -412,29 +450,52 @@ CheckIfOurDevice(
 
 BOOLEAN
 GetFeatureCapabilities(
-    )
+)
 {
     BOOLEAN bSuccess;
 
+    /*ULONG usageValue;
+    UCHAR currentReport = 0;
+
+    for (int idx = 0; idx < m_Caps.NumberFeatureValueCaps; ++idx)
+    {
+        if (m_pFeatureValueCaps[idx].LinkUsage != 0)
+        {
+            if (currentReport != m_pFeatureValueCaps[idx].ReportID)
+            {
+                ZeroMemory(m_pFeatureReport, m_Caps.FeatureReportByteLength + 1);
+                m_pFeatureReport[0] = m_pFeatureValueCaps[idx].ReportID;
+
+                HidD_GetFeature(
+                    m_file,
+                    m_pFeatureReport,
+                    m_Caps.FeatureReportByteLength
+                );
+
+                currentReport = m_pFeatureValueCaps[idx].ReportID;
+            }
+
+            HidP_GetUsageValue(
+                HidP_Feature,
+                m_pFeatureValueCaps[idx].LinkUsagePage,
+                m_pFeatureValueCaps[idx].LinkCollection,
+                m_pFeatureValueCaps[idx].LinkUsage,
+                &usageValue,
+                m_pPpd,
+                m_pFeatureReport,
+                m_Caps.FeatureReportByteLength
+            );
+        }
+    }*/
+
     CAPABILITIES_REPORT capabilities = { 0 };
     capabilities.ReportId = HID_USAGE_CAPABILITIES;
+
     bSuccess = HidD_GetFeature(m_file, &capabilities, sizeof(capabilities));
     if (bSuccess)
     {
-        /*
-        HidP_GetUsageValue(HidP_Feature,
-            HID_USAGE_PAGE_EYE_HEAD_TRACKER,
-            0,
-            HID_USAGE_TRACKER_QUALITY,
-            usage,
-            Ppd,
-            (PCHAR)pbReportBuffer,
-            cbReportBuffer
-        );
-        */
-
         printf("\n\nHID_USAGE_CAPABILITIES\n");
-        printf("Report ID:                   0x%04x\n", capabilities.ReportId);
+        printf("Report ID:                   0x%04X\n", capabilities.ReportId);
         printf("Tracker Quality:           %8d\n", capabilities.TrackerQuality);
         if (capabilities.TrackerQuality < 1 || capabilities.TrackerQuality > 4)
         {
@@ -457,7 +518,7 @@ GetFeatureCapabilities(
         printf("Max Screen Plane Width:    %8d\n", capabilities.MaximumScreenPlaneWidth);
         printf("Max Screen Plane Height:   %8d\n", capabilities.MaximumScreenPlaneHeight);
         printf("Screen Plane Curvature:    %8d\n", capabilities.ScreenPlaneCurvature);
-        
+
         printf("Screen Plane Top Left:     (%3d, %3d, %3d)\n", capabilities.ScreenPlaneTopLeft.X, capabilities.ScreenPlaneTopLeft.Y, capabilities.ScreenPlaneTopLeft.Z);
         printf("Screen Plane Top Right:    (%3d, %3d, %3d)\n", capabilities.ScreenPlaneTopRight.X, capabilities.ScreenPlaneTopRight.Y, capabilities.ScreenPlaneTopRight.Z);
         printf("Screen Plane Bottom Left:  (%3d, %3d, %3d)\n", capabilities.ScreenPlaneBottomLeft.X, capabilities.ScreenPlaneBottomLeft.Y, capabilities.ScreenPlaneBottomLeft.Z);
@@ -480,12 +541,12 @@ GetFeatureConfiguration(
     if (bSuccess)
     {
         printf("\n\nHID_USAGE_CONFIGURATION\n");
-        printf("Report ID:                   0x%04x\n", configuration.ReportId);
+        printf("Report ID:                   0x%04X\n", configuration.ReportId);
 
         // https://en.wikipedia.org/wiki/Extended_Display_Identification_Data
 
-        printf("Display Manufacturer Id:     0x%04x\n", configuration.DisplayManufacturerId);
-        printf("Display Product Id:          0x%04x\n", configuration.DisplayProductId);
+        printf("Display Manufacturer Id:     0x%04X\n", configuration.DisplayManufacturerId);
+        printf("Display Product Id:          0x%04X\n", configuration.DisplayProductId);
         printf("Display Serial Number:       0x%04d\n", configuration.DisplaySerialNumber);
         printf("Display Manufacturer Date:   0x%04d\n", configuration.DisplayManufacturerDate);
     }
@@ -507,7 +568,7 @@ GetFeatureTrackerStatus(
     if (bSuccess)
     {
         printf("\n\nHID_USAGE_TRACKER_STATUS\n");
-        printf("Report ID:                   0x%04x\n", status.ReportId);
+        printf("Report ID:                   0x%04X\n", status.ReportId);
         printf("Tracker Status:            %8d\n", status.TrackerStatus);
         if (status.TrackerStatus > 1)
         {
@@ -560,7 +621,7 @@ SetFeatureTrackerControl(
 
 BOOLEAN
 ReadInputData(
-    )
+)
 {
     GAZE_REPORT report = { 0 };
     BOOL bSuccess = TRUE;
@@ -593,11 +654,11 @@ ReadInputData(
     while ((bSuccess) && (!_kbhit()))
     {
         bSuccess = ReadFile(
-        m_file,        // HANDLE hFile, 
-        &report,      // LPVOID lpBuffer, 
-        sizeof(report),  // DWORD nNumberOfBytesToRead, 
-        &bytesRead,  // LPDWORD lpNumberOfBytesRead, 
-        NULL         // LPOVERLAPPED lpOverlapped 
+            m_file,        // HANDLE hFile, 
+            &report,      // LPVOID lpBuffer, 
+            sizeof(report),  // DWORD nNumberOfBytesToRead, 
+            &bytesRead,  // LPDWORD lpNumberOfBytesRead, 
+            NULL         // LPOVERLAPPED lpOverlapped 
         );
 
         // XXX: calculate monitor width and height manually rather than using calibrated value from sensor 
@@ -622,13 +683,13 @@ ReadInputData(
         _getch();
     }
 
-    return (BOOLEAN) bSuccess;
+    return (BOOLEAN)bSuccess;
 }
 
 
 BOOLEAN
 GetIndexedString(
-    )
+)
 {
     BOOLEAN bSuccess;
     BYTE* buffer;
@@ -636,7 +697,7 @@ GetIndexedString(
 
     bufferLength = MAXIMUM_STRING_LENGTH;
     buffer = calloc(bufferLength, sizeof(BYTE));
-    if (!buffer )
+    if (!buffer)
     {
         printf("calloc failed\n");
         return FALSE;
@@ -647,9 +708,9 @@ GetIndexedString(
     bSuccess = HidD_GetIndexedString(
         m_file,
         VHIDMINI_DEVICE_STRING_INDEX,  // IN ULONG  StringIndex,
-        (PVOID) buffer,  //OUT PVOID  Buffer,
+        (PVOID)buffer,  //OUT PVOID  Buffer,
         bufferLength // IN ULONG  BufferLength
-        );
+    );
 
     if (!bSuccess)
     {
@@ -657,7 +718,7 @@ GetIndexedString(
     }
     else
     {
-        printf("Indexed string: %S\n", (PWSTR) buffer);
+        printf("Indexed string: %S\n", (PWSTR)buffer);
     }
 
     free(buffer);
@@ -666,8 +727,8 @@ GetIndexedString(
 }
 
 BOOLEAN
-GetStrings(
-    )
+GetWellKnownStrings(
+)
 {
     BOOLEAN bSuccess;
     BYTE* buffer;
@@ -675,7 +736,7 @@ GetStrings(
 
     bufferLength = MAXIMUM_STRING_LENGTH;
     buffer = calloc(bufferLength, sizeof(BYTE));
-    if (!buffer )
+    if (!buffer)
     {
         printf("calloc failed\n");
         return FALSE;
@@ -684,9 +745,9 @@ GetStrings(
     ZeroMemory(buffer, bufferLength);
     bSuccess = HidD_GetProductString(
         m_file,
-        (PVOID) buffer,  //OUT PVOID  Buffer,
+        (PVOID)buffer,  //OUT PVOID  Buffer,
         bufferLength // IN ULONG  BufferLength
-        );
+    );
 
     if (!bSuccess)
     {
@@ -694,15 +755,15 @@ GetStrings(
     }
     else
     {
-        printf("Product string: %S\n", (PWSTR) buffer);
+        printf("Product string: %S\n", (PWSTR)buffer);
     }
 
     ZeroMemory(buffer, bufferLength);
     bSuccess = HidD_GetSerialNumberString(
         m_file,
-        (PVOID) buffer,  //OUT PVOID  Buffer,
+        (PVOID)buffer,  //OUT PVOID  Buffer,
         bufferLength // IN ULONG  BufferLength
-        );
+    );
 
     if (!bSuccess)
     {
@@ -710,15 +771,15 @@ GetStrings(
     }
     else
     {
-        printf("Serial number string: %S\n", (PWSTR) buffer);
+        printf("Serial number string: %S\n", (PWSTR)buffer);
     }
 
     ZeroMemory(buffer, bufferLength);
     bSuccess = HidD_GetManufacturerString(
         m_file,
-        (PVOID) buffer,  //OUT PVOID  Buffer,
+        (PVOID)buffer,  //OUT PVOID  Buffer,
         bufferLength // IN ULONG  BufferLength
-        );
+    );
 
     if (!bSuccess)
     {
@@ -726,7 +787,7 @@ GetStrings(
     }
     else
     {
-        printf("Manufacturer string: %S\n", (PWSTR) buffer);
+        printf("Manufacturer string: %S\n", (PWSTR)buffer);
     }
 
     ZeroMemory(buffer, bufferLength);
@@ -745,7 +806,7 @@ GetStrings(
         printf("Physical Descriptor string: %S\n", (PWSTR)buffer);
     }
 
-//exit:
+    //exit:
 
     free(buffer);
 
@@ -770,42 +831,50 @@ GetValueCaps(
 BOOLEAN
 GetValueCapsEX(
     HIDP_REPORT_TYPE reportType,
-    USHORT length,
+    USHORT valueCapsLength,
     PHIDP_VALUE_CAPS* ppValueCaps
 )
 {
     BOOLEAN bSuccess = TRUE;
 
-    if (length > 0)
+    PHIDP_VALUE_CAPS pValueCaps = NULL;
+
+    if (valueCapsLength > 0)
     {
-        *ppValueCaps = calloc(length, sizeof(HIDP_VALUE_CAPS));
-        //ZeroMemory(*ppValueCaps, length * sizeof(HIDP_VALUE_CAPS));
+        *ppValueCaps = calloc(valueCapsLength, sizeof(HIDP_VALUE_CAPS));
 
         HidP_GetValueCaps(
             reportType,
             *ppValueCaps,
-            &length,
+            &valueCapsLength,
             m_pPpd
         );
 
-        switch (reportType)
+        pValueCaps = *ppValueCaps;
+
+        for (int idx = 0; idx < valueCapsLength; ++idx)
         {
-        case HidP_Input:
-            printf("ReportType:           HidP_Input\n");
-            break;
-        case HidP_Output:
-            printf("ReportType:           HidP_Output\n");
-            break;
-        case HidP_Feature:
-            printf("ReportType:           HidP_Feature\n");
-            break;
+            switch (reportType)
+            {
+            case HidP_Input:
+                printf("ReportType:           HidP_Input\n");
+                break;
+            case HidP_Output:
+                printf("ReportType:           HidP_Output\n");
+                break;
+            case HidP_Feature:
+                printf("ReportType:           HidP_Feature\n");
+                break;
+            }
+            printf("UsagePage:            0x%04X ", pValueCaps[idx].UsagePage); PrintUsagePage(pValueCaps[idx].UsagePage); printf("\n");
+            printf("ReportID:             0x%04X ", pValueCaps[idx].ReportID); PrintUsageString(pValueCaps[idx].ReportID); printf("\n");
+            printf("LinkCollection:     %8d\n", pValueCaps[idx].LinkCollection);
+            printf("LinkUsage:            0x%04X ", pValueCaps[idx].LinkUsage); PrintUsageString(pValueCaps[idx].LinkUsage); printf("\n");
+            printf("LinkUsagePage:        0x%04X ", pValueCaps[idx].LinkUsagePage); PrintUsagePage(pValueCaps[idx].LinkUsagePage); printf("\n");
+            printf("BitSize:              0x%04X\n", pValueCaps[idx].BitSize);
+            printf("\n");
+
         }
-        printf("UsagePage:            0x%04x\n", (*ppValueCaps)->UsagePage);
-        printf("ReportID:             0x%04x\n", (*ppValueCaps)->ReportID);
-        printf("LinkCollection:     %8d\n", (*ppValueCaps)->LinkCollection);
-        printf("LinkUsage:            0x%04x\n", (*ppValueCaps)->LinkUsage);
-        printf("LinkUsagePage:        0x%04x\n", (*ppValueCaps)->LinkUsagePage);
-        printf("\n");
     }
 
     return bSuccess;
@@ -816,7 +885,7 @@ GetButtonCaps(
 )
 {
     BOOLEAN bSuccess = TRUE;
-    
+
     printf("ButtonCaps\n");
     GetButtonCapsEX(HidP_Input, m_Caps.NumberInputButtonCaps, &m_pInputButtonCaps);
     GetButtonCapsEX(HidP_Output, m_Caps.NumberOutputButtonCaps, &m_pOutputButtonCaps);
@@ -846,23 +915,12 @@ GetButtonCapsEX(
             m_pPpd
         );
 
-        switch (reportType)
-        {
-        case HidP_Input:
-            printf("ReportType:           HidP_Input\n");
-            break;
-        case HidP_Output:
-            printf("ReportType:           HidP_Output\n");
-            break;
-        case HidP_Feature:
-            printf("ReportType:           HidP_Feature\n");
-            break;
-        }
-        printf("UsagePage:            0x%04x\n", (*ppButtonCaps)->UsagePage);
-        printf("ReportID:             0x%04x\n", (*ppButtonCaps)->ReportID);
+        printf("ReportType:           "); PrintReportType(reportType); printf("\n");
+        printf("UsagePage:            0x%04X ", (*ppButtonCaps)->UsagePage); PrintUsagePage((*ppButtonCaps)->UsagePage); printf("\n");
+        printf("ReportID:             0x%04X\n", (*ppButtonCaps)->ReportID);
         printf("LinkCollection:     %8d\n", (*ppButtonCaps)->LinkCollection);
-        printf("LinkUsage:            0x%04x\n", (*ppButtonCaps)->LinkUsage);
-        printf("LinkUsagePage:        0x%04x\n", (*ppButtonCaps)->LinkUsagePage);
+        printf("LinkUsage:            0x%04X ", (*ppButtonCaps)->LinkUsage); PrintUsageString((*ppButtonCaps)->LinkUsage); printf("\n");
+        printf("LinkUsagePage:        0x%04X\n", (*ppButtonCaps)->LinkUsagePage); PrintUsagePage((*ppButtonCaps)->LinkUsagePage); printf("\n");
         printf("\n");
     }
 
@@ -925,17 +983,13 @@ DumpLinkCollectionNode(
 )
 {
     printf("Index:              %8d\n", currentNodeIdx);
-    printf("Usage:                0x%04x\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsage);
-    if (m_pLinkCollectionNodes[currentNodeIdx].LinkUsage == 0)
-    {
-        printf("Error: Invalid Usage, should not be 0\n");
-    }
-    printf("UsagePage:            0x%04x\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage);
+    printf("Usage:                0x%04X ", m_pLinkCollectionNodes[currentNodeIdx].LinkUsage); PrintUsageString(m_pLinkCollectionNodes[currentNodeIdx].LinkUsage); printf("\n");
+    printf("UsagePage:            0x%04X ", m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage); PrintUsagePage(m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage); printf("\n");
     if (m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage != HID_USAGE_PAGE_EYE_HEAD_TRACKER)
     {
-        printf("Error: Invalid Usage Page, should be 0x%04x\n", HID_USAGE_PAGE_EYE_HEAD_TRACKER);
+        printf("Error: Invalid Usage Page, should be 0x%04X\n", HID_USAGE_PAGE_EYE_HEAD_TRACKER);
     }
-    printf("CollectionType:     %8d\n", m_pLinkCollectionNodes[currentNodeIdx].CollectionType);
+    printf("CollectionType:     %8d ", m_pLinkCollectionNodes[currentNodeIdx].CollectionType); PrintCollectionType(m_pLinkCollectionNodes[currentNodeIdx].CollectionType); printf("\n");
     printf("IsAlias:            %8d\n", m_pLinkCollectionNodes[currentNodeIdx].IsAlias);
     printf("Parent:             %8d\n", m_pLinkCollectionNodes[currentNodeIdx].Parent);
     printf("NumberOfChildren:   %8d\n", m_pLinkCollectionNodes[currentNodeIdx].NumberOfChildren);
@@ -944,4 +998,140 @@ DumpLinkCollectionNode(
     printf("\n");
 }
 
+BOOLEAN
+GetReports()
+{
+    BOOLEAN bSuccess = TRUE;
+
+    if (m_Caps.InputReportByteLength > 0)
+    {
+        m_pInputReport = calloc(m_Caps.InputReportByteLength + 1, sizeof(BYTE));
+        HidD_GetInputReport(
+            m_file,
+            m_pInputReport,
+            m_Caps.InputReportByteLength
+        );
+    }
+
+    if (m_Caps.FeatureReportByteLength > 0)
+    {
+        m_pFeatureReport = calloc(m_Caps.FeatureReportByteLength + 1, sizeof(BYTE));
+        HidD_GetFeature(
+            m_file,
+            m_pFeatureReport,
+            m_Caps.FeatureReportByteLength
+        );
+    }
+
+    return bSuccess;
+}
+
+VOID
+PrintCollectionType
+(
+    int collectionType
+)
+{
+    // From HID Spec 6.2.2.6
+    switch (collectionType)
+    {
+    case 0: printf("Physical"); break;
+    case 1: printf("Application"); break;
+    case 2: printf("Logical"); break;
+    case 3: printf("Report"); break;
+    case 4: printf("Named Array"); break;
+    case 5: printf("Usage Switch"); break;
+    case 6: printf("Usage Modifier"); break;
+    default: printf("Unknown"); break;
+    }
+}
+
+VOID
+PrintUsageString(
+    USAGE usage
+)
+{
+    switch (usage)
+    {
+    case HID_USAGE_EYE_TRACKER: printf("HID_USAGE_EYE_TRACKER"); break;
+    case HID_USAGE_HEAD_TRACKER: printf("HID_USAGE_HEAD_TRACKER"); break;
+
+        // HID_REPORT_ID List
+    case HID_USAGE_TRACKING_DATA: printf("HID_USAGE_TRACKING_DATA"); break;
+    case HID_USAGE_CAPABILITIES: printf("HID_USAGE_CAPABILITIES"); break;
+    case HID_USAGE_CONFIGURATION: printf("HID_USAGE_CONFIGURATION"); break;
+    case HID_USAGE_TRACKER_STATUS: printf("HID_USAGE_TRACKER_STATUS"); break;
+    case HID_USAGE_TRACKER_CONTROL: printf("HID_USAGE_TRACKER_CONTROL"); break;
+
+        // HID_USAGE_TRACKING_DATA - Input Collection
+    case HID_USAGE_TIMESTAMP: printf("HID_USAGE_TIMESTAMP"); break;
+    case HID_USAGE_POSITION_X: printf("HID_USAGE_POSITION_X"); break;
+    case HID_USAGE_POSITION_Y: printf("HID_USAGE_POSITION_Y"); break;
+    case HID_USAGE_POSITION_Z: printf("HID_USAGE_POSITION_Z"); break;
+    case HID_USAGE_GAZE_LOCATION: printf("HID_USAGE_GAZE_LOCATION"); break;
+    case HID_USAGE_LEFT_EYE_POSITION: printf("HID_USAGE_LEFT_EYE_POSITION"); break;
+    case HID_USAGE_RIGHT_EYE_POSITION: printf("HID_USAGE_RIGHT_EYE_POSITION"); break;
+    case HID_USAGE_HEAD_POSITION: printf("HID_USAGE_HEAD_POSITION"); break;
+
+        // HID_USAGE_CAPABILITIES - Feature Collection 
+    case HID_USAGE_TRACKER_QUALITY: printf("HID_USAGE_TRACKER_QUALITY"); break;
+    case HID_USAGE_GAZE_LOCATION_ORIGIN: printf("HID_USAGE_GAZE_LOCATION_ORIGIN"); break;
+    case HID_USAGE_EYE_POSITION_ORIGIN: printf("HID_USAGE_EYE_POSITION_ORIGIN"); break;
+    case HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY: printf("HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY"); break;
+    case HID_USAGE_MINIMUM_TRACKING_DISTANCE: printf("HID_USAGE_MINIMUM_TRACKING_DISTANCE"); break;
+    case HID_USAGE_OPTIMUM_TRACKING_DISTANCE: printf("HID_USAGE_OPTIMUM_TRACKING_DISTANCE"); break;
+    case HID_USAGE_MAXIMUM_TRACKING_DISTANCE: printf("HID_USAGE_MAXIMUM_TRACKING_DISTANCE"); break;
+    case HID_USAGE_MAXIMUM_SCREEN_PLANE_WIDTH: printf("HID_USAGE_MAXIMUM_SCREEN_PLANE_WIDTH"); break;
+    case HID_USAGE_MAXIMUM_SCREEN_PLANE_HEIGHT: printf("HID_USAGE_MAXIMUM_SCREEN_PLANE_HEIGHT"); break;
+    case HID_USAGE_SCREEN_PLANE_CURVATURE: printf("HID_USAGE_SCREEN_PLANE_CURVATURE"); break;
+    case HID_USAGE_SCREEN_PLANE_TOP_LEFT: printf("HID_USAGE_SCREEN_PLANE_TOP_LEFT"); break;
+    case HID_USAGE_SCREEN_PLANE_TOP_RIGHT: printf("HID_USAGE_SCREEN_PLANE_TOP_RIGHT"); break;
+    case HID_USAGE_SCREEN_PLANE_BOTTOM_LEFT: printf("HID_USAGE_SCREEN_PLANE_BOTTOM_LEFT"); break;
+    case HID_USAGE_TRACKER_COORDINATES: printf("HID_USAGE_TRACKER_COORDINATES"); break;
+
+        // HID_USAGE_CONFIGURATION - Feature Collection 
+    case HID_USAGE_DISPLAY_MANUFACTURER_ID: printf("HID_USAGE_DISPLAY_MANUFACTURER_ID"); break;
+    case HID_USAGE_DISPLAY_PRODUCT_ID: printf("HID_USAGE_DISPLAY_PRODUCT_ID"); break;
+    case HID_USAGE_DISPLAY_SERIAL_NUMBER: printf("HID_USAGE_DISPLAY_SERIAL_NUMBER"); break;
+    case HID_USAGE_DISPLAY_MANUFACTURER_DATE: printf("HID_USAGE_DISPLAY_MANUFACTURER_DATE"); break;
+
+        // HID_USAGE_TRACKER_STATUS - Feature Collection 
+    case HID_USAGE_DEVICE_STATUS: printf("HID_USAGE_DEVICE_STATUS"); break;
+    case HID_USAGE_CONFIGURATION_STATUS: printf("HID_USAGE_CONFIGURATION_STATUS"); break;
+    case HID_USAGE_SAMPLING_FREQUENCY: printf("HID_USAGE_SAMPLING_FREQUENCY"); break;
+
+        // HID_USAGE_TRACKER_CONTROL - Feature Collection 
+    case HID_USAGE_MODE_REQUEST: printf("HID_USAGE_MODE_REQUEST"); break;
+    default: printf("Unknown Usage"); break;
+    }
+}
+
+VOID
+PrintReportType
+(
+    HIDP_REPORT_TYPE reportType
+)
+{
+    switch (reportType)
+    {
+    case HidP_Input: printf("HidP_Input"); break;
+    case HidP_Output: printf("HidP_Output"); break;
+    case HidP_Feature: printf("HidP_Feature"); break;
+    default: printf("Unknown ReportType"); break;
+    }
+}
+
+
+VOID
+PrintUsagePage
+(
+    USAGE usagePage
+)
+{
+    switch (usagePage)
+    {
+    case HID_USAGE_PAGE_EYE_HEAD_TRACKER: printf("HID_USAGE_PAGE_EYE_HEAD_TRACKER"); break;
+    default: printf("Unknown UsagePage"); break;
+    }
+}
 
