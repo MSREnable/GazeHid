@@ -482,17 +482,20 @@ GetFeatureCapabilities(
 
     usCollectionIdx = GetLinkCollectionIndex(HidP_Feature, reportID, 0);
 
-    printf("\nReportID: "); PrintUsageString(reportID); printf("\n");
-    printf("LinkCollection: %d\n", usCollectionIdx);
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_TRACKER_QUALITY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_GAZE_LOCATION_ORIGIN, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_EYE_POSITION_ORIGIN, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MINIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_OPTIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SCREEN_PLANE_WIDTH, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SCREEN_PLANE_HEIGHT, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+    if (HidD_GetFeature(m_file, pbBuffer, cbBuffer))
+    {
+        printf("\nReportID: "); PrintUsageString(reportID); printf("\n");
+        printf("LinkCollection: %d\n", usCollectionIdx);
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_TRACKER_QUALITY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_GAZE_LOCATION_ORIGIN, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_EYE_POSITION_ORIGIN, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MINIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_OPTIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SCREEN_PLANE_WIDTH, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SCREEN_PLANE_HEIGHT, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+    }
 
     free(pbBuffer);
 
@@ -517,14 +520,17 @@ GetFeatureConfiguration(
 
     usCollectionIdx = GetLinkCollectionIndex(HidP_Feature, reportID, 0);
 
-    printf("\nReportID: "); PrintUsageString(reportID); printf("\n");
-    printf("LinkCollection: %d\n", usCollectionIdx);
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_MANUFACTURER_ID, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_PRODUCT_ID, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_SERIAL_NUMBER, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_MANUFACTURER_DATE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CALIBRATED_SCREEN_WIDTH, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CALIBRATED_SCREEN_HEIGHT, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+    if (HidD_GetFeature(m_file, pbBuffer, cbBuffer))
+    {
+        printf("\nReportID: "); PrintUsageString(reportID); printf("\n");
+        printf("LinkCollection: %d\n", usCollectionIdx);
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_MANUFACTURER_ID, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_PRODUCT_ID, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_SERIAL_NUMBER, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_MANUFACTURER_DATE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CALIBRATED_SCREEN_WIDTH, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CALIBRATED_SCREEN_HEIGHT, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+    }
 
     free(pbBuffer);
 
@@ -549,11 +555,14 @@ GetFeatureTrackerStatus(
 
     usCollectionIdx = GetLinkCollectionIndex(HidP_Feature, reportID, 0);
 
-    printf("\nReportID: "); PrintUsageString(reportID); printf("\n");
-    printf("LinkCollection: %d\n", usCollectionIdx);
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DEVICE_STATUS, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CONFIGURATION_STATUS, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-    GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_SAMPLING_FREQUENCY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+    if (HidD_GetFeature(m_file, pbBuffer, cbBuffer))
+    {
+        printf("\nReportID: "); PrintUsageString(reportID); printf("\n");
+        printf("LinkCollection: %d\n", usCollectionIdx);
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DEVICE_STATUS, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CONFIGURATION_STATUS, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_SAMPLING_FREQUENCY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+    }
 
     free(pbBuffer);
 
@@ -603,14 +612,7 @@ ReadInputData(
     DWORD bytesRead;
     USAGE reportID = 0;
     USHORT usCollectionIdx;
-
-    //ULONG ulTimestamp;
-    //ULONG ulPositionX;
-    //ULONG ulPositionY;
-    //ULONG ulPositionZ;
     ULONG ulUsageValue;
-
-    //NTSTATUS status;
 
     pbBuffer = calloc(cbBuffer, sizeof(CHAR));
 
@@ -841,8 +843,6 @@ GetValueCapsEX(
 {
     BOOLEAN bSuccess = TRUE;
 
-    PHIDP_VALUE_CAPS pValueCaps = NULL;
-
     if (valueCapsLength > 0)
     {
         *ppValueCaps = calloc(valueCapsLength, sizeof(HIDP_VALUE_CAPS));
@@ -854,19 +854,16 @@ GetValueCapsEX(
             m_pPpd
         );
 
-        pValueCaps = *ppValueCaps;
-
         for (int idx = 0; idx < valueCapsLength; ++idx)
         {
             printf("ReportType:           "); PrintReportType(reportType); printf("\n");
-            printf("UsagePage:            0x%04X ", pValueCaps[idx].UsagePage); PrintUsagePage(pValueCaps[idx].UsagePage); printf("\n");
-            printf("ReportID:             0x%04X ", pValueCaps[idx].ReportID); PrintUsageString(pValueCaps[idx].ReportID); printf("\n");
-            printf("LinkCollection:     %8d\n", pValueCaps[idx].LinkCollection);
-            printf("LinkUsage:            0x%04X ", pValueCaps[idx].LinkUsage); PrintUsageString(pValueCaps[idx].LinkUsage); printf("\n");
-            printf("LinkUsagePage:        0x%04X ", pValueCaps[idx].LinkUsagePage); PrintUsagePage(pValueCaps[idx].LinkUsagePage); printf("\n");
-            printf("BitSize:              0x%04X\n", pValueCaps[idx].BitSize);
+            printf("UsagePage:            0x%04X ", (*ppValueCaps)[idx].UsagePage); PrintUsagePage((*ppValueCaps)[idx].UsagePage); printf("\n");
+            printf("ReportID:             0x%04X ", (*ppValueCaps)[idx].ReportID); PrintUsageString((*ppValueCaps)[idx].ReportID); printf("\n");
+            printf("LinkCollection:     %8d\n", (*ppValueCaps)[idx].LinkCollection);
+            printf("LinkUsage:            0x%04X ", (*ppValueCaps)[idx].LinkUsage); PrintUsageString((*ppValueCaps)[idx].LinkUsage); printf("\n");
+            printf("LinkUsagePage:        0x%04X ", (*ppValueCaps)[idx].LinkUsagePage); PrintUsagePage((*ppValueCaps)[idx].LinkUsagePage); printf("\n");
+            printf("BitSize:              0x%04X\n", (*ppValueCaps)[idx].BitSize);
             printf("\n");
-
         }
     }
 
@@ -895,7 +892,6 @@ GetButtonCapsEX(
 )
 {
     BOOLEAN bSuccess = TRUE;
-    PHIDP_BUTTON_CAPS pButtonCaps = NULL;
 
     if (buttonCapsLength > 0)
     {
@@ -909,16 +905,14 @@ GetButtonCapsEX(
             m_pPpd
         );
 
-        pButtonCaps = *ppButtonCaps;
-
         for (int idx = 0; idx < buttonCapsLength; ++idx)
         {
             printf("ReportType:           "); PrintReportType(reportType); printf("\n");
-            printf("UsagePage:            0x%04X ", pButtonCaps[idx].UsagePage); PrintUsagePage(pButtonCaps[idx].UsagePage); printf("\n");
-            printf("ReportID:             0x%04X\n", pButtonCaps[idx].ReportID);
-            printf("LinkCollection:     %8d\n", pButtonCaps[idx].LinkCollection);
-            printf("LinkUsage:            0x%04X ", pButtonCaps[idx].LinkUsage); PrintUsageString(pButtonCaps[idx].LinkUsage); printf("\n");
-            printf("LinkUsagePage:        0x%04X\n", pButtonCaps[idx].LinkUsagePage); PrintUsagePage(pButtonCaps[idx].LinkUsagePage); printf("\n");
+            printf("UsagePage:            0x%04X ", (*ppButtonCaps)[idx].UsagePage); PrintUsagePage((*ppButtonCaps)[idx].UsagePage); printf("\n");
+            printf("ReportID:             0x%04X\n", (*ppButtonCaps)[idx].ReportID);
+            printf("LinkCollection:     %8d\n", (*ppButtonCaps)[idx].LinkCollection);
+            printf("LinkUsage:            0x%04X ", (*ppButtonCaps)[idx].LinkUsage); PrintUsageString((*ppButtonCaps)[idx].LinkUsage); printf("\n");
+            printf("LinkUsagePage:        0x%04X\n", (*ppButtonCaps)[idx].LinkUsagePage); PrintUsagePage((*ppButtonCaps)[idx].LinkUsagePage); printf("\n");
             printf("\n");
         }
     }
@@ -936,7 +930,6 @@ GetLinkCollectionNodes(
     if (ulLinkCollectionNodesLength > 0)
     {
         m_pLinkCollectionNodes = calloc(ulLinkCollectionNodesLength, sizeof(HIDP_LINK_COLLECTION_NODE));
-        //ZeroMemory(m_pLinkCollectionNodes, linkCollectionNodesLength * sizeof(HIDP_LINK_COLLECTION_NODE));
 
         HidP_GetLinkCollectionNodes(
             m_pLinkCollectionNodes,
@@ -948,8 +941,6 @@ GetLinkCollectionNodes(
         {
             DumpLinkCollectionNode(ulCurrentNodeIdx);
         }
-
-        //TraverseLinkCollectionNodes(0);
     }
 
     return TRUE;
@@ -1024,14 +1015,14 @@ PrintCollectionType
     // From HID Spec 6.2.2.6
     switch (collectionType)
     {
-    case 0: printf("Physical"); break;
-    case 1: printf("Application"); break;
-    case 2: printf("Logical"); break;
-    case 3: printf("Report"); break;
-    case 4: printf("Named Array"); break;
-    case 5: printf("Usage Switch"); break;
-    case 6: printf("Usage Modifier"); break;
-    default: printf("Unknown"); break;
+    case 0:     printf("Physical"); break;
+    case 1:     printf("Application"); break;
+    case 2:     printf("Logical"); break;
+    case 3:     printf("Report"); break;
+    case 4:     printf("Named Array"); break;
+    case 5:     printf("Usage Switch"); break;
+    case 6:     printf("Usage Modifier"); break;
+    default:    printf("Unknown"); break;
     }
 }
 
@@ -1211,26 +1202,26 @@ PrintStatusResult
 {
     switch (status)
     {
-    case HIDP_STATUS_SUCCESS: printf("HIDP_STATUS_SUCCESS"); break;
-    case HIDP_STATUS_NULL: printf("HIDP_STATUS_NULL"); break;
-    case HIDP_STATUS_INVALID_PREPARSED_DATA: printf("HIDP_STATUS_INVALID_PREPARSED_DATA"); break;
-    case HIDP_STATUS_INVALID_REPORT_TYPE: printf("HIDP_STATUS_INVALID_REPORT_TYPE"); break;
-    case HIDP_STATUS_INVALID_REPORT_LENGTH: printf("HIDP_STATUS_INVALID_REPORT_LENGTH"); break;
-    case HIDP_STATUS_USAGE_NOT_FOUND: printf("HIDP_STATUS_USAGE_NOT_FOUND"); break;
-    case HIDP_STATUS_VALUE_OUT_OF_RANGE: printf("HIDP_STATUS_VALUE_OUT_OF_RANGE"); break;
-    case HIDP_STATUS_BAD_LOG_PHY_VALUES: printf("HIDP_STATUS_BAD_LOG_PHY_VALUES"); break;
-    case HIDP_STATUS_BUFFER_TOO_SMALL: printf("HIDP_STATUS_BUFFER_TOO_SMALL"); break;
-    case HIDP_STATUS_INTERNAL_ERROR: printf("HIDP_STATUS_INTERNAL_ERROR"); break;
-    case HIDP_STATUS_I8042_TRANS_UNKNOWN: printf("HIDP_STATUS_I8042_TRANS_UNKNOWN"); break;
-    case HIDP_STATUS_INCOMPATIBLE_REPORT_ID: printf("HIDP_STATUS_INCOMPATIBLE_REPORT_ID"); break;
-    case HIDP_STATUS_NOT_VALUE_ARRAY: printf("HIDP_STATUS_NOT_VALUE_ARRAY"); break;
-    case HIDP_STATUS_IS_VALUE_ARRAY: printf("HIDP_STATUS_IS_VALUE_ARRAY"); break;
-    case HIDP_STATUS_DATA_INDEX_NOT_FOUND: printf("HIDP_STATUS_DATA_INDEX_NOT_FOUND"); break;
-    case HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE: printf("HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE"); break;
-    case HIDP_STATUS_BUTTON_NOT_PRESSED: printf("HIDP_STATUS_BUTTON_NOT_PRESSED"); break;
-    case HIDP_STATUS_REPORT_DOES_NOT_EXIST: printf("HIDP_STATUS_REPORT_DOES_NOT_EXIST"); break;
-    case HIDP_STATUS_NOT_IMPLEMENTED: printf("HIDP_STATUS_NOT_IMPLEMENTED"); break;
-    default: printf("Unknown status 0x%08X", status); break;
+    case HIDP_STATUS_SUCCESS:                   printf("HIDP_STATUS_SUCCESS"); break;
+    case HIDP_STATUS_NULL:                      printf("HIDP_STATUS_NULL"); break;
+    case HIDP_STATUS_INVALID_PREPARSED_DATA:    printf("HIDP_STATUS_INVALID_PREPARSED_DATA"); break;
+    case HIDP_STATUS_INVALID_REPORT_TYPE:       printf("HIDP_STATUS_INVALID_REPORT_TYPE"); break;
+    case HIDP_STATUS_INVALID_REPORT_LENGTH:     printf("HIDP_STATUS_INVALID_REPORT_LENGTH"); break;
+    case HIDP_STATUS_USAGE_NOT_FOUND:           printf("HIDP_STATUS_USAGE_NOT_FOUND"); break;
+    case HIDP_STATUS_VALUE_OUT_OF_RANGE:        printf("HIDP_STATUS_VALUE_OUT_OF_RANGE"); break;
+    case HIDP_STATUS_BAD_LOG_PHY_VALUES:        printf("HIDP_STATUS_BAD_LOG_PHY_VALUES"); break;
+    case HIDP_STATUS_BUFFER_TOO_SMALL:          printf("HIDP_STATUS_BUFFER_TOO_SMALL"); break;
+    case HIDP_STATUS_INTERNAL_ERROR:            printf("HIDP_STATUS_INTERNAL_ERROR"); break;
+    case HIDP_STATUS_I8042_TRANS_UNKNOWN:       printf("HIDP_STATUS_I8042_TRANS_UNKNOWN"); break;
+    case HIDP_STATUS_INCOMPATIBLE_REPORT_ID:    printf("HIDP_STATUS_INCOMPATIBLE_REPORT_ID"); break;
+    case HIDP_STATUS_NOT_VALUE_ARRAY:           printf("HIDP_STATUS_NOT_VALUE_ARRAY"); break;
+    case HIDP_STATUS_IS_VALUE_ARRAY:            printf("HIDP_STATUS_IS_VALUE_ARRAY"); break;
+    case HIDP_STATUS_DATA_INDEX_NOT_FOUND:      printf("HIDP_STATUS_DATA_INDEX_NOT_FOUND"); break;
+    case HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE:   printf("HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE"); break;
+    case HIDP_STATUS_BUTTON_NOT_PRESSED:        printf("HIDP_STATUS_BUTTON_NOT_PRESSED"); break;
+    case HIDP_STATUS_REPORT_DOES_NOT_EXIST:     printf("HIDP_STATUS_REPORT_DOES_NOT_EXIST"); break;
+    case HIDP_STATUS_NOT_IMPLEMENTED:           printf("HIDP_STATUS_NOT_IMPLEMENTED"); break;
+    default:                                    printf("Unknown status 0x%08X", status); break;
     }
 }
 
