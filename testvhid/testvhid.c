@@ -45,6 +45,9 @@ PHIDP_BUTTON_CAPS           m_pOutputButtonCaps = NULL;
 
 PHIDP_LINK_COLLECTION_NODE  m_pLinkCollectionNodes = NULL;
 
+ULONG                       m_ulScreenWidth = 0;
+ULONG                       m_ulScreenHeight = 0;
+
 //
 // Function prototypes
 //
@@ -174,6 +177,18 @@ GetUsageValue
     _In_ PCHAR pbBuffer,
     _In_ DWORD cbBuffer,
     _Out_ PULONG ulUsageValue
+);
+
+NTSTATUS
+GetUsageValueArray
+(
+    _In_ HIDP_REPORT_TYPE reportType,
+    _In_ USHORT usCollectionIdx,
+    _In_ USAGE usage,
+    _In_ PCHAR pbBuffer,
+    _In_ DWORD cbBuffer,
+    _In_ USHORT cbUsageValueArray,
+    _Out_ PCHAR pbUsageValueArray
 );
 
 //
@@ -469,7 +484,7 @@ GetFeatureCapabilities(
 )
 {
     BOOLEAN bSuccess = TRUE;
-
+    NTSTATUS status;
     PCHAR pbBuffer = NULL;
     USHORT cbBuffer = m_Caps.FeatureReportByteLength;
     USHORT usCollectionIdx;
@@ -486,15 +501,72 @@ GetFeatureCapabilities(
     {
         printf("\nReportID: "); PrintUsageString(reportID); printf("\n");
         printf("LinkCollection: %d\n", usCollectionIdx);
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_TRACKER_QUALITY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_GAZE_LOCATION_ORIGIN, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_EYE_POSITION_ORIGIN, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MINIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_OPTIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SCREEN_PLANE_WIDTH, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SCREEN_PLANE_HEIGHT, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_TRACKER_QUALITY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            switch (ulUsageValue)
+            {
+            case 1: printf("Foveated Rendering\n"); break;
+            case 2: printf("Interaction Gaze\n"); break;
+            case 3: printf("Medium Gaze\n"); break;
+            case 4: printf("Rough Gaze\n"); break;
+            default: printf("Error: Invalid Quality Level!\n");
+            }
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_GAZE_LOCATION_ORIGIN, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            switch (ulUsageValue)
+            {
+            case 1: printf("Upper Left Origin\n"); break;
+            case 2: printf("Lower Left Origin\n"); break;
+            case 3: printf("Center Origin\n"); break;
+            case 4: printf("Geometrical Center of Eye Tracker\n"); break;
+            default: printf("Error: Invalid Coordinate System!\n");
+            }
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_EYE_POSITION_ORIGIN, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            switch (ulUsageValue)
+            {
+            case 1: printf("Upper Left Origin\n"); break;
+            case 2: printf("Lower Left Origin\n"); break;
+            case 3: printf("Center Origin\n"); break;
+            case 4: printf("Geometrical Center of Eye Tracker\n"); break;
+            default: printf("Error: Invalid Coordinate System!\n");
+            }
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            printf("Maximum Sampling Frequency %d Hz\n", ulUsageValue);
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MINIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            printf("Miniumum Tracking Distance %d millimeters\n", ulUsageValue);
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_OPTIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            printf("Optimum Tracking Distance %d millimeters\n", ulUsageValue);
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_TRACKING_DISTANCE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            printf("Maximum Tracking Distance %d millimeters\n", ulUsageValue);
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SCREEN_PLANE_WIDTH, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            printf("Maximum Screen Plane Width %d millimeters\n", ulUsageValue);
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_MAXIMUM_SCREEN_PLANE_HEIGHT, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            printf("Maximum Screen Plane Height %d millimeters\n", ulUsageValue);
+        }
     }
 
     free(pbBuffer);
@@ -507,7 +579,7 @@ GetFeatureConfiguration(
 )
 {
     BOOLEAN bSuccess = TRUE;
-
+    NTSTATUS status;
     PCHAR pbBuffer = NULL;
     USHORT cbBuffer = m_Caps.FeatureReportByteLength;
     USHORT usCollectionIdx;
@@ -524,12 +596,22 @@ GetFeatureConfiguration(
     {
         printf("\nReportID: "); PrintUsageString(reportID); printf("\n");
         printf("LinkCollection: %d\n", usCollectionIdx);
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_MANUFACTURER_ID, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_PRODUCT_ID, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_SERIAL_NUMBER, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_MANUFACTURER_DATE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CALIBRATED_SCREEN_WIDTH, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CALIBRATED_SCREEN_HEIGHT, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_MANUFACTURER_ID, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_PRODUCT_ID, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_SERIAL_NUMBER, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DISPLAY_MANUFACTURER_DATE, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CALIBRATED_SCREEN_WIDTH, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            printf("Calibrated Screen Width %d micrometers\n", ulUsageValue);
+            m_ulScreenWidth = ulUsageValue; // save the screen width for later calculations
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CALIBRATED_SCREEN_HEIGHT, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            printf("Calibrated Screen Height %d micrometers\n", ulUsageValue);
+            m_ulScreenHeight = ulUsageValue; // save the screen height for later calculations
+        }
     }
 
     free(pbBuffer);
@@ -542,7 +624,7 @@ GetFeatureTrackerStatus(
 )
 {
     BOOLEAN bSuccess = TRUE;
-
+    NTSTATUS status;
     PCHAR pbBuffer = NULL;
     USHORT cbBuffer = m_Caps.FeatureReportByteLength;
     USHORT usCollectionIdx;
@@ -559,9 +641,32 @@ GetFeatureTrackerStatus(
     {
         printf("\nReportID: "); PrintUsageString(reportID); printf("\n");
         printf("LinkCollection: %d\n", usCollectionIdx);
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DEVICE_STATUS, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CONFIGURATION_STATUS, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-        GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_SAMPLING_FREQUENCY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_DEVICE_STATUS, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            switch (ulUsageValue)
+            {
+            case 0: printf("Eye tracking is disabled\n"); break;
+            case 1: printf("Eye tracking is enabled\n"); break;
+            default: printf("Error: Invalid device status!\n");
+            }
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_CONFIGURATION_STATUS, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            switch (ulUsageValue)
+            {
+            case 0: printf("Screen Setup Needed\n"); break;
+            case 1: printf("User Calibration Needed\n"); break;
+            case 2: printf("Device Ready\n"); break;
+            default: printf("Error: Invalid configuration status!\n");
+            }
+        }
+        status = GetUsageValue(HidP_Feature, usCollectionIdx, HID_USAGE_SAMPLING_FREQUENCY, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+        if (status == HIDP_STATUS_SUCCESS)
+        {
+            printf("Sensor Sampling Frequency %d Hz\n", ulUsageValue);
+        }
     }
 
     free(pbBuffer);
@@ -608,11 +713,13 @@ ReadInputData(
 {
     BOOL bSuccess = TRUE;
     PCHAR pbBuffer = NULL;
+    NTSTATUS status;
     USHORT cbBuffer = m_Caps.InputReportByteLength;
     DWORD bytesRead;
     USAGE reportID = 0;
     USHORT usCollectionIdx;
     ULONG ulUsageValue;
+    UINT64 ullTimestamp;
 
     pbBuffer = calloc(cbBuffer, sizeof(CHAR));
 
@@ -646,23 +753,52 @@ ReadInputData(
             if (reportID == HID_USAGE_TRACKING_DATA)
             {
                 usCollectionIdx = GetLinkCollectionIndex(HidP_Input, HID_USAGE_TRACKING_DATA, 0);
-                GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_TIMESTAMP, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-                
+                status = HidP_GetUsageValueArray(
+                    HidP_Input,
+                    HID_USAGE_PAGE_EYE_HEAD_TRACKER,
+                    usCollectionIdx,
+                    HID_USAGE_TIMESTAMP,
+                    (PCHAR)(&ullTimestamp),
+                    sizeof(ullTimestamp),
+                    m_pPpd,
+                    pbBuffer,
+                    cbBuffer);
+                PrintUsageString(HID_USAGE_TIMESTAMP);
+                printf(" ");
+                if (status == HIDP_STATUS_SUCCESS)
+                {
+                    printf("0x%llX", ullTimestamp);
+                }
+                else
+                {
+                    PrintStatusResult(status);
+                }
+                printf("\n");
+                //GetUsageValueArray(HidP_Input, usCollectionIdx, HID_USAGE_TIMESTAMP, pbBuffer, cbBuffer, sizeof(ullTimestamp), (PCHAR)(&ullTimestamp)); printf("\n");
+
                 usCollectionIdx = GetLinkCollectionIndex(HidP_Input, HID_USAGE_TRACKING_DATA, HID_USAGE_GAZE_LOCATION);
-                GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_X, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-                GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Y, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+                status = GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_X, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+                if (status == HIDP_STATUS_SUCCESS && m_ulScreenWidth != 0)
+                {
+                    printf("X: %d\n", ulUsageValue / m_ulScreenWidth);
+                }
+                status = GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Y, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+                if (status == HIDP_STATUS_SUCCESS && m_ulScreenHeight != 0)
+                {
+                    printf("Y: %d\n", ulUsageValue / m_ulScreenHeight);
+                }
 
                 usCollectionIdx = GetLinkCollectionIndex(HidP_Input, HID_USAGE_TRACKING_DATA, HID_USAGE_LEFT_EYE_POSITION);
-                GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_X, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-                GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Y, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-                GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Z, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+                status = GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_X, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+                status = GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Y, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+                status = GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Z, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
 
                 usCollectionIdx = GetLinkCollectionIndex(HidP_Input, HID_USAGE_TRACKING_DATA, HID_USAGE_RIGHT_EYE_POSITION);
-                GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_X, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-                GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Y, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
-                GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Z, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+                status = GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_X, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+                status = GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Y, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
+                status = GetUsageValue(HidP_Input, usCollectionIdx, HID_USAGE_POSITION_Z, pbBuffer, cbBuffer, &ulUsageValue); printf("\n");
             }
-            else if (reportID == 0x0015) // Config status change
+            else if (reportID == HID_USAGE_TRACKER_STATUS) // Config status change
             {
                 PCHAR pbBuffer2 = NULL;
                 USHORT cbBuffer2 = m_Caps.FeatureReportByteLength;
@@ -859,10 +995,10 @@ GetValueCapsEX(
             printf("ReportType:           "); PrintReportType(reportType); printf("\n");
             printf("UsagePage:            0x%04X ", (*ppValueCaps)[idx].UsagePage); PrintUsagePage((*ppValueCaps)[idx].UsagePage); printf("\n");
             printf("ReportID:             0x%04X ", (*ppValueCaps)[idx].ReportID); PrintUsageString((*ppValueCaps)[idx].ReportID); printf("\n");
-            printf("LinkCollection:     %8d\n", (*ppValueCaps)[idx].LinkCollection);
+            printf("LinkCollection:     %8d (", (*ppValueCaps)[idx].LinkCollection); PrintCollectionType(m_pLinkCollectionNodes[(*ppValueCaps)[idx].LinkCollection].CollectionType); printf(")\n");
             printf("LinkUsage:            0x%04X ", (*ppValueCaps)[idx].LinkUsage); PrintUsageString((*ppValueCaps)[idx].LinkUsage); printf("\n");
             printf("LinkUsagePage:        0x%04X ", (*ppValueCaps)[idx].LinkUsagePage); PrintUsagePage((*ppValueCaps)[idx].LinkUsagePage); printf("\n");
-            printf("BitSize:              0x%04X\n", (*ppValueCaps)[idx].BitSize);
+            printf("BitSize:              0x%04X %d bits\n", (*ppValueCaps)[idx].BitSize, (*ppValueCaps)[idx].BitSize);
             printf("\n");
         }
     }
@@ -1255,6 +1391,43 @@ GetUsageValue
     {
         PrintStatusResult(status);
     }
+
+    return status;
+}
+
+NTSTATUS
+GetUsageValueArray
+(
+    _In_ HIDP_REPORT_TYPE reportType,
+    _In_ USHORT usCollectionIdx,
+    _In_ USAGE usage,
+    _In_ PCHAR pbBuffer,
+    _In_ DWORD cbBuffer,
+    _In_ USHORT cbUsageValueArray,
+    _Out_ PCHAR pbUsageValueArray
+)
+{
+    NTSTATUS status = HidP_GetUsageValueArray(
+        reportType,
+        HID_USAGE_PAGE_EYE_HEAD_TRACKER,
+        usCollectionIdx,
+        usage,
+        pbUsageValueArray,
+        cbUsageValueArray,
+        m_pPpd,
+        pbBuffer,
+        cbBuffer);
+    PrintUsageString(usage);
+    printf(" ");
+    if (status == HIDP_STATUS_SUCCESS)
+    {
+        printf("0x%llX", (UINT64)*pbUsageValueArray);
+    }
+    else
+    {
+        PrintStatusResult(status);
+    }
+    printf("\n");
 
     return status;
 }
