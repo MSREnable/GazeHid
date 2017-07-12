@@ -3,7 +3,7 @@
 #define HID_USAGE_PAGE_EYE_HEAD_TRACKER             (0x0012)
 #define HID_USAGE_PAGE_NAME_EYE_HEAD_TRACKER        "Eye and Head Trackers"
 
-                                                                    // Type
+#define HID_USAGE_UNDEFINED                         (0x0000)        // Type
 #define HID_USAGE_EYE_TRACKER                       (0x0001)        // CA
 #define HID_USAGE_HEAD_TRACKER                      (0x0002)        // CA
 //RESERVED                                          0x0003-0x000F
@@ -64,21 +64,21 @@
 
 typedef struct _POINT2D
 {
-    float    X;
-    float    Y;
+    int32_t    X;
+    int32_t    Y;
 } POINT2D, *PPOINT2D;
 
 typedef struct _POINT3D
 {
-    uint32_t    X;
-    uint32_t    Y;
-    uint32_t    Z;
+    int32_t    X;
+    int32_t    Y;
+    int32_t    Z;
 } POINT3D, *PPOINT3D;
 
 typedef struct _GAZE_REPORT
 {
-    uint8_t        ReportId;
-    uint8_t        Reserved[3];
+    uint8_t     ReportId;
+    uint8_t     Reserved[3];
     uint64_t    TimeStamp;
     POINT2D     GazePoint;
     POINT3D     LeftEyePosition;
@@ -87,20 +87,16 @@ typedef struct _GAZE_REPORT
 
 typedef struct _CAPABILITIES_REPORT
 {
-    uint8_t            ReportId;
-    uint8_t            TrackerQuality;
-    uint8_t            GazeLocationOrigin;
-    uint8_t            EyePositionOrigin;
+    uint8_t         ReportId;
+    uint8_t         TrackerQuality;
+    uint8_t         GazeLocationOrigin;
+    uint8_t         EyePositionOrigin;
     uint16_t        MaxFramesPerSecond; // Maximum Sampling Frequency
     uint16_t        MinimumTrackingDistance;
     uint16_t        OptimumTrackingDistance;
     uint16_t        MaximumTrackingDistance;
     uint16_t        MaximumScreenPlaneWidth;
     uint16_t        MaximumScreenPlaneHeight;
-    uint32_t        ScreenPlaneCurvature;
-    POINT3D         ScreenPlaneTopLeft;
-    POINT3D         ScreenPlaneTopRight;
-    POINT3D         ScreenPlaneBottomLeft;
 } CAPABILITIES_REPORT, *PCAPABILITIES_REPORT;
 
 typedef struct _CONFIGURATION_REPORT
@@ -111,15 +107,18 @@ typedef struct _CONFIGURATION_REPORT
     uint16_t        DisplayProductId;
     uint32_t        DisplaySerialNumber;
     uint16_t        DisplayManufacturerDate;
+    int32_t         CalibratedScreenWidth;
+    int32_t         CalibratedScreenHeight;
 } CONFIGURATION_REPORT, *PCONFIGURATION_REPORT;
 
 typedef struct _TRACKER_STATUS_REPORT
 {
     uint8_t         ReportId;
     uint8_t         Reserved;
+    uint8_t         DeviceStatus;
     uint8_t         TrackerStatus;
     uint8_t         ConfigurationStatus;
-    uint16_t        FramesPerSecond;
+    uint16_t        SamplingFrequency;
 } TRACKER_STATUS_REPORT, *PTRACKER_STATUS_REPORT;
 
 typedef struct _TRACKER_CONTROL_REPORT
