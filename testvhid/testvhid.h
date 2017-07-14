@@ -7,9 +7,7 @@
 #include <conio.h>
 #include <cfgmgr32.h>
 #include <hidsdi.h>
-#include <wingdi.h>
 #include "common.h"
-#include <time.h>
 #include "Tracker.h"
 
 GUID                        m_hidguid;
@@ -204,6 +202,32 @@ GetUsagePageString(
 CHAR*
 GetStatusResultString(
     NTSTATUS status
+);
+
+CHAR*
+GetTrackerQualityString(
+    uint8_t trackerQuality
+);
+
+CHAR*
+GetCoordinateSystemString(
+    uint8_t coordinateSystem
+);
+
+CHAR*
+GetDeviceStatusString(
+    uint8_t deviceStatus
+);
+
+CHAR*
+GetConfigurationStatusString(
+    uint8_t configurationStatus
+);
+
+VOID
+GetDesktopResolution(
+    PLONG plHorizontal,
+    PLONG plVertical
 );
 
 VOID

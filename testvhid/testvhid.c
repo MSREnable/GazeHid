@@ -33,10 +33,12 @@ main(
     BOOLEAN found = FALSE;
     BOOLEAN bSuccess = FALSE;
 
+    LONG h, v;
+
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(argv);
 
-    srand((unsigned)time(NULL));
+    GetDesktopResolution(&m_lScreenWidth, &m_lScreenHeight);
 
     HidD_GetHidGuid(&m_hidguid);
 
@@ -464,36 +466,16 @@ PrintFeatureCapabilities(
 {
     printf("ReportID:   0x%04X %s\n", m_capabilitiesReport.ReportId, GetUsageString(m_capabilitiesReport.ReportId));
 
-    switch (m_capabilitiesReport.TrackerQuality)
-    {
-    case 1: printf("Foveated Rendering\n"); break;
-    case 2: printf("Interaction Gaze\n"); break;
-    case 3: printf("Medium Gaze\n"); break;
-    case 4: printf("Rough Gaze\n"); break;
-    default: printf("Error: Invalid Quality Level!\n");
-    }
-    switch (m_capabilitiesReport.GazeLocationOrigin)
-    {
-    case 1: printf("Upper Left Origin\n"); break;
-    case 2: printf("Lower Left Origin\n"); break;
-    case 3: printf("Center Origin\n"); break;
-    case 4: printf("Geometrical Center of Eye Tracker\n"); break;
-    default: printf("Error: Invalid Coordinate System!\n");
-    }
-    switch (m_capabilitiesReport.EyePositionOrigin)
-    {
-    case 1: printf("Upper Left Origin\n"); break;
-    case 2: printf("Lower Left Origin\n"); break;
-    case 3: printf("Center Origin\n"); break;
-    case 4: printf("Geometrical Center of Eye Tracker\n"); break;
-    default: printf("Error: Invalid Coordinate System!\n");
-    }
-    printf("Maximum Sampling Frequency %d Hz\n", m_capabilitiesReport.MaxFramesPerSecond);
-    printf("Miniumum Tracking Distance %d millimeters\n", m_capabilitiesReport.MinimumTrackingDistance);
-    printf("Optimum Tracking Distance %d millimeters\n", m_capabilitiesReport.OptimumTrackingDistance);
-    printf("Maximum Tracking Distance %d millimeters\n", m_capabilitiesReport.MaximumTrackingDistance);
-    printf("Maximum Screen Plane Width %d millimeters\n", m_capabilitiesReport.MaximumScreenPlaneWidth);
-    printf("Maximum Screen Plane Height %d millimeters\n", m_capabilitiesReport.MaximumScreenPlaneHeight);
+    printf("0x%04X %s\n", m_capabilitiesReport.TrackerQuality, GetTrackerQualityString(m_capabilitiesReport.TrackerQuality));
+    printf("0x%04X %s\n", m_capabilitiesReport.GazeLocationOrigin, GetCoordinateSystemString(m_capabilitiesReport.GazeLocationOrigin));
+    printf("0x%04X %s\n", m_capabilitiesReport.EyePositionOrigin, GetCoordinateSystemString(m_capabilitiesReport.EyePositionOrigin));
+
+    printf("0x%04X Maximum Sampling Frequency %d Hz\n", m_capabilitiesReport.MaxFramesPerSecond, m_capabilitiesReport.MaxFramesPerSecond);
+    printf("0x%04X Miniumum Tracking Distance %d millimeters\n", m_capabilitiesReport.MinimumTrackingDistance, m_capabilitiesReport.MinimumTrackingDistance);
+    printf("0x%04X Optimum Tracking Distance %d millimeters\n", m_capabilitiesReport.OptimumTrackingDistance, m_capabilitiesReport.OptimumTrackingDistance);
+    printf("0x%04X Maximum Tracking Distance %d millimeters\n", m_capabilitiesReport.MaximumTrackingDistance, m_capabilitiesReport.MaximumTrackingDistance);
+    printf("0x%04X Maximum Screen Plane Width %d micrometers\n", m_capabilitiesReport.MaximumScreenPlaneWidth, m_capabilitiesReport.MaximumScreenPlaneWidth);
+    printf("0x%04X Maximum Screen Plane Height %d micrometers\n", m_capabilitiesReport.MaximumScreenPlaneHeight, m_capabilitiesReport.MaximumScreenPlaneHeight);
 
     printf("\n");
 }
@@ -708,19 +690,8 @@ PrintFeatureTrackerStatus(
 )
 {
     printf("ReportID:   0x%04X %s\n", m_trackerStatusReport.ReportId, GetUsageString(m_trackerStatusReport.ReportId));
-    switch (m_trackerStatusReport.DeviceStatus)
-    {
-    case 0: printf("Eye tracking is disabled\n"); break;
-    case 1: printf("Eye tracking is enabled\n"); break;
-    default: printf("Error: Invalid device status!\n");
-    }
-    switch (m_trackerStatusReport.ConfigurationStatus)
-    {
-    case 0: printf("Screen Setup Needed\n"); break;
-    case 1: printf("User Calibration Needed\n"); break;
-    case 2: printf("Device Ready\n"); break;
-    default: printf("Error: Invalid configuration status!\n");
-    }
+    printf("%s\n", GetDeviceStatusString(m_trackerStatusReport.DeviceStatus));
+    printf("%s\n", GetConfigurationStatusString(m_trackerStatusReport.ConfigurationStatus));
     printf("Sensor Sampling Frequency %d Hz\n", m_trackerStatusReport.SamplingFrequency);
 
     printf("\n");
@@ -764,7 +735,7 @@ ReadInputData(
 )
 {
     BOOL bSuccess = TRUE;
-    PCHAR pbBuffer = NULL;
+    PBYTE pbBuffer = NULL;
     NTSTATUS status;
     USHORT cbBuffer = m_Caps.InputReportByteLength;
     DWORD bytesRead;
@@ -775,9 +746,7 @@ ReadInputData(
     LONG lPositionX;
     LONG lPositionY;
 
-    pbBuffer = calloc(cbBuffer, sizeof(CHAR));
-
-    printf("\n\nHID_USAGE_TRACKING_DATA\n");
+    pbBuffer = calloc(cbBuffer, sizeof(BYTE));
 
     //
     // get input data.
@@ -940,9 +909,20 @@ ReadInputData(
                         m_gazeReport.RightEyePosition.Z = ulUsageValue;
                     }
 
-                    printf("%lld - GazePoint (%d,%d) - Eye Position L(%d,%d,%d) R(%d,%d,%d)\n",
+                    // TODO remove the 1000.0 multiplier once the calibrated screen width and height are returned in micrometers
+                    // rather than millimeters. Ensure that the GazePoint X and Y match 
+                    DOUBLE dX = (m_gazeReport.GazePoint.X * 1.0) / (m_configurationReport.CalibratedScreenWidth * 1000.0);
+                    DOUBLE dY = (m_gazeReport.GazePoint.Y * 1.0) / (m_configurationReport.CalibratedScreenHeight * 1000.0);
+
+                    ULONG posX = m_lScreenWidth * dX;
+                    ULONG posY = m_lScreenHeight * dY;
+
+                    SetCursorPos(posX, posY);
+
+                    printf("%lld - GazePoint (%d,%d) (%0.3f%%, %0.3f%%) - Eye Position L(%d,%d,%d) R(%d,%d,%d)\n",
                         m_gazeReport.TimeStamp,
-                        m_gazeReport.GazePoint.X / m_configurationReport.CalibratedScreenWidth, m_gazeReport.GazePoint.Y / m_configurationReport.CalibratedScreenHeight,
+                        posX, posY,
+                        dX, dY,
                         m_gazeReport.LeftEyePosition.X, m_gazeReport.LeftEyePosition.Y, m_gazeReport.LeftEyePosition.Z,
                         m_gazeReport.RightEyePosition.X, m_gazeReport.RightEyePosition.Y, m_gazeReport.RightEyePosition.Z
                         );
@@ -968,6 +948,7 @@ ReadInputData(
     }
 
     free(pbBuffer);
+    pbBuffer = NULL;
 
     return (BOOLEAN)bSuccess;
 }
@@ -1563,6 +1544,78 @@ GetStatusResultString
     return retval;
 }
 
+CHAR*
+GetTrackerQualityString(
+    uint8_t trackerQuality
+)
+{
+    CHAR* retval = NULL;
+
+    switch (trackerQuality)
+    {
+    case 1:     retval = "Foveated Rendering"; break;
+    case 2:     retval = "Interaction Gaze"; break;
+    case 3:     retval = "Medium Gaze"; break;
+    case 4:     retval = "Rough Gaze"; break;
+    default:    retval = "Error: Invalid Quality Level!";
+    }
+
+    return retval;
+}
+
+CHAR*
+GetCoordinateSystemString(
+    uint8_t coordinateSystem
+)
+{
+    CHAR* retval = NULL;
+
+    switch (coordinateSystem)
+    {
+    case 1: printf("Upper Left Origin"); break;
+    case 2: printf("Lower Left Origin"); break;
+    case 3: printf("Center Origin"); break;
+    case 4: printf("Geometrical Center of Eye Tracker"); break;
+    default: printf("Error: Invalid Coordinate System!");
+    }
+
+    return retval;
+}
+
+CHAR*
+GetDeviceStatusString(
+    uint8_t deviceStatus
+)
+{
+    CHAR* retval = NULL;
+
+    switch (deviceStatus)
+    {
+    case 0:     retval = "Eye tracking is disabled"; break;
+    case 1:     retval = "Eye tracking is enabled"; break;
+    default:    retval = "Error: Invalid device status!";
+    }
+
+    return retval;
+}
+
+CHAR*
+GetConfigurationStatusString(
+    uint8_t configurationStatus
+)
+{
+    CHAR* retval = NULL;
+
+    switch (configurationStatus)
+    {
+    case 0:     retval = "Screen Setup Needed"; break;
+    case 1:     retval = "User Calibration Needed"; break;
+    case 2:     retval = "Device Ready"; break;
+    default:    retval = "Error: Invalid configuration status!";
+    }
+
+    return retval;
+}
 int8_t
 CodeToExponent(
     BYTE b
@@ -1626,3 +1679,19 @@ UnitsToString(
     return retval;
 }
 
+VOID
+GetDesktopResolution(
+    PLONG plHorizontal, 
+    PLONG plVertical)
+{
+    RECT desktop;
+    // Get a handle to the desktop window
+    const HWND hDesktop = GetDesktopWindow();
+    // Get the size of screen to the variable desktop
+    GetWindowRect(hDesktop, &desktop);
+    // The top left corner will have coordinates (0,0)
+    // and the bottom right corner will have coordinates
+    // (horizontal, vertical)
+    *plHorizontal = desktop.right;
+    *plVertical = desktop.bottom;
+}
