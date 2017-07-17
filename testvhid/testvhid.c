@@ -1273,19 +1273,19 @@ PrintLinkCollectionNode(
     int currentNodeIdx
 )
 {
-    printf("Index:              %8d\n", currentNodeIdx);
-    printf("Usage:                0x%04X %s\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsage, GetUsageString(m_pLinkCollectionNodes[currentNodeIdx].LinkUsage));
-    printf("UsagePage:            0x%04X %s\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage, GetUsagePageString(m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage));
+    printf("Index:              %6d\n", currentNodeIdx);
+    printf("Usage:              0x%04X %s\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsage, GetUsageString(m_pLinkCollectionNodes[currentNodeIdx].LinkUsage));
+    printf("UsagePage:          0x%04X %s\n", m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage, GetUsagePageString(m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage));
     if (m_pLinkCollectionNodes[currentNodeIdx].LinkUsagePage != HID_USAGE_PAGE_EYE_HEAD_TRACKER)
     {
         printf("Error: Invalid Usage Page, should be 0x%04X\n", HID_USAGE_PAGE_EYE_HEAD_TRACKER);
     }
-    printf("CollectionType:     %8d %s\n", m_pLinkCollectionNodes[currentNodeIdx].CollectionType, GetCollectionTypeString(m_pLinkCollectionNodes[currentNodeIdx].CollectionType));
-    printf("IsAlias:            %8d\n", m_pLinkCollectionNodes[currentNodeIdx].IsAlias);
-    printf("Parent:             %8d\n", m_pLinkCollectionNodes[currentNodeIdx].Parent);
-    printf("NumberOfChildren:   %8d ", m_pLinkCollectionNodes[currentNodeIdx].NumberOfChildren); PrintLinkCollectionNodeChildren(currentNodeIdx); printf("\n");
-    printf("FirstChild:         %8d\n", m_pLinkCollectionNodes[currentNodeIdx].FirstChild);
-    printf("NextSibling:        %8d\n", m_pLinkCollectionNodes[currentNodeIdx].NextSibling);
+    printf("CollectionType:     %6d %s\n", m_pLinkCollectionNodes[currentNodeIdx].CollectionType, GetCollectionTypeString(m_pLinkCollectionNodes[currentNodeIdx].CollectionType));
+    printf("IsAlias:            %6d\n", m_pLinkCollectionNodes[currentNodeIdx].IsAlias);
+    printf("Parent:             %6d\n", m_pLinkCollectionNodes[currentNodeIdx].Parent);
+    printf("NumberOfChildren:   %6d ", m_pLinkCollectionNodes[currentNodeIdx].NumberOfChildren); PrintLinkCollectionNodeChildren(currentNodeIdx); printf("\n");
+    printf("FirstChild:         %6d\n", m_pLinkCollectionNodes[currentNodeIdx].FirstChild);
+    printf("NextSibling:        %6d\n", m_pLinkCollectionNodes[currentNodeIdx].NextSibling);
     printf("\n");
 }
 
