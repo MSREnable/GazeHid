@@ -471,9 +471,9 @@ PrintFeatureCapabilities(
     printf("0x%04X %s\n", m_capabilitiesReport.EyePositionOrigin, GetCoordinateSystemString(m_capabilitiesReport.EyePositionOrigin));
 
     printf("0x%04X Maximum Sampling Frequency %d Hz\n", m_capabilitiesReport.MaxFramesPerSecond, m_capabilitiesReport.MaxFramesPerSecond);
-    printf("0x%04X Miniumum Tracking Distance %d millimeters\n", m_capabilitiesReport.MinimumTrackingDistance, m_capabilitiesReport.MinimumTrackingDistance);
-    printf("0x%04X Optimum Tracking Distance %d millimeters\n", m_capabilitiesReport.OptimumTrackingDistance, m_capabilitiesReport.OptimumTrackingDistance);
-    printf("0x%04X Maximum Tracking Distance %d millimeters\n", m_capabilitiesReport.MaximumTrackingDistance, m_capabilitiesReport.MaximumTrackingDistance);
+    printf("0x%04X Miniumum Tracking Distance %d micrometers\n", m_capabilitiesReport.MinimumTrackingDistance, m_capabilitiesReport.MinimumTrackingDistance);
+    printf("0x%04X Optimum Tracking Distance %d micrometers\n", m_capabilitiesReport.OptimumTrackingDistance, m_capabilitiesReport.OptimumTrackingDistance);
+    printf("0x%04X Maximum Tracking Distance %d micrometers\n", m_capabilitiesReport.MaximumTrackingDistance, m_capabilitiesReport.MaximumTrackingDistance);
     printf("0x%04X Maximum Screen Plane Width %d micrometers\n", m_capabilitiesReport.MaximumScreenPlaneWidth, m_capabilitiesReport.MaximumScreenPlaneWidth);
     printf("0x%04X Maximum Screen Plane Height %d micrometers\n", m_capabilitiesReport.MaximumScreenPlaneHeight, m_capabilitiesReport.MaximumScreenPlaneHeight);
 
@@ -605,8 +605,8 @@ PrintFeatureConfiguration(
     printf("EDID Display Manufacturer Date %d\n", m_configurationReport.DisplayManufacturerDate);
     printf("EDID Display Serial Number %d\n", m_configurationReport.DisplaySerialNumber);
 
-    printf("Calibrated Screen Width %d millimeters\n", m_configurationReport.CalibratedScreenWidth);
-    printf("Calibrated Screen Height %d millimeters\n", m_configurationReport.CalibratedScreenHeight);
+    printf("Calibrated Screen Width %d micrometers\n", m_configurationReport.CalibratedScreenWidth);
+    printf("Calibrated Screen Height %d micrometers\n", m_configurationReport.CalibratedScreenHeight);
 
     printf("\n");
 }
@@ -909,10 +909,8 @@ ReadInputData(
                         m_gazeReport.RightEyePosition.Z = ulUsageValue;
                     }
 
-                    // TODO remove the 1000.0 multiplier once the calibrated screen width and height are returned in micrometers
-                    // rather than millimeters. Ensure that the GazePoint X and Y match 
-                    DOUBLE dX = (m_gazeReport.GazePoint.X * 1.0) / (m_configurationReport.CalibratedScreenWidth * 1000.0);
-                    DOUBLE dY = (m_gazeReport.GazePoint.Y * 1.0) / (m_configurationReport.CalibratedScreenHeight * 1000.0);
+                    DOUBLE dX = (m_gazeReport.GazePoint.X * 1.0) / (m_configurationReport.CalibratedScreenWidth * 1.0);
+                    DOUBLE dY = (m_gazeReport.GazePoint.Y * 1.0) / (m_configurationReport.CalibratedScreenHeight * 1.0);
 
                     ULONG posX = m_lScreenWidth * dX;
                     ULONG posY = m_lScreenHeight * dY;
