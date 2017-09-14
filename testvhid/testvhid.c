@@ -690,9 +690,9 @@ PrintFeatureTrackerStatus(
 )
 {
     printf("ReportID:   0x%04X %s\n", m_trackerStatusReport.ReportId, GetUsageString(m_trackerStatusReport.ReportId));
-    printf("%s\n", GetDeviceStatusString(m_trackerStatusReport.DeviceStatus));
-    printf("%s\n", GetConfigurationStatusString(m_trackerStatusReport.ConfigurationStatus));
-    printf("Sensor Sampling Frequency %d Hz\n", m_trackerStatusReport.SamplingFrequency);
+    printf("0x%04X %s\n", m_trackerStatusReport.DeviceStatus, GetDeviceStatusString(m_trackerStatusReport.DeviceStatus));
+    printf("0x%04X %s\n", m_trackerStatusReport.ConfigurationStatus, GetConfigurationStatusString(m_trackerStatusReport.ConfigurationStatus));
+    printf("0x%04X Sensor Sampling Frequency %d Hz\n", m_trackerStatusReport.SamplingFrequency, m_trackerStatusReport.SamplingFrequency);
 
     printf("\n");
 }
@@ -1570,11 +1570,11 @@ GetCoordinateSystemString(
 
     switch (coordinateSystem)
     {
-    case 1: printf("Upper Left Origin"); break;
-    case 2: printf("Lower Left Origin"); break;
-    case 3: printf("Center Origin"); break;
-    case 4: printf("Geometrical Center of Eye Tracker"); break;
-    default: printf("Error: Invalid Coordinate System!");
+    case 1:  retval = "Upper Left Origin"; break;
+    case 2:  retval = "Lower Left Origin"; break;
+    case 3:  retval = "Center Origin"; break;
+    case 4:  retval = "Geometrical Center of Eye Tracker"; break;
+    default: retval = "Error: Invalid Coordinate System!";
     }
 
     return retval;
@@ -1606,9 +1606,11 @@ GetConfigurationStatusString(
 
     switch (configurationStatus)
     {
-    case 0:     retval = "Screen Setup Needed"; break;
-    case 1:     retval = "User Calibration Needed"; break;
-    case 2:     retval = "Device Ready"; break;
+    case 0:     retval = "Undefined"; break;
+    case 1:     retval = "Ready"; break;
+    case 2:     retval = "Configuring"; break;
+    case 3:     retval = "Screen Setup Needed"; break;
+    case 4:     retval = "User Calibration Needed"; break;
     default:    retval = "Error: Invalid configuration status!";
     }
 
@@ -1671,6 +1673,7 @@ UnitsToString(
     case 0x0000:    retval = ""; break;
     case 0x0011:    retval = "centimeters"; break;
     case 0x1001:    retval = "seconds"; break;
+    case 0xF001:    retval = "Hz"; break;
     default:        retval = "Unknown Units"; break;
     }
 
