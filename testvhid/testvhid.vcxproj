@@ -16,6 +16,7 @@
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
     <SampleGuid>{0C5D2471-0E43-4210-8174-8165AA2D514A}</SampleGuid>
+    <WindowsTargetPlatformVersion>$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -31,7 +32,7 @@
     <UseDebugLibraries>True</UseDebugLibraries>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
     <DriverType />
-    <PlatformToolset>WindowsApplicationForDrivers10.0</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
