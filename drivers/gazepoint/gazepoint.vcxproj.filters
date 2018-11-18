@@ -19,7 +19,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Inf Include="eyetech.inx">
+    <Inf Include="gazepoint.inx">
       <Filter>Driver Files</Filter>
     </Inf>
   </ItemGroup>
@@ -30,12 +30,12 @@
     <ClCompile Include="..\util.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="eyetech.c">
+    <ClCompile Include="gazepoint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="EyeTech.rc">
+    <ResourceCompile Include="GazePoint.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -48,10 +48,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="packages.config" />
     <None Include="@(NativeLibs)" />
     <None Include="@(NativeLibs)" />
     <None Include="@(NativeLibs)" />

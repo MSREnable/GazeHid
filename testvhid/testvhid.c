@@ -61,7 +61,7 @@ main(
 
         bSuccess = SetFeatureTrackerControl(TRUE);
         if (bSuccess == FALSE) {
-            goto cleanup;
+            //goto cleanup;
         }
 
         printf("\n\n\nPress any key to continue...\n");
@@ -346,48 +346,6 @@ GetFeatureCapabilities(
             HidP_Feature,
             HID_USAGE_PAGE_EYE_HEAD_TRACKER,
             usCollectionIdx,
-            HID_USAGE_GAZE_LOCATION_ORIGIN,
-            &ulUsageValue,
-            m_pPpd,
-            pbBuffer,
-            cbBuffer);
-        if (status == HIDP_STATUS_SUCCESS)
-        {
-            m_capabilitiesReport.GazeLocationOrigin = (uint8_t)ulUsageValue;
-        }
-
-        status = HidP_GetUsageValue(
-            HidP_Feature,
-            HID_USAGE_PAGE_EYE_HEAD_TRACKER,
-            usCollectionIdx,
-            HID_USAGE_EYE_POSITION_ORIGIN,
-            &ulUsageValue,
-            m_pPpd,
-            pbBuffer,
-            cbBuffer);
-        if (status == HIDP_STATUS_SUCCESS)
-        {
-            m_capabilitiesReport.EyePositionOrigin = (uint8_t)ulUsageValue;
-        }
-
-        status = HidP_GetUsageValue(
-            HidP_Feature,
-            HID_USAGE_PAGE_EYE_HEAD_TRACKER,
-            usCollectionIdx,
-            HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY,
-            &ulUsageValue,
-            m_pPpd,
-            pbBuffer,
-            cbBuffer);
-        if (status == HIDP_STATUS_SUCCESS)
-        {
-            m_capabilitiesReport.MaxFramesPerSecond = (uint16_t)ulUsageValue;
-        }
-
-        status = HidP_GetUsageValue(
-            HidP_Feature,
-            HID_USAGE_PAGE_EYE_HEAD_TRACKER,
-            usCollectionIdx,
             HID_USAGE_MINIMUM_TRACKING_DISTANCE,
             &ulUsageValue,
             m_pPpd,
@@ -395,7 +353,7 @@ GetFeatureCapabilities(
             cbBuffer);
         if (status == HIDP_STATUS_SUCCESS)
         {
-            m_capabilitiesReport.MinimumTrackingDistance = (uint16_t)ulUsageValue;
+            m_capabilitiesReport.MinimumTrackingDistance = (uint32_t)ulUsageValue;
         }
 
         status = HidP_GetUsageValue(
@@ -409,7 +367,7 @@ GetFeatureCapabilities(
             cbBuffer);
         if (status == HIDP_STATUS_SUCCESS)
         {
-            m_capabilitiesReport.OptimumTrackingDistance = (uint16_t)ulUsageValue;
+            m_capabilitiesReport.OptimumTrackingDistance = (uint32_t)ulUsageValue;
         }
 
         status = HidP_GetUsageValue(
@@ -423,7 +381,7 @@ GetFeatureCapabilities(
             cbBuffer);
         if (status == HIDP_STATUS_SUCCESS)
         {
-            m_capabilitiesReport.MaximumTrackingDistance = (uint16_t)ulUsageValue;
+            m_capabilitiesReport.MaximumTrackingDistance = (uint32_t)ulUsageValue;
         }
 
         status = HidP_GetUsageValue(
@@ -437,7 +395,7 @@ GetFeatureCapabilities(
             cbBuffer);
         if (status == HIDP_STATUS_SUCCESS)
         {
-            m_capabilitiesReport.MaximumScreenPlaneWidth = (uint16_t)ulUsageValue;
+            m_capabilitiesReport.MaximumScreenPlaneWidth = (uint32_t)ulUsageValue;
         }
 
         status = HidP_GetUsageValue(
@@ -451,7 +409,7 @@ GetFeatureCapabilities(
             cbBuffer);
         if (status == HIDP_STATUS_SUCCESS)
         {
-            m_capabilitiesReport.MaximumScreenPlaneHeight = (uint16_t)ulUsageValue;
+            m_capabilitiesReport.MaximumScreenPlaneHeight = (uint32_t)ulUsageValue;
         }
     }
 
@@ -467,15 +425,12 @@ PrintFeatureCapabilities(
     printf("ReportID:   0x%04X %s\n", m_capabilitiesReport.ReportId, GetUsageString(m_capabilitiesReport.ReportId));
 
     printf("0x%04X %s\n", m_capabilitiesReport.TrackerQuality, GetTrackerQualityString(m_capabilitiesReport.TrackerQuality));
-    printf("0x%04X %s\n", m_capabilitiesReport.GazeLocationOrigin, GetCoordinateSystemString(m_capabilitiesReport.GazeLocationOrigin));
-    printf("0x%04X %s\n", m_capabilitiesReport.EyePositionOrigin, GetCoordinateSystemString(m_capabilitiesReport.EyePositionOrigin));
 
-    printf("0x%04X Maximum Sampling Frequency %d Hz\n", m_capabilitiesReport.MaxFramesPerSecond, m_capabilitiesReport.MaxFramesPerSecond);
-    printf("0x%04X Miniumum Tracking Distance %d micrometers\n", m_capabilitiesReport.MinimumTrackingDistance, m_capabilitiesReport.MinimumTrackingDistance);
-    printf("0x%04X Optimum Tracking Distance %d micrometers\n", m_capabilitiesReport.OptimumTrackingDistance, m_capabilitiesReport.OptimumTrackingDistance);
-    printf("0x%04X Maximum Tracking Distance %d micrometers\n", m_capabilitiesReport.MaximumTrackingDistance, m_capabilitiesReport.MaximumTrackingDistance);
-    printf("0x%04X Maximum Screen Plane Width %d micrometers\n", m_capabilitiesReport.MaximumScreenPlaneWidth, m_capabilitiesReport.MaximumScreenPlaneWidth);
-    printf("0x%04X Maximum Screen Plane Height %d micrometers\n", m_capabilitiesReport.MaximumScreenPlaneHeight, m_capabilitiesReport.MaximumScreenPlaneHeight);
+    printf("0x%08X Miniumum Tracking Distance %d micrometers\n", m_capabilitiesReport.MinimumTrackingDistance, m_capabilitiesReport.MinimumTrackingDistance);
+    printf("0x%08X Optimum Tracking Distance %d micrometers\n", m_capabilitiesReport.OptimumTrackingDistance, m_capabilitiesReport.OptimumTrackingDistance);
+    printf("0x%08X Maximum Tracking Distance %d micrometers\n", m_capabilitiesReport.MaximumTrackingDistance, m_capabilitiesReport.MaximumTrackingDistance);
+    printf("0x%08X Maximum Screen Plane Width %d micrometers\n", m_capabilitiesReport.MaximumScreenPlaneWidth, m_capabilitiesReport.MaximumScreenPlaneWidth);
+    printf("0x%08X Maximum Screen Plane Height %d micrometers\n", m_capabilitiesReport.MaximumScreenPlaneHeight, m_capabilitiesReport.MaximumScreenPlaneHeight);
 
     printf("\n");
 }
@@ -639,20 +594,6 @@ GetFeatureTrackerStatus(
             HidP_Feature,
             HID_USAGE_PAGE_EYE_HEAD_TRACKER,
             usCollectionIdx,
-            HID_USAGE_DEVICE_STATUS,
-            &ulUsageValue,
-            m_pPpd,
-            pbBuffer,
-            cbBuffer);
-        if (status == HIDP_STATUS_SUCCESS)
-        {
-            m_trackerStatusReport.DeviceStatus = (uint8_t)ulUsageValue;
-        }
-
-        status = HidP_GetUsageValue(
-            HidP_Feature,
-            HID_USAGE_PAGE_EYE_HEAD_TRACKER,
-            usCollectionIdx,
             HID_USAGE_CONFIGURATION_STATUS,
             &ulUsageValue,
             m_pPpd,
@@ -690,7 +631,6 @@ PrintFeatureTrackerStatus(
 )
 {
     printf("ReportID:   0x%04X %s\n", m_trackerStatusReport.ReportId, GetUsageString(m_trackerStatusReport.ReportId));
-    printf("0x%04X %s\n", m_trackerStatusReport.DeviceStatus, GetDeviceStatusString(m_trackerStatusReport.DeviceStatus));
     printf("0x%04X %s\n", m_trackerStatusReport.ConfigurationStatus, GetConfigurationStatusString(m_trackerStatusReport.ConfigurationStatus));
     printf("0x%04X Sensor Sampling Frequency %d Hz\n", m_trackerStatusReport.SamplingFrequency, m_trackerStatusReport.SamplingFrequency);
 
@@ -723,7 +663,7 @@ SetFeatureTrackerControl(
         }
         else
         {
-            printf("ERROR: HidD_GetFeature failed. GLE=0x%08x\n", GetLastError());
+            printf("ERROR: HidD_SetFeature failed. GLE=0x%08x\n", GetLastError());
         }
     }
 
@@ -1440,9 +1380,6 @@ GetUsageString(
 
         // HID_USAGE_CAPABILITIES - Feature Collection 
     case HID_USAGE_TRACKER_QUALITY:                 retval = "HID_USAGE_TRACKER_QUALITY"; break;
-    case HID_USAGE_GAZE_LOCATION_ORIGIN:            retval = "HID_USAGE_GAZE_LOCATION_ORIGIN"; break;
-    case HID_USAGE_EYE_POSITION_ORIGIN:             retval = "HID_USAGE_EYE_POSITION_ORIGIN"; break;
-    case HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY:      retval = "HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY"; break;
     case HID_USAGE_MINIMUM_TRACKING_DISTANCE:       retval = "HID_USAGE_MINIMUM_TRACKING_DISTANCE"; break;
     case HID_USAGE_OPTIMUM_TRACKING_DISTANCE:       retval = "HID_USAGE_OPTIMUM_TRACKING_DISTANCE"; break;
     case HID_USAGE_MAXIMUM_TRACKING_DISTANCE:       retval = "HID_USAGE_MAXIMUM_TRACKING_DISTANCE"; break;
@@ -1458,7 +1395,6 @@ GetUsageString(
     case HID_USAGE_CALIBRATED_SCREEN_HEIGHT:        retval = "HID_USAGE_CALIBRATED_SCREEN_HEIGHT"; break;
 
         // HID_USAGE_TRACKER_STATUS - Feature Collection 
-    case HID_USAGE_DEVICE_STATUS:                   retval = "HID_USAGE_DEVICE_STATUS"; break;
     case HID_USAGE_CONFIGURATION_STATUS:            retval = "HID_USAGE_CONFIGURATION_STATUS"; break;
     case HID_USAGE_SAMPLING_FREQUENCY:              retval = "HID_USAGE_SAMPLING_FREQUENCY"; break;
 

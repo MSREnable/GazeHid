@@ -20,6 +20,7 @@ Environment:
 #include "hidconstants.h"
 #include "Tracker.h"
 #include <strsafe.h>
+#include <SetupAPI.h>
 
 HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] = {
     HID_USAGE_PAGE(HID_USAGE_PAGE_EYE_HEAD_TRACKER),
@@ -41,7 +42,7 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] = {
 
             HID_REPORT_COUNT(1),
             HID_REPORT_SIZE_UINT32(),
-            HID_LOGICAL_MINIMUM_DWORD(0x00000000),
+            HID_LOGICAL_MINIMUM_DWORD(0x80000000),
             HID_LOGICAL_MAXIMUM_DWORD(0x7FFFFFFF),
 
             HID_USAGE(HID_USAGE_GAZE_LOCATION),
@@ -49,7 +50,7 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] = {
                 HID_REPORT_COUNT(2),
                 HID_USAGE(HID_USAGE_POSITION_X),
                 HID_USAGE(HID_USAGE_POSITION_Y),
-                HID_INPUT_STATIC_VALUE(),
+                HID_INPUT_DYNAMIC_VALUE(),
             HID_END_COLLECTION(),
 
             HID_USAGE(HID_USAGE_LEFT_EYE_POSITION),
@@ -58,7 +59,7 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] = {
                 HID_USAGE(HID_USAGE_POSITION_X),
                 HID_USAGE(HID_USAGE_POSITION_Y),
                 HID_USAGE(HID_USAGE_POSITION_Z),
-                HID_INPUT_STATIC_VALUE(),
+                HID_INPUT_DYNAMIC_VALUE(),
             HID_END_COLLECTION(),
 
             HID_USAGE(HID_USAGE_RIGHT_EYE_POSITION),
@@ -67,34 +68,26 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] = {
                 HID_USAGE(HID_USAGE_POSITION_X),
                 HID_USAGE(HID_USAGE_POSITION_Y),
                 HID_USAGE(HID_USAGE_POSITION_Z),
-                HID_INPUT_STATIC_VALUE(),
+                HID_INPUT_DYNAMIC_VALUE(),
             HID_END_COLLECTION(),
         HID_END_COLLECTION(),
 #pragma endregion
 #pragma region HID_USAGE_CAPABILITIES
         HID_BEGIN_LOGICAL_COLLECTION(),
             HID_REPORT_ID(HID_USAGE_CAPABILITIES),
+
             HID_REPORT_SIZE_UINT8(),
             HID_REPORT_COUNT(1),
-
-            HID_USAGE_WORD(HID_USAGE_TRACKER_QUALITY),
             HID_LOGICAL_MINIMUM(0x01),
             HID_LOGICAL_MAXIMUM(0x04),
+            HID_USAGE_WORD(HID_USAGE_TRACKER_QUALITY),
             HID_FEATURE_STATIC_VALUE(),
 
-            HID_REPORT_COUNT(2),
-            HID_LOGICAL_MINIMUM(0x01),
-            HID_LOGICAL_MAXIMUM(0x03),
-            HID_USAGE_WORD(HID_USAGE_GAZE_LOCATION_ORIGIN),
-            HID_USAGE_WORD(HID_USAGE_EYE_POSITION_ORIGIN),
-            HID_FEATURE_STATIC_VALUE(),
-
-            HID_REPORT_COUNT(6),
-            HID_REPORT_SIZE_UINT16(),
+            HID_REPORT_COUNT(5),
+            HID_REPORT_SIZE_UINT32(),
             HID_LOGICAL_MINIMUM(0x00),
-            HID_LOGICAL_MAXIMUM_DWORD(0x0000FFFF),
+            HID_LOGICAL_MAXIMUM_DWORD(0x7FFFFFFF),
 
-            HID_USAGE_WORD(HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY),
             HID_USAGE_WORD(HID_USAGE_MINIMUM_TRACKING_DISTANCE),
             HID_USAGE_WORD(HID_USAGE_OPTIMUM_TRACKING_DISTANCE),
             HID_USAGE_WORD(HID_USAGE_MAXIMUM_TRACKING_DISTANCE),
@@ -102,9 +95,9 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] = {
             HID_USAGE_WORD(HID_USAGE_MAXIMUM_SCREEN_PLANE_HEIGHT),
             HID_FEATURE_STATIC_VALUE(),
 
-            HID_REPORT_SIZE_UINT32(),
-            HID_LOGICAL_MINIMUM_WORD(0x00000000),
-            HID_LOGICAL_MAXIMUM_WORD(0x7FFFFFFF),
+            //HID_REPORT_SIZE_UINT32(),
+            //HID_LOGICAL_MINIMUM_WORD(0x00000000),
+            //HID_LOGICAL_MAXIMUM_WORD(0x7FFFFFFF),
         HID_END_COLLECTION(),
 #pragma endregion
 #pragma region HID_USAGE_CONFIGURATION
@@ -139,41 +132,33 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] = {
             HID_USAGE_WORD(HID_USAGE_DISPLAY_MANUFACTURER_DATE),
             HID_FEATURE_STATIC_VALUE(),
 
-            HID_REPORT_SIZE_UINT16(),
+            HID_REPORT_SIZE_UINT32(),
+            HID_REPORT_COUNT(2),
             HID_LOGICAL_MINIMUM(0x00),
             HID_LOGICAL_MAXIMUM_DWORD(0x7FFFFFFF),
 
             HID_USAGE_WORD(HID_USAGE_CALIBRATED_SCREEN_WIDTH),
-            HID_FEATURE_STATIC_VALUE(),
-
-            HID_REPORT_SIZE_UINT16(),
-            HID_LOGICAL_MINIMUM(0x00),
-            HID_LOGICAL_MAXIMUM_DWORD(0x7FFFFFFF),
-
             HID_USAGE_WORD(HID_USAGE_CALIBRATED_SCREEN_HEIGHT),
             HID_FEATURE_STATIC_VALUE(),
+
         HID_END_COLLECTION(),
 #pragma endregion
 #pragma region HID_USAGE_TRACKER_STATUS
         HID_BEGIN_LOGICAL_COLLECTION(),
             HID_REPORT_ID(HID_USAGE_TRACKER_STATUS),
+
             HID_REPORT_SIZE_UINT8(),
             HID_REPORT_COUNT(1),
-
             HID_FEATURE_STATIC_VALUE(),
 
             HID_LOGICAL_MINIMUM(0x00),
-            HID_LOGICAL_MAXIMUM(0x03),
-            HID_USAGE_WORD(HID_USAGE_TRACKER_STATUS),
-            HID_FEATURE_DYNAMIC_VALUE(),
-
-            HID_LOGICAL_MAXIMUM(0x02),
+            HID_LOGICAL_MAXIMUM(0x04),
             HID_USAGE_WORD(HID_USAGE_CONFIGURATION_STATUS),
             HID_FEATURE_DYNAMIC_VALUE(),
 
             HID_REPORT_SIZE_UINT16(),
             HID_LOGICAL_MINIMUM(0x00),
-            HID_LOGICAL_MAXIMUM_DWORD(0x0000FFFF),
+            HID_LOGICAL_MAXIMUM_WORD(0x7FFF),
 
             HID_USAGE_WORD(HID_USAGE_SAMPLING_FREQUENCY),
             HID_FEATURE_DYNAMIC_VALUE(),
@@ -377,6 +362,22 @@ Return Value:
         KdPrint(("Using Hard-coded Report descriptor\n"));
         status = STATUS_SUCCESS;
     }
+
+    // Filling in generic values here. These should be customized for the specific tracker
+    // When InitializeEyeTracker is called, the tracker can customize its own specific values
+
+    PCAPABILITIES_REPORT caps = &deviceContext->CapabilitiesReport;
+    caps->ReportId = HID_USAGE_CAPABILITIES;
+    caps->TrackerQuality = TRACKER_QUALITY_FINE_GAZE;
+    caps->MinimumTrackingDistance = 50000;
+    caps->OptimumTrackingDistance = 65000;
+    caps->MaximumTrackingDistance = 90000;
+
+    GetPrimaryMonitorInfo(deviceContext);
+
+    PTRACKER_STATUS_REPORT trackerStatus = &deviceContext->TrackerStatusReport;
+    trackerStatus->ReportId = HID_USAGE_TRACKER_STATUS;
+    trackerStatus->ConfigurationStatus = TRACKER_STATUS_RESERVED;
 
     if (!InitializeEyeTracker(deviceContext))
     {
@@ -824,7 +825,7 @@ Return Value:
     NTSTATUS                status = STATUS_UNSUCCESSFUL;
     //GAZE_REPORT             gazeReport;
 
-    KdPrint(("ReadReport\n"));
+    //KdPrint(("ReadReport\n"));
 
     //
     // forward the request to manual queue
@@ -944,7 +945,7 @@ Return Value:
     NTSTATUS                status;
     HID_XFER_PACKET         packet;
     ULONG                   reportSize;
-    PCAPABILITIES_REPORT	capabilities;
+    PUCHAR                  reportData;
 	
 	UNREFERENCED_PARAMETER(QueueContext);
     // PHID_DEVICE_ATTRIBUTES  hidAttributes = &QueueContext->DeviceContext->HidDeviceAttributes;
@@ -958,11 +959,21 @@ Return Value:
         return status;
     }
 
-    if (packet.reportId != HID_USAGE_CAPABILITIES) {
-        //
-        // If collection ID is not for control collection then handle
-        // this request just as you would for a regular collection.
-        //
+    switch (packet.reportId)
+    {
+    case HID_USAGE_CAPABILITIES:
+        reportSize = sizeof(CAPABILITIES_REPORT);
+        reportData = (PUCHAR)&QueueContext->DeviceContext->CapabilitiesReport;
+        break;
+    case HID_USAGE_CONFIGURATION:
+        reportSize = sizeof(CONFIGURATION_REPORT);
+        reportData = (PUCHAR)&QueueContext->DeviceContext->ConfigurationReport;
+        break;
+    case HID_USAGE_TRACKER_STATUS:
+        reportSize = sizeof(TRACKER_STATUS_REPORT);
+        reportData = (PUCHAR)&QueueContext->DeviceContext->TrackerStatusReport;
+        break;
+    default:
         status = STATUS_INVALID_PARAMETER;
         KdPrint(("GetFeature: invalid report id %d\n", packet.reportId));
         return status;
@@ -980,7 +991,6 @@ Return Value:
     // it is good practice to not do so.
     //
 
-	reportSize = sizeof(CAPABILITIES_REPORT);	// +sizeof(packet.reportId);
     if (packet.reportBufferLen < reportSize) {
         status = STATUS_INVALID_BUFFER_SIZE;
         KdPrint(("GetFeature: output buffer too small. Size %d, expect %d\n",
@@ -996,15 +1006,8 @@ Return Value:
     // report ID since we get it other way as shown above, however this is
     // something to keep in mind.
     //
-	capabilities = (PCAPABILITIES_REPORT)packet.reportBuffer;
-	capabilities->ReportId			    = HID_USAGE_CAPABILITIES;
-	capabilities->MaxFramesPerSecond	= 60;
 
-	// TODO:
-	// These returned values are wrong. It looks like GetSystemMetrics (and GetMonitorInfo) return
-	// wrong values when called from a driver. Need to investigate the correct way of getting this info.
-	capabilities->MaximumScreenPlaneWidth		= (uint16_t)GetSystemMetrics(SM_CXSCREEN);
-	capabilities->MaximumScreenPlaneHeight  	= (uint16_t)GetSystemMetrics(SM_CYSCREEN);
+    memcpy(packet.reportBuffer, reportData, reportSize);
 
     //
     // Report how many bytes were copied
@@ -1041,8 +1044,9 @@ Return Value:
     NTSTATUS                status;
     HID_XFER_PACKET         packet;
     ULONG                   reportSize;
-    PHIDMINI_CONTROL_INFO   controlInfo;
-    PHID_DEVICE_ATTRIBUTES  hidAttributes = &QueueContext->DeviceContext->HidDeviceAttributes;
+    PTRACKER_CONTROL_REPORT trackerControl;
+
+    UNREFERENCED_PARAMETER(QueueContext);
 
     KdPrint(("SetFeature\n"));
 
@@ -1053,11 +1057,7 @@ Return Value:
         return status;
     }
 
-    if (packet.reportId != CONTROL_COLLECTION_REPORT_ID) {
-        //
-        // If collection ID is not for control collection then handle
-        // this request just as you would for a regular collection.
-        //
+    if (packet.reportId != HID_USAGE_MODE_REQUEST) {
         status = STATUS_INVALID_PARAMETER;
         KdPrint(("SetFeature: invalid report id %d\n", packet.reportId));
         return status;
@@ -1066,7 +1066,7 @@ Return Value:
     //
     // before touching control code make sure buffer is big enough.
     //
-    reportSize = sizeof(HIDMINI_CONTROL_INFO);
+    reportSize = sizeof(TRACKER_CONTROL_REPORT);
 
     if (packet.reportBufferLen < reportSize) {
         status = STATUS_INVALID_BUFFER_SIZE;
@@ -1075,42 +1075,11 @@ Return Value:
         return status;
     }
 
-    controlInfo = (PHIDMINI_CONTROL_INFO)packet.reportBuffer;
+    trackerControl = (PTRACKER_CONTROL_REPORT)packet.reportBuffer;
 
-    switch(controlInfo->ControlCode)
-    {
-    case HIDMINI_CONTROL_CODE_SET_ATTRIBUTES:
-        //
-        // Store the device attributes in device extension
-        //
-        hidAttributes->ProductID     = controlInfo->u.Attributes.ProductID;
-        hidAttributes->VendorID      = controlInfo->u.Attributes.VendorID;
-        hidAttributes->VersionNumber = controlInfo->u.Attributes.VersionNumber;
+    // TODO: Handle mode request
 
-        //
-        // set status and information
-        //
-        WdfRequestSetInformation(Request, reportSize);
-        break;
-
-    case HIDMINI_CONTROL_CODE_DUMMY1:
-        status = STATUS_NOT_IMPLEMENTED;
-        KdPrint(("SetFeature: HIDMINI_CONTROL_CODE_DUMMY1\n"));
-        break;
-
-    case HIDMINI_CONTROL_CODE_DUMMY2:
-        status = STATUS_NOT_IMPLEMENTED;
-        KdPrint(("SetFeature: HIDMINI_CONTROL_CODE_DUMMY2\n"));
-        break;
-
-    default:
-        status = STATUS_NOT_IMPLEMENTED;
-        KdPrint(("SetFeature: Unknown control Code 0x%x\n",
-                            controlInfo->ControlCode));
-        break;
-    }
-
-    return status;
+    return STATUS_SUCCESS;
 }
 
 
@@ -1513,6 +1482,64 @@ Return Value:
     return status;
 }
 
+#include <initguid.h>
+#include <cfgmgr32.h>
+DEFINE_GUID(GUID_CLASS_MONITOR, 0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18);
+
+void
+GetPrimaryMonitorInfo(
+    _In_ PDEVICE_CONTEXT DeviceContext
+)
+{
+    HDEVINFO devInfo = SetupDiGetClassDevsEx(&GUID_CLASS_MONITOR, NULL, NULL, DIGCF_PRESENT | DIGCF_PROFILE, NULL, NULL, NULL);
+
+    if (NULL == devInfo)
+    {
+        return;
+    }
+
+    for (ULONG i = 0; ERROR_NO_MORE_ITEMS != GetLastError(); ++i)
+    {
+        SP_DEVINFO_DATA devInfoData;
+
+        memset(&devInfoData, 0, sizeof(devInfoData));
+        devInfoData.cbSize = sizeof(devInfoData);
+
+        if (!SetupDiEnumDeviceInfo(devInfo, i, &devInfoData))
+        {
+            return;
+        }
+        TCHAR Instance[MAX_DEVICE_ID_LEN];
+        if (!SetupDiGetDeviceInstanceId(devInfo, &devInfoData, Instance, MAX_PATH, NULL))
+        {
+            return;
+        }
+
+        HKEY hEDIDRegKey = SetupDiOpenDevRegKey(devInfo, &devInfoData, DICS_FLAG_GLOBAL, 0, DIREG_DEV, KEY_READ);
+
+        if (!hEDIDRegKey || (hEDIDRegKey == INVALID_HANDLE_VALUE))
+        {
+            continue;
+        }
+
+        BYTE EDIDdata[1024];
+        DWORD edidsize = sizeof(EDIDdata);
+
+        if (ERROR_SUCCESS != RegQueryValueEx(hEDIDRegKey, L"EDID", NULL, NULL, EDIDdata, &edidsize))
+        {
+            RegCloseKey(hEDIDRegKey);
+            continue;
+        }
+        DeviceContext->ConfigurationReport.CalibratedScreenWidth = ((EDIDdata[68] & 0xF0) << 4) + EDIDdata[66];
+        DeviceContext->ConfigurationReport.CalibratedScreenHeight = ((EDIDdata[68] & 0x0F) << 8) + EDIDdata[67];
+
+        RegCloseKey(hEDIDRegKey);
+
+        // this only handles the case of the primary monitor
+        break;
+    }
+    SetupDiDestroyDeviceInfoList(devInfo);
+}
 
 void
 SendGazeReport(
@@ -1529,6 +1556,27 @@ SendGazeReport(
     if (NT_SUCCESS(status))
     {
         status = RequestCopyFromBuffer(request, GazeReport, sizeof(*GazeReport));
+        WdfRequestComplete(request, status);
+    }
+}
+
+void
+SendTrackerStatusReport(
+    _In_ PDEVICE_CONTEXT DeviceContext,
+    _In_ uint8_t         TrackerStatus
+    )
+{
+    NTSTATUS status;
+    PMANUAL_QUEUE_CONTEXT queueContext;
+    WDFREQUEST request;
+
+    DeviceContext->TrackerStatusReport.ConfigurationStatus = TrackerStatus;
+
+    queueContext = GetManualQueueContext(DeviceContext->ManualQueue);
+    status = WdfIoQueueRetrieveNextRequest(queueContext->Queue, &request);
+    if (NT_SUCCESS(status))
+    {
+        status = RequestCopyFromBuffer(request, &DeviceContext->TrackerStatusReport, sizeof(TRACKER_STATUS_REPORT));
         WdfRequestComplete(request, status);
     }
 }

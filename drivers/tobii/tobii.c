@@ -38,9 +38,8 @@ void OnGazeEvent(tobii_gaze_point_t const* gazePoint, void* userData)
     {
         gazeReport.ReportId = HID_USAGE_TRACKING_DATA;
         gazeReport.TimeStamp = gazePoint->timestamp_us;
-        gazeReport.GazePoint.X = gazePoint->position_xy[0];
-        gazeReport.GazePoint.Y = gazePoint->position_xy[1];
-        gazeReport.ReportId = HID_USAGE_TRACKING_DATA;
+        gazeReport.GazePoint.X = (int32_t)(gazePoint->position_xy[0] * deviceContext->ConfigurationReport.CalibratedScreenWidth);
+        gazeReport.GazePoint.Y = (int32_t)(gazePoint->position_xy[1] * deviceContext->ConfigurationReport.CalibratedScreenHeight);
         SendGazeReport(deviceContext, &gazeReport);
     }
 }

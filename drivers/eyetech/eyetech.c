@@ -163,8 +163,8 @@ DWORD WINAPI EyeTechFrameProc(PVOID startParam)
             gazeReport.ReportId = HID_USAGE_TRACKING_DATA;
             // TODO: Check on timestamp data type
             gazeReport.TimeStamp = (uint64_t)frameData.ImageData.Timestamp;
-            gazeReport.GazePoint.X = frameData.WeightedGazePoint.x / 100;
-            gazeReport.GazePoint.Y = frameData.WeightedGazePoint.y / 100;
+            gazeReport.GazePoint.X = (int32_t)(frameData.WeightedGazePoint.x / 100 * deviceContext->ConfigurationReport.CalibratedScreenWidth);
+            gazeReport.GazePoint.Y = (int32_t)(frameData.WeightedGazePoint.y / 100 * deviceContext->ConfigurationReport.CalibratedScreenHeight);
             KdPrint(("GazePoint = [%1.5f, %1.5f]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
             SendGazeReport(deviceContext, &gazeReport);
         }

@@ -123,7 +123,7 @@ namespace GazeHidTest
                 return;
             }
 
-            _eyeTracker = await HidDevice.FromIdAsync(devices.ElementAt(0).Id, Windows.Storage.FileAccessMode.ReadWrite);
+            _eyeTracker = await HidDevice.FromIdAsync(devices.ElementAt(0).Id, Windows.Storage.FileAccessMode.Read);
             _eyeTracker.InputReportReceived += OnGazeReportReceived;
         }
 
@@ -201,10 +201,10 @@ namespace GazeHidTest
             var timestamp = (int)num.Value;
 
             num = report.GetNumericControl(HID_USAGE_PAGE_EYE_HEAD_TRACKER, HID_USAGE_POSITION_X);
-            var x = BitConverter.ToSingle(BitConverter.GetBytes((int)num.Value), 0);
+            var x = num.Value;
 
             num = report.GetNumericControl(HID_USAGE_PAGE_EYE_HEAD_TRACKER, HID_USAGE_POSITION_Y);
-            var y = BitConverter.ToSingle(BitConverter.GetBytes((int)num.Value), 0);
+            var y = num.Value;
 
             var gazeData = new GazeData { Timestamp = timestamp, X = x, Y = y };
 

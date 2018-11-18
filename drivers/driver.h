@@ -48,6 +48,10 @@ typedef struct _DEVICE_CONTEXT
     PHID_REPORT_DESCRIPTOR  ReportDescriptor;
     BOOLEAN                 ReadReportDescFromRegistry;
 
+    CAPABILITIES_REPORT     CapabilitiesReport;
+    CONFIGURATION_REPORT    ConfigurationReport;
+    TRACKER_STATUS_REPORT   TrackerStatusReport;
+
     // Sensor related fields
     PVOID                   EyeTracker;
 
@@ -177,6 +181,17 @@ SendGazeReport(
     _In_ PDEVICE_CONTEXT DeviceContext,
     _In_ PGAZE_REPORT    GazeReport
     );
+
+void
+SendTrackerStatusReport(
+    _In_ PDEVICE_CONTEXT DeviceContext,
+    _In_ uint8_t         TrackerStatus
+    );
+
+void
+GetPrimaryMonitorInfo(
+    _In_ PDEVICE_CONTEXT DeviceContext
+);
 
 BOOL InitializeEyeTracker(PDEVICE_CONTEXT deviceContext);
 void ShutdownEyeTracker(PDEVICE_CONTEXT deviceContext);

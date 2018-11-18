@@ -9,11 +9,11 @@
 //RESERVED                                          0x0003-0x000F
 
 // HID_REPORT_ID List
-#define HID_USAGE_TRACKING_DATA                     (0x0010)        // CP
-#define HID_USAGE_CAPABILITIES                      (0x0011)        // CL
-#define HID_USAGE_CONFIGURATION                     (0x0012)        // CL
-#define HID_USAGE_TRACKER_STATUS                    (0x0013)        // CL
-#define HID_USAGE_TRACKER_CONTROL                   (0x0014)        // CL
+#define HID_USAGE_TRACKING_DATA                     (0x10)        // CP
+#define HID_USAGE_CAPABILITIES                      (0x11)        // CL
+#define HID_USAGE_CONFIGURATION                     (0x12)        // CL
+#define HID_USAGE_TRACKER_STATUS                    (0x13)        // CL
+#define HID_USAGE_TRACKER_CONTROL                   (0x14)        // CL
 //RESERVED                                          0x0015-0x001F
 
 // HID_USAGE_TRACKING_DATA - Input Collection
@@ -25,19 +25,19 @@
 #define HID_USAGE_LEFT_EYE_POSITION                 (0x0025)        // CP
 #define HID_USAGE_RIGHT_EYE_POSITION                (0x0026)        // CP
 #define HID_USAGE_HEAD_POSITION                     (0x0027)        // CP
-//RESERVED                                          0x0028-0x00FF
+#define HID_USAGE_ROTATION_ABOUT_X_AXIS             (0x0028)        // DV
+#define HID_USAGE_ROTATION_ABOUT_Y_AXIS             (0x0029)        // DV
+#define HID_USAGE_ROTATION_ABOUT_Z_AXIS             (0x002A)        // DV
+//RESERVED                                          0x002B-0x00FF
 
 // HID_USAGE_CAPABILITIES - Feature Collection 
 #define HID_USAGE_TRACKER_QUALITY                   (0x0100)        // SV
-#define HID_USAGE_GAZE_LOCATION_ORIGIN              (0x0101)        // SV
-#define HID_USAGE_EYE_POSITION_ORIGIN               (0x0102)        // SV
-#define HID_USAGE_MAXIMUM_SAMPLING_FREQUENCY        (0x0103)        // SV
-#define HID_USAGE_MINIMUM_TRACKING_DISTANCE         (0x0104)        // SV
-#define HID_USAGE_OPTIMUM_TRACKING_DISTANCE         (0x0105)        // SV
-#define HID_USAGE_MAXIMUM_TRACKING_DISTANCE         (0x0106)        // SV
-#define HID_USAGE_MAXIMUM_SCREEN_PLANE_WIDTH        (0x0107)        // SV
-#define HID_USAGE_MAXIMUM_SCREEN_PLANE_HEIGHT       (0x0108)        // SV
-//RESERVED                                          0x0010E-0x01FF
+#define HID_USAGE_MINIMUM_TRACKING_DISTANCE         (0x0101)        // SV
+#define HID_USAGE_OPTIMUM_TRACKING_DISTANCE         (0x0102)        // SV
+#define HID_USAGE_MAXIMUM_TRACKING_DISTANCE         (0x0103)        // SV
+#define HID_USAGE_MAXIMUM_SCREEN_PLANE_WIDTH        (0x0104)        // SV
+#define HID_USAGE_MAXIMUM_SCREEN_PLANE_HEIGHT       (0x0105)        // SV
+//RESERVED                                          0x00106-0x01FF
 
 // HID_USAGE_CONFIGURATION - Feature Collection 
 #define HID_USAGE_DISPLAY_MANUFACTURER_ID           (0x0200)        // SV
@@ -49,16 +49,27 @@
 //RESERVED                                          0x0204-0x02FF
 
 // HID_USAGE_TRACKER_STATUS - Feature Collection 
-#define HID_USAGE_DEVICE_STATUS                     (0x0300)        // DV
+#define HID_USAGE_SAMPLING_FREQUENCY                (0x0300)        // DV
 #define HID_USAGE_CONFIGURATION_STATUS              (0x0301)        // DV
-#define HID_USAGE_SAMPLING_FREQUENCY                (0x0302)        // DV
-//RESERVED                                          0x0303-0x03FF
+//RESERVED                                          0x0302-0x03FF
 
 // HID_USAGE_TRACKER_CONTROL - Feature Collection 
 #define HID_USAGE_MODE_REQUEST                      (0x0400)        // DV
 
 // TODO: API Validator has to be turned off for the driver. This needs to be fixed.
 
+#define TRACKER_QUALITY_RESERVED                    0
+#define TRACKER_QUALITY_FINE_GAZE                   1
+
+#define TRACKER_STATUS_RESERVED                     0
+#define TRACKER_STATUS_READY                        1
+#define TRACKER_STATUS_CONFIGURING                  2
+#define TRACKER_STATUS_SCREEN_SETUP_NEEDED          3
+#define TRACKER_STATUS_USER_CALIBRATION_NEEDED      4
+
+#define MODE_REQUEST_ENABLE_GAZE_POINT              1
+#define MODE_REQUEST_ENABLE_EYE_POSITION            2
+#define MODE_REQUEST_ENABLE_HEAD_POSITION           3
 
 #include <pshpack1.h>
 
@@ -89,14 +100,11 @@ typedef struct _CAPABILITIES_REPORT
 {
     uint8_t         ReportId;
     uint8_t         TrackerQuality;
-    uint8_t         GazeLocationOrigin;
-    uint8_t         EyePositionOrigin;
-    uint16_t        MaxFramesPerSecond; // Maximum Sampling Frequency
-    uint16_t        MinimumTrackingDistance;
-    uint16_t        OptimumTrackingDistance;
-    uint16_t        MaximumTrackingDistance;
-    uint16_t        MaximumScreenPlaneWidth;
-    uint16_t        MaximumScreenPlaneHeight;
+    uint32_t        MinimumTrackingDistance;
+    uint32_t        OptimumTrackingDistance;
+    uint32_t        MaximumTrackingDistance;
+    uint32_t        MaximumScreenPlaneWidth;
+    uint32_t        MaximumScreenPlaneHeight;
 } CAPABILITIES_REPORT, *PCAPABILITIES_REPORT;
 
 typedef struct _CONFIGURATION_REPORT
@@ -115,8 +123,6 @@ typedef struct _TRACKER_STATUS_REPORT
 {
     uint8_t         ReportId;
     uint8_t         Reserved;
-    uint8_t         DeviceStatus;
-    uint8_t         TrackerStatus;
     uint8_t         ConfigurationStatus;
     uint16_t        SamplingFrequency;
 } TRACKER_STATUS_REPORT, *PTRACKER_STATUS_REPORT;

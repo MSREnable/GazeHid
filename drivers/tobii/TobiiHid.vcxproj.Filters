@@ -51,5 +51,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="@(NativeLibs)" />
+    <None Include="@(NativeLibs)" />
+    <None Include="@(NativeLibs)" />
   </ItemGroup>
 </Project>
