@@ -217,7 +217,7 @@ BOOL SetDataRecordVariables(PSENSOR_CONTEXT sensorContext)
 {
     PSTR variables[] = {
         "ENABLE_SEND_TIME_TICK",
-        "ENABLE_SEND_POG_BEST",
+        "ENABLE_SEND_POG_FIX",
         "ENABLE_SEND_DATA"  // this has to be last
     };
     for (int i = 0; i < __crt_countof(variables); i++)
@@ -283,18 +283,20 @@ void ProcessGazeRecords(PDEVICE_CONTEXT deviceContext, PSTR recordStr)
         char time_str[16] = { 0 };
         float pogX;
         float pogY;
-        BOOL valid;
-        PSTR dataFormat = "<REC TIME_TICK=\"%[0-9]\" BPOGX=\"%g\" BPOGY=\"%g\" BPOGV=\"%d\" />";
-        int result = sscanf_s(token, dataFormat, time_str, sizeof(time_str), &pogX, &pogY, &valid);
-        
+		float pogS;
+		float pogD;
+		int pogID;
+        BOOL valid;		
+		PSTR dataFormat = "<REC TIME_TICK=\"%[0-9]\" FPOGX=\"%g\" FPOGY=\"%g\" FPOGS=\"%g\" FPOGD=\"%g\" FPOGID=\"%i\" FPOGV=\"%d\" />";
+        int result = sscanf_s(token, dataFormat, time_str, sizeof(time_str), &pogX, &pogY, &pogS, &pogD, &pogID, &valid);
+		
         token = strtok(NULL, delimiters);
 
-        if (result != 4)
+        if (result != 7)
         {
             KdPrint(("GazePointFrameProc: Invalid record received\n", result));
             break;
         }
-
 
         if (!valid)
         {
@@ -304,13 +306,17 @@ void ProcessGazeRecords(PDEVICE_CONTEXT deviceContext, PSTR recordStr)
         }
 
         gazeReport.ReportId = HID_USAGE_TRACKING_DATA;
-        gazeReport.TimeStamp = _atoi64(time_str);
+        gazeReport.TimeStamp = _atoi64(time_str)/10;
         gazeReport.GazePoint.X = (int32_t)(pogX * deviceContext->ConfigurationReport.CalibratedScreenWidth);
         gazeReport.GazePoint.Y = (int32_t)(pogY * deviceContext->ConfigurationReport.CalibratedScreenHeight);
         KdPrint(("GazePointFrameProc: %lld, %d, %d\n\n", gazeReport.TimeStamp, gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
         SendGazeReport(deviceContext, &gazeReport);
     }
 }
+
+// Removed:
+//PSTR dataFormat = "<REC TIME_TICK=\"%[0-9]\" BPOGX=\"%g\" BPOGY=\"%g\" BPOGV=\"%d\" />";
+//int result = sscanf_s(token, dataFormat, time_str, sizeof(time_str), &pogX, &pogY,&valid);
 
 DWORD WINAPI GazePointFrameProc(PVOID startParam)
 {

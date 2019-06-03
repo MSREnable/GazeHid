@@ -1,5 +1,4 @@
-#ifndef _HIDCONSTANTS_H_
-#define _HIDCONSTANTS_H_
+#pragma once
 
 #define HID_SIZE_ZERO                       0x00
 #define HID_SIZE_BYTE                       0x01
@@ -74,7 +73,7 @@
 
 #define HID_USAGE_PAGE(usagePage)               (HID_GLOBAL_USAGE_PAGE | HID_SIZE_BYTE), usagePage
 #define HID_USAGE(usage)                        (HID_LOCAL_USAGE  | HID_SIZE_BYTE), usage
-#define HID_USAGE_WORD(usage)                   (HID_LOCAL_USAGE  | HID_SIZE_WORD), LOBYTE(usage), HIBYTE(usage)
+#define HID_USAGE_WORD(usage)                   (HID_LOCAL_USAGE  | HID_SIZE_WORD), (usage & 0xFF), ((usage << 8) & 0xFF)
 
 #define HID_BEGIN_COLLECTION(type)              (HID_MAIN_BEGIN_COLLECTION | HID_SIZE_BYTE), type
 #define HID_BEGIN_PHYSICAL_COLLECTION()         HID_BEGIN_COLLECTION(HID_COLLECTION_PHYSICAL)
@@ -99,11 +98,9 @@
 
 #define HID_LOGICAL_MINIMUM(val)                (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_BYTE), val
 #define HID_LOGICAL_MAXIMUM(val)                (HID_GLOBAL_LOGICAL_MAXIMUM | HID_SIZE_BYTE), val
-#define HID_LOGICAL_MINIMUM_WORD(val)           (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_WORD), LOBYTE(val), HIBYTE(val)
-#define HID_LOGICAL_MAXIMUM_WORD(val)           (HID_GLOBAL_LOGICAL_MAXIMUM | HID_SIZE_WORD), LOBYTE(val), HIBYTE(val)
-#define HID_LOGICAL_MINIMUM_DWORD(val)          (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_DWORD), LOBYTE(LOWORD(val)), HIBYTE(LOWORD(val)), LOBYTE(HIWORD(val)), HIBYTE(HIWORD(val))
-#define HID_LOGICAL_MAXIMUM_DWORD(val)          (HID_GLOBAL_LOGICAL_MAXIMUM | HID_SIZE_DWORD), LOBYTE(LOWORD(val)), HIBYTE(LOWORD(val)), LOBYTE(HIWORD(val)), HIBYTE(HIWORD(val))
+#define HID_LOGICAL_MINIMUM_WORD(val)           (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_WORD), (val & 0xFF), ((val << 8) & 0xFF)
+#define HID_LOGICAL_MAXIMUM_WORD(val)           (HID_GLOBAL_LOGICAL_MAXIMUM | HID_SIZE_WORD), (val & 0xFF), ((val << 8) & 0xFF)
+#define HID_LOGICAL_MINIMUM_DWORD(val)          (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_DWORD), (val & 0xFF), ((val << 8) & 0xFF), ((val << 16) & 0xFF), ((val << 24) & 0xFF)
+#define HID_LOGICAL_MAXIMUM_DWORD(val)          (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_DWORD), (val & 0xFF), ((val << 8) & 0xFF), ((val << 16) & 0xFF), ((val << 24) & 0xFF)
 
-
-#endif //_HIDCONSTANTS_H_
-
+typedef unsigned char HID_REPORT_DESCRIPTOR, *PHID_REPORT_DESCRIPTOR;
