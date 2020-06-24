@@ -13,3 +13,6 @@ Related topics
 
 [UMDF HID Minidriver IOCTLs](http://msdn.microsoft.com/en-us/library/windows/hardware/hh463977)
 
+## Contributors
+
+Contributors are required to behave by the [Microsoft Code of Conduct](https://opensource.microsoft.com/codeofconduct).
