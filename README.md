@@ -2,6 +2,8 @@ HID Minidriver Sample (UMDF V2)
 ======================================
 The *HID minidriver* sample demonstrates how to write a HID minidriver using User-Mode Driver Framework (UMDF) for eye trackers. This is a reference implementation to match the HID specification for eye trackers.
 
+To compile, you must install the [Windows Driver Kit](https://docs.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk) and you must [install Spectre mitigation libraries](https://devblogs.microsoft.com/cppblog/spectre-mitigations-in-msvc/).
+
 Related topics
 --------------
 
