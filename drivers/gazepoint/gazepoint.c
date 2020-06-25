@@ -80,7 +80,7 @@ BOOL SetConfigVariable(PSENSOR_CONTEXT sensorContext, PSTR variable, BOOL value)
         return FALSE;
     }
 
-    if (0 != strcmpi(data, expected))
+    if (0 != _strcmpi(data, expected))
     {
         return FALSE;
     }
@@ -249,8 +249,9 @@ DWORD ConnectToEyeTracker(PSENSOR_CONTEXT sensorContext)
     }
 
     struct sockaddr_in addr;
+
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr(DEFAULT_SERVER);
+    inet_pton(AF_INET, DEFAULT_SERVER, &(addr.sin_addr));
     addr.sin_port = htons(DEFAULT_PORT);
 
     if (SOCKET_ERROR == connect(sensorContext->Socket, (PSOCKADDR)&addr, (int)sizeof(addr)))
@@ -271,7 +272,8 @@ void ProcessGazeRecords(PDEVICE_CONTEXT deviceContext, PSTR recordStr)
 {
     //PSENSOR_CONTEXT sensorContext = deviceContext->EyeTracker;
     char *delimiters = "\r\n";
-    char *token = strtok(recordStr, delimiters);
+    char *next_token = NULL;
+    char *token = strtok_s(recordStr, delimiters, &next_token);
     while (token != NULL)
     {
         KdPrint(("GazePointFrameProc: %s\n", token));
@@ -290,7 +292,7 @@ void ProcessGazeRecords(PDEVICE_CONTEXT deviceContext, PSTR recordStr)
 		PSTR dataFormat = "<REC TIME_TICK=\"%[0-9]\" FPOGX=\"%g\" FPOGY=\"%g\" FPOGS=\"%g\" FPOGD=\"%g\" FPOGID=\"%i\" FPOGV=\"%d\" />";
         int result = sscanf_s(token, dataFormat, time_str, sizeof(time_str), &pogX, &pogY, &pogS, &pogD, &pogID, &valid);
 		
-        token = strtok(NULL, delimiters);
+        token = strtok_s(NULL, delimiters, &next_token);
 
         if (result != 7)
         {
