@@ -25,10 +25,11 @@
 #define HID_USAGE_LEFT_EYE_POSITION                 (0x0025)        // CP
 #define HID_USAGE_RIGHT_EYE_POSITION                (0x0026)        // CP
 #define HID_USAGE_HEAD_POSITION                     (0x0027)        // CP
-#define HID_USAGE_ROTATION_ABOUT_X_AXIS             (0x0028)        // DV
-#define HID_USAGE_ROTATION_ABOUT_Y_AXIS             (0x0029)        // DV
-#define HID_USAGE_ROTATION_ABOUT_Z_AXIS             (0x002A)        // DV
-//RESERVED                                          0x002B-0x00FF
+#define HID_USAGE_HEAD_DIRECTION                    (0x0028)        // CP
+#define HID_USAGE_ROTATION_ABOUT_X_AXIS             (0x0029)        // DV
+#define HID_USAGE_ROTATION_ABOUT_Y_AXIS             (0x002A)        // DV
+#define HID_USAGE_ROTATION_ABOUT_Z_AXIS             (0x002B)        // DV
+//RESERVED                                          0x002C-0x00FF
 
 // HID_USAGE_CAPABILITIES - Feature Collection 
 #define HID_USAGE_TRACKER_QUALITY                   (0x0100)        // SV
@@ -58,18 +59,21 @@
 
 // TODO: API Validator has to be turned off for the driver. This needs to be fixed.
 
+// Tracker Quality
 #define TRACKER_QUALITY_RESERVED                    0
 #define TRACKER_QUALITY_FINE_GAZE                   1
 
+// Tracker Status
 #define TRACKER_STATUS_RESERVED                     0
 #define TRACKER_STATUS_READY                        1
 #define TRACKER_STATUS_CONFIGURING                  2
 #define TRACKER_STATUS_SCREEN_SETUP_NEEDED          3
 #define TRACKER_STATUS_USER_CALIBRATION_NEEDED      4
 
+// Device Mode Request
 #define MODE_REQUEST_ENABLE_GAZE_POINT              1
 #define MODE_REQUEST_ENABLE_EYE_POSITION            2
-#define MODE_REQUEST_ENABLE_HEAD_POSITION           3
+#define MODE_REQUEST_ENABLE_HEAD_POSITION           4
 
 #include <pshpack1.h>
 
