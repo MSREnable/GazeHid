@@ -12,14 +12,12 @@
     <Component Include="List here folders to Include in a GeoPol Scan">    
   <!-- . means the entire repo -->
   <!-- Use back slash \ to indicate folder path e.g. C:\Temp\Git\ -->
-    <IncludeFolder>*.c</IncludeFolder>
-    <IncludeFolder>*.h</IncludeFolder>
-    <IncludeFolder>*.cs</IncludeFolder>
-    <IncludeFolder>*.xaml</IncludeFolder>
-    <IncludeFolder>*.md</IncludeFolder>
+    <IncludeFolder>.</IncludeFolder>
   </Component>
     <Component Exclude="List exceptions here to not be scanned, that have been included above">    
     <!-- Make sure to consult http://aka.ms/NExtStart if excluding 3rd party or OSS components -->
     <!-- Use back slash \ to indicate folder path e.g. C:\Temp\Git\ -->
+    <ExcludeFolder>.gitignore</ExcludeFolder>
+    <ExcludeFolder>GeoPol.xml</ExcludeFolder>
   </Component>
 </GeoPol_Folders>
