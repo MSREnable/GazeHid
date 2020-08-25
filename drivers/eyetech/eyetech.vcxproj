@@ -98,6 +98,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\inc\Tracker.h" />
     <ClInclude Include="..\driver.h" />
+    <ClInclude Include="..\hidconstants.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

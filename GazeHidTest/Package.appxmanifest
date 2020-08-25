@@ -29,5 +29,6 @@
         <Function Type="usage:0012 0001" />
       </Device>
     </DeviceCapability>
+    <DeviceCapability Name="gazeInput"/>
   </Capabilities>
 </Package>

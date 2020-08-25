@@ -18,6 +18,9 @@
     <ClInclude Include="..\..\inc\Tracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\hidconstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Driver Files">

@@ -147,6 +147,10 @@
     <None Include="Tobii\API-Reference.pdf" />
     <None Include="Tobii\SDK-License.pdf" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\driver.h" />
+    <ClInclude Include="..\hidconstants.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="..\..\packages\Tobii.StreamEngine.Native.1.0.0.282\build\Tobii.StreamEngine.Native.targets" Condition="Exists('..\..\packages\Tobii.StreamEngine.Native.1.0.0.282\build\Tobii.StreamEngine.Native.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
