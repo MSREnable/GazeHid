@@ -1397,7 +1397,7 @@ Return Value:
 
 NTSTATUS
 CheckRegistryForDescriptor(
-        WDFDEVICE Device
+        _In_ WDFDEVICE Device
         )
 /*++
 
@@ -1448,7 +1448,7 @@ Return Value:
 
 NTSTATUS
 ReadDescriptorFromRegistry(
-        WDFDEVICE Device
+        _In_ WDFDEVICE Device
         )
 /*++
 
