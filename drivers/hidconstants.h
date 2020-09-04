@@ -75,11 +75,11 @@
 #define HID_USAGE(usage)                        (HID_LOCAL_USAGE  | HID_SIZE_BYTE), usage
 #define HID_USAGE_WORD(usage)                   (HID_LOCAL_USAGE  | HID_SIZE_WORD), (usage & 0xFF), ((usage >> 8) & 0xFF)
 
-#define HID_BEGIN_COLLECTION(type)              (HID_MAIN_BEGIN_COLLECTION | HID_SIZE_BYTE), type
-#define HID_BEGIN_PHYSICAL_COLLECTION()         HID_BEGIN_COLLECTION(HID_COLLECTION_PHYSICAL)
-#define HID_BEGIN_LOGICAL_COLLECTION()          HID_BEGIN_COLLECTION(HID_COLLECTION_LOGICAL)
-#define HID_BEGIN_APPLICATION_COLLECTION()      HID_BEGIN_COLLECTION(HID_COLLECTION_APPLICATION)
-#define HID_END_COLLECTION()                    HID_MAIN_END_COLLECTION
+#define HID_BEGIN_COLLECTION_EX(type)           (HID_MAIN_BEGIN_COLLECTION | HID_SIZE_BYTE), type
+#define HID_BEGIN_PHYSICAL_COLLECTION()         HID_BEGIN_COLLECTION_EX(HID_COLLECTION_PHYSICAL)
+#define HID_BEGIN_LOGICAL_COLLECTION()          HID_BEGIN_COLLECTION_EX(HID_COLLECTION_LOGICAL)
+#define HID_BEGIN_APPLICATION_COLLECTION()      HID_BEGIN_COLLECTION_EX(HID_COLLECTION_APPLICATION)
+#define HID_END_COLLECTION_EX()                 HID_MAIN_END_COLLECTION
 
 #define HID_REPORT_ID(reportId)                 (HID_GLOBAL_REPORT_ID | HID_SIZE_BYTE), reportId
 #define HID_REPORT_COUNT(count)                 (HID_GLOBAL_REPORT_COUNT | HID_SIZE_BYTE), count
@@ -96,11 +96,25 @@
 #define HID_OUTPUT_DYNAMIC_VALUE()              (HID_MAIN_OUTPUT | HID_SIZE_BYTE), (HID_MAIN_DATA | HID_MAIN_VARIABLE | HID_MAIN_ABSOLUTE)
 
 
-#define HID_LOGICAL_MINIMUM(val)                (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_BYTE), val
-#define HID_LOGICAL_MAXIMUM(val)                (HID_GLOBAL_LOGICAL_MAXIMUM | HID_SIZE_BYTE), val
+#define HID_LOGICAL_MINIMUM_BYTE(val)           (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_BYTE), val
+#define HID_LOGICAL_MAXIMUM_BYTE(val)           (HID_GLOBAL_LOGICAL_MAXIMUM | HID_SIZE_BYTE), val
 #define HID_LOGICAL_MINIMUM_WORD(val)           (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_WORD), (val & 0xFF), ((val >> 8) & 0xFF)
 #define HID_LOGICAL_MAXIMUM_WORD(val)           (HID_GLOBAL_LOGICAL_MAXIMUM | HID_SIZE_WORD), (val & 0xFF), ((val >> 8) & 0xFF)
 #define HID_LOGICAL_MINIMUM_DWORD(val)          (HID_GLOBAL_LOGICAL_MINIMUM | HID_SIZE_DWORD), (val & 0xFF), ((val >> 8) & 0xFF), ((val >> 16) & 0xFF), ((val >> 24) & 0xFF)
 #define HID_LOGICAL_MAXIMUM_DWORD(val)          (HID_GLOBAL_LOGICAL_MAXIMUM | HID_SIZE_DWORD), (val & 0xFF), ((val >> 8) & 0xFF), ((val >> 16) & 0xFF), ((val >> 24) & 0xFF)
+
+#define HID_UNIT_EXPONENT_BYTE(val)             (HID_GLOBAL_UNIT_EXPONENT | HID_SIZE_BYTE), val
+#define HID_UNIT_EXPONENT_BYTE(val)             (HID_GLOBAL_UNIT_EXPONENT | HID_SIZE_BYTE), val
+#define HID_UNIT_EXPONENT_WORD(val)             (HID_GLOBAL_UNIT_EXPONENT | HID_SIZE_WORD), (val & 0xFF), ((val >> 8) & 0xFF)
+#define HID_UNIT_EXPONENT_WORD(val)             (HID_GLOBAL_UNIT_EXPONENT | HID_SIZE_WORD), (val & 0xFF), ((val >> 8) & 0xFF)
+#define HID_UNIT_EXPONENT_DWORD(val)            (HID_GLOBAL_UNIT_EXPONENT | HID_SIZE_DWORD), (val & 0xFF), ((val >> 8) & 0xFF), ((val >> 16) & 0xFF), ((val >> 24) & 0xFF)
+#define HID_UNIT_EXPONENT_DWORD(val)            (HID_GLOBAL_UNIT_EXPONENT | HID_SIZE_DWORD), (val & 0xFF), ((val >> 8) & 0xFF), ((val >> 16) & 0xFF), ((val >> 24) & 0xFF)
+
+#define HID_UNIT_BYTE(val)                      (HID_GLOBAL_UNIT | HID_SIZE_BYTE), val
+#define HID_UNIT_BYTE(val)                      (HID_GLOBAL_UNIT | HID_SIZE_BYTE), val
+#define HID_UNIT_WORD(val)                      (HID_GLOBAL_UNIT | HID_SIZE_WORD), (val & 0xFF), ((val >> 8) & 0xFF)
+#define HID_UNIT_WORD(val)                      (HID_GLOBAL_UNIT | HID_SIZE_WORD), (val & 0xFF), ((val >> 8) & 0xFF)
+#define HID_UNIT_DWORD(val)                     (HID_GLOBAL_UNIT | HID_SIZE_DWORD), (val & 0xFF), ((val >> 8) & 0xFF), ((val >> 16) & 0xFF), ((val >> 24) & 0xFF)
+#define HID_UNIT_DWORD(val)                     (HID_GLOBAL_UNIT | HID_SIZE_DWORD), (val & 0xFF), ((val >> 8) & 0xFF), ((val >> 16) & 0xFF), ((val >> 24) & 0xFF)
 
 typedef unsigned char HID_REPORT_DESCRIPTOR, *PHID_REPORT_DESCRIPTOR;
