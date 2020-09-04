@@ -1,5 +1,8 @@
 #pragma once
 
+#pragma region Eye Tracker HID Usages
+// From HUTRR74 - https://www.usb.org/sites/default/files/hutrr74_-_usage_page_for_head_and_eye_trackers_0.pdf
+
 #define HID_USAGE_PAGE_EYE_HEAD_TRACKER             (0x0012)
 #define HID_USAGE_PAGE_NAME_EYE_HEAD_TRACKER        "Eye and Head Trackers"
 
@@ -56,7 +59,9 @@
 
 // HID_USAGE_TRACKER_CONTROL - Feature Collection 
 #define HID_USAGE_MODE_REQUEST                      (0x0400)        // DV
+#pragma endregion Eye Tracker HID Usages
 
+#pragma region Eye Tracker HID Usage Constant Definitions
 // TODO: API Validator has to be turned off for the driver. This needs to be fixed.
 
 // Tracker Quality
@@ -74,9 +79,11 @@
 #define MODE_REQUEST_ENABLE_GAZE_POINT              1
 #define MODE_REQUEST_ENABLE_EYE_POSITION            2
 #define MODE_REQUEST_ENABLE_HEAD_POSITION           4
+#pragma endregion Eye Tracker HID Usage Constant Definitions
 
 #include <pshpack1.h>
 
+#pragma region HID Report Struct Definitions
 typedef struct _POINT2D
 {
     int32_t    X;
@@ -136,5 +143,6 @@ typedef struct _TRACKER_CONTROL_REPORT
     uint8_t         ReportId;
     uint8_t         ModeRequest;
 } TRACKER_CONTROL_REPORT, *PTRACKER_CONTROL_REPORT;
+#pragma endregion HID Report Struct Definitions
 
 #include <poppack.h>
