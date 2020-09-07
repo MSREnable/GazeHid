@@ -165,7 +165,7 @@ DWORD WINAPI EyeTechFrameProc(PVOID startParam)
             gazeReport.TimeStamp = (uint64_t)frameData.ImageData.Timestamp;
             gazeReport.GazePoint.X = (int32_t)(frameData.WeightedGazePoint.x / 100 * deviceContext->ConfigurationReport.CalibratedScreenWidth);
             gazeReport.GazePoint.Y = (int32_t)(frameData.WeightedGazePoint.y / 100 * deviceContext->ConfigurationReport.CalibratedScreenHeight);
-            KdPrint(("GazePoint = [%1.5f, %1.5f]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
+            KdPrint(("GazePoint = [%1.5d, %1.5d]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
             SendGazeReport(deviceContext, &gazeReport);
         }
 

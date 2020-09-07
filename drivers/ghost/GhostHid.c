@@ -46,7 +46,7 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
         gazeReport.TimeStamp = (uint64_t)ltime;
         gazeReport.GazePoint.X = (int32_t)x;
         gazeReport.GazePoint.Y = (int32_t)y;
-        KdPrint(("GazePoint = [%1.5f, %1.5f]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
+        KdPrint(("GazePoint = [%1.5d, %1.5d]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
         SendGazeReport(deviceContext, &gazeReport);
 
         if (x > 600)
