@@ -1565,8 +1565,9 @@ GetPrimaryMonitorInfo(
             RegCloseKey(hEDIDRegKey);
             continue;
         }
-        DeviceContext->ConfigurationReport.CalibratedScreenWidth = ((EDIDdata[68] & 0xF0) << 4) + EDIDdata[66];
-        DeviceContext->ConfigurationReport.CalibratedScreenHeight = ((EDIDdata[68] & 0x0F) << 8) + EDIDdata[67];
+
+        DeviceContext->ConfigurationReport.CalibratedScreenWidth = (((EDIDdata[68] & 0xF0) << 4) + EDIDdata[66]) * 1000; // width in micrometers
+        DeviceContext->ConfigurationReport.CalibratedScreenHeight = (((EDIDdata[68] & 0x0F) << 8) + EDIDdata[67]) * 1000; // height in micrometers
 
         RegCloseKey(hEDIDRegKey);
 
