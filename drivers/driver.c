@@ -1093,7 +1093,6 @@ Return Value:
         return status;
     }
 
-    if (packet.reportId != HID_USAGE_MODE_REQUEST) {
     if (packet.reportId != HID_USAGE_TRACKER_CONTROL) {
         status = STATUS_INVALID_PARAMETER;
         KdPrint(("SetFeature: invalid report id %d\n", packet.reportId));
