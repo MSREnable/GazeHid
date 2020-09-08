@@ -133,7 +133,6 @@ typedef struct _CONFIGURATION_REPORT
 typedef struct _TRACKER_STATUS_REPORT
 {
     uint8_t         ReportId;
-    uint8_t         Reserved;
     uint8_t         ConfigurationStatus;
     uint16_t        SamplingFrequency;
 } TRACKER_STATUS_REPORT, *PTRACKER_STATUS_REPORT;
