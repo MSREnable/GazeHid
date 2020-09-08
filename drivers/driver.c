@@ -412,7 +412,8 @@ Return Value:
 
     PTRACKER_STATUS_REPORT trackerStatus = &deviceContext->TrackerStatusReport;
     trackerStatus->ReportId = HID_USAGE_TRACKER_STATUS;
-    trackerStatus->ConfigurationStatus = TRACKER_STATUS_RESERVED;
+    trackerStatus->ConfigurationStatus = TRACKER_STATUS_READY;
+    trackerStatus->SamplingFrequency = 100;
 
     if (!InitializeEyeTracker(deviceContext))
     {
@@ -1566,8 +1567,15 @@ GetPrimaryMonitorInfo(
             continue;
         }
 
+        DeviceContext->ConfigurationReport.DisplayManufacturerId = (EDIDdata[0x08] << 8) + EDIDdata[0x09];
+        DeviceContext->ConfigurationReport.DisplayProductId = (EDIDdata[0x0A] << 8) + EDIDdata[0x0B];
+        DeviceContext->ConfigurationReport.DisplaySerialNumber = (EDIDdata[0x0C] << 24) + (EDIDdata[0x0D] << 16) + (EDIDdata[0x0E] << 8) + EDIDdata[0x0F];
+        DeviceContext->ConfigurationReport.DisplayManufacturerDate = (EDIDdata[0x11] << 8) + EDIDdata[0x10];
         DeviceContext->ConfigurationReport.CalibratedScreenWidth = (((EDIDdata[68] & 0xF0) << 4) + EDIDdata[66]) * 1000; // width in micrometers
         DeviceContext->ConfigurationReport.CalibratedScreenHeight = (((EDIDdata[68] & 0x0F) << 8) + EDIDdata[67]) * 1000; // height in micrometers
+
+        KdPrint(("VHIDMINI - Calibrated Screen W %dum H %dum\n", DeviceContext->ConfigurationReport.CalibratedScreenWidth, 
+                                                             DeviceContext->ConfigurationReport.CalibratedScreenHeight));
 
         RegCloseKey(hEDIDRegKey);
 
