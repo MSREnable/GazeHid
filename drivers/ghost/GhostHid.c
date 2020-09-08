@@ -34,6 +34,8 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
 	// such as load calibration
     int32_t x = 0;
     int32_t y = 0;
+    int32_t max = 300000; // ~12" in micrometers, typical for a surface device
+    int32_t count = 0;
     while (TRUE)
     {
         GAZE_REPORT gazeReport = { 0 };
@@ -46,27 +48,19 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
         gazeReport.TimeStamp = (uint64_t)ltime;
         gazeReport.GazePoint.X = (int32_t)x;
         gazeReport.GazePoint.Y = (int32_t)y;
-        KdPrint(("GhostHID - GazePoint = [%8d, %8d]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
+        //KdPrint(("GhostHID - GazePoint = [%8d, %8d]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
         SendGazeReport(deviceContext, &gazeReport);
 
-        if (x > 600)
+        // Draw a diagonal line, from upper left to lower right
+        if (count > max)
         {
-            x = 0;
-            if (y > 600)
-            {
-                y = 0;
-            }
-            else
-            {
-                ++y;
-            }
-        }
-        else
-        {
-            ++x;
+            count = 0;
         }
 
-        Sleep(15);
+        count += 250; // 2500; // ~0.125" in micrometers
+        x = y = count;
+
+        Sleep(10);
 
         // TODO: Graceful thread exit and cleanup
     }
@@ -86,7 +80,7 @@ BOOL InitializeEyeTracker(PDEVICE_CONTEXT deviceContext)
     sensorContext->ThreadHandle = CreateThread(NULL, 0, GhostHidFrameProc, deviceContext, CREATE_SUSPENDED, &sensorContext->ThreadId);
     if (!sensorContext->ThreadHandle)
     {
-        KdPrint(("CreateThread failed with error=0x%08x\n", GetLastError()));
+        KdPrint(("GhostHID - CreateThread failed with error=0x%08x\n", GetLastError()));
         return FALSE;
     }
 
