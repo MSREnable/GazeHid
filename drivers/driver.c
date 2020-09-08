@@ -272,7 +272,7 @@ Return Value:
     WDF_DRIVER_CONFIG       config;
     NTSTATUS                status;
 
-    KdPrint(("DriverEntry for VHidMini\n"));
+    KdPrint(("VHIDMINI - DriverEntry for VHidMini\n"));
 
     WDF_DRIVER_CONFIG_INIT(&config, EvtDeviceAdd);
 
@@ -282,7 +282,7 @@ Return Value:
                             &config,
                             WDF_NO_HANDLE);
     if (!NT_SUCCESS(status)) {
-        KdPrint(("Error: WdfDriverCreate failed 0x%x\n", status));
+        KdPrint(("VHIDMINI - Error: WdfDriverCreate failed 0x%x\n", status));
         return status;
     }
 
@@ -320,7 +320,7 @@ Return Value:
     PHID_DEVICE_ATTRIBUTES  hidAttributes;
     UNREFERENCED_PARAMETER  (Driver);
 
-    KdPrint(("Enter EvtDeviceAdd\n"));
+    KdPrint(("VHIDMINI - Enter EvtDeviceAdd\n"));
 
     //
     // Mark ourselves as a filter, which also relinquishes power policy ownership
@@ -335,7 +335,7 @@ Return Value:
                             &deviceAttributes,
                             &device);
     if (!NT_SUCCESS(status)) {
-        KdPrint(("Error: WdfDeviceCreate failed 0x%x\n", status));
+        KdPrint(("VHIDMINI - Error: WdfDeviceCreate failed 0x%x\n", status));
         return status;
     }
 
@@ -385,7 +385,7 @@ Return Value:
         //
         status = ReadDescriptorFromRegistry(device);
         if (!NT_SUCCESS(status)){
-            KdPrint(("Failed to read descriptor from registry\n"));
+            KdPrint(("VHIDMINI - VHIDMINI - Failed to read descriptor from registry\n"));
         }
     }
 
@@ -394,7 +394,7 @@ Return Value:
     //
     if (!NT_SUCCESS(status)){
         deviceContext->ReportDescriptor = EyeTrackerReportDescriptor;
-        KdPrint(("Using Hard-coded Report descriptor\n"));
+        KdPrint(("VHIDMINI - Using Hard-coded Report descriptor\n"));
         status = STATUS_SUCCESS;
     }
 
@@ -417,7 +417,7 @@ Return Value:
 
     if (!InitializeEyeTracker(deviceContext))
     {
-        KdPrint(("Error: Failed to initialize eye tracker\n"));
+        KdPrint(("VHIDMINI - Error: Failed to initialize eye tracker\n"));
         return STATUS_UNSUCCESSFUL;
     }
 
@@ -556,7 +556,7 @@ Return Value:
         &queue);
 
     if (!NT_SUCCESS(status)) {
-        KdPrint(("WdfIoQueueCreate failed 0x%x\n", status));
+        KdPrint(("VHIDMINI - WdfIoQueueCreate failed 0x%x\n", status));
         return status;
     }
 
@@ -615,6 +615,8 @@ Return Value:
     UNREFERENCED_PARAMETER  (InputBufferLength);
 
     deviceContext = GetDeviceContext(device);
+
+    KdPrint(("VHIDMINI - EvtIoDeviceControl IoControlCode = [%d]\n", IoControlCode));
 
     switch (IoControlCode)
     {
@@ -800,7 +802,7 @@ Return Value:
 
     status = WdfRequestRetrieveOutputMemory(Request, &memory);
     if( !NT_SUCCESS(status) ) {
-        KdPrint(("WdfRequestRetrieveOutputMemory failed 0x%x\n",status));
+        KdPrint(("VHIDMINI - WdfRequestRetrieveOutputMemory failed 0x%x\n",status));
         return status;
     }
 
@@ -861,7 +863,7 @@ Return Value:
     NTSTATUS                status = STATUS_UNSUCCESSFUL;
     //GAZE_REPORT             gazeReport;
 
-    //KdPrint(("ReadReport\n"));
+    KdPrint(("VHIDMINI - ReadReport\n"));
 
     //
     // forward the request to manual queue
@@ -871,7 +873,7 @@ Return Value:
         QueueContext->DeviceContext->ManualQueue);
 
     if( !NT_SUCCESS(status) ) {
-        KdPrint(("WdfRequestForwardToIoQueue failed with 0x%x\n", status));
+        KdPrint(("VHIDMINI - WdfRequestForwardToIoQueue failed with 0x%x\n", status));
         *CompleteRequest = TRUE;
         }
     else {
@@ -910,8 +912,6 @@ Return Value:
     ULONG                   reportSize;
     PHIDMINI_OUTPUT_REPORT  outputReport;
 
-    KdPrint(("WriteReport\n"));
-
     status = RequestGetHidXferPacket_ToWriteToDevice(
                             Request,
                             &packet);
@@ -919,12 +919,13 @@ Return Value:
         return status;
     }
 
+    KdPrint(("VHIDMINI - WriteReport packet.reportId = [%d]\n", packet.reportId));
     if (packet.reportId != CONTROL_COLLECTION_REPORT_ID) {
         //
         // Return error for unknown collection
         //
         status = STATUS_INVALID_PARAMETER;
-        KdPrint(("WriteReport: unkown report id %d\n", packet.reportId));
+        KdPrint(("VHIDMINI - WriteReport: unkown report id %d\n", packet.reportId));
         return status;
     }
 
@@ -986,8 +987,6 @@ Return Value:
 	UNREFERENCED_PARAMETER(QueueContext);
     // PHID_DEVICE_ATTRIBUTES  hidAttributes = &QueueContext->DeviceContext->HidDeviceAttributes;
 
-    KdPrint(("GetFeature\n"));
-
     status = RequestGetHidXferPacket_ToReadFromDevice(
                             Request,
                             &packet);
@@ -995,6 +994,7 @@ Return Value:
         return status;
     }
 
+    KdPrint(("VHIDMINI - GetFeature packet.reportId = [%d]\n", packet.reportId));
     switch (packet.reportId)
     {
     case HID_USAGE_CAPABILITIES:
@@ -1011,7 +1011,7 @@ Return Value:
         break;
     default:
         status = STATUS_INVALID_PARAMETER;
-        KdPrint(("GetFeature: invalid report id %d\n", packet.reportId));
+        KdPrint(("VHIDMINI - GetFeature: invalid report id %d\n", packet.reportId));
         return status;
     }
 
@@ -1029,7 +1029,7 @@ Return Value:
 
     if (packet.reportBufferLen < reportSize) {
         status = STATUS_INVALID_BUFFER_SIZE;
-        KdPrint(("GetFeature: output buffer too small. Size %d, expect %d\n",
+        KdPrint(("VHIDMINI - GetFeature: output buffer too small. Size %d, expect %d\n",
                             packet.reportBufferLen, reportSize));
         return status;
     }
@@ -1084,8 +1084,6 @@ Return Value:
 
     UNREFERENCED_PARAMETER(QueueContext);
 
-    KdPrint(("SetFeature\n"));
-
     status = RequestGetHidXferPacket_ToWriteToDevice(
                             Request,
                             &packet);
@@ -1093,9 +1091,10 @@ Return Value:
         return status;
     }
 
+    KdPrint(("VHIDMINI - SetFeature packet.reportId = [%d]\n", packet.reportId));
     if (packet.reportId != HID_USAGE_TRACKER_CONTROL) {
         status = STATUS_INVALID_PARAMETER;
-        KdPrint(("SetFeature: invalid report id %d\n", packet.reportId));
+        KdPrint(("VHIDMINI - SetFeature: invalid report id %d\n", packet.reportId));
         return status;
     }
 
@@ -1106,12 +1105,13 @@ Return Value:
 
     if (packet.reportBufferLen < reportSize) {
         status = STATUS_INVALID_BUFFER_SIZE;
-        KdPrint(("SetFeature: invalid input buffer. size %d, expect %d\n",
+        KdPrint(("VHIDMINI - SetFeature: invalid input buffer. size %d, expect %d\n",
                             packet.reportBufferLen, reportSize));
         return status;
     }
 
     trackerControl = (PTRACKER_CONTROL_REPORT)packet.reportBuffer;
+    KdPrint(("VHIDMINI - SetFeature: ReportId %d ModeRequest 0x%02X\n", trackerControl->ReportId, trackerControl->ModeRequest));
 
     // TODO: Handle mode request
 
@@ -1147,7 +1147,7 @@ Return Value:
     ULONG                   reportSize;
     PHIDMINI_OUTPUT_REPORT  reportBuffer;
 
-    KdPrint(("SetOutputReport\n"));
+    KdPrint(("VHIDMINI - SetOutputReport\n"));
 
     status = RequestGetHidXferPacket_ToWriteToDevice(
                             Request,
@@ -1156,13 +1156,14 @@ Return Value:
         return status;
     }
 
+    KdPrint(("VHIDMINI - SetOutputReport packet.reportId = [%d]\n", packet.reportId));
     if (packet.reportId != CONTROL_COLLECTION_REPORT_ID) {
         //
         // If collection ID is not for control collection then handle
         // this request just as you would for a regular collection.
         //
         status = STATUS_INVALID_PARAMETER;
-        KdPrint(("SetOutputReport: unkown report id %d\n", packet.reportId));
+        KdPrint(("VHIDMINI - SetOutputReport: unkown report id %d\n", packet.reportId));
         return status;
     }
 
@@ -1173,7 +1174,7 @@ Return Value:
 
     if (packet.reportBufferLen < reportSize) {
         status = STATUS_INVALID_BUFFER_SIZE;
-        KdPrint(("SetOutputReport: invalid input buffer. size %d, expect %d\n",
+        KdPrint(("VHIDMINI - SetOutputReport: invalid input buffer. size %d, expect %d\n",
                             packet.reportBufferLen, reportSize));
         return status;
     }
@@ -1258,7 +1259,7 @@ Return Value:
 
     status = WdfRequestRetrieveInputMemory(Request, &inputMemory);
     if( !NT_SUCCESS(status) ) {
-        KdPrint(("WdfRequestRetrieveInputMemory failed 0x%x\n",status));
+        KdPrint(("VHIDMINI - WdfRequestRetrieveInputMemory failed 0x%x\n",status));
         return status;
     }
     inputBuffer = WdfMemoryGetBuffer(inputMemory, &inputBufferLength);
@@ -1269,7 +1270,7 @@ Return Value:
     if (inputBufferLength < sizeof(ULONG))
     {
         status = STATUS_INVALID_BUFFER_SIZE;
-        KdPrint(("GetStringId: invalid input buffer. size %d, expect %d\n",
+        KdPrint(("VHIDMINI - GetStringId: invalid input buffer. size %d, expect %d\n",
                             (int)inputBufferLength, (int)sizeof(ULONG)));
         return status;
     }
@@ -1387,7 +1388,7 @@ Return Value:
         break;
     default:
         status = STATUS_INVALID_PARAMETER;
-        KdPrint(("GetString: unkown string id %d\n", stringId));
+        KdPrint(("VHIDMINI - GetString: unkown string id %d\n", stringId));
         return status;
     }
 
@@ -1502,7 +1503,7 @@ Return Value:
 
             reportDescriptor = WdfMemoryGetBuffer(memory, &bufferSize);
 
-            KdPrint(("No. of report descriptor bytes copied: %d\n", (INT) bufferSize));
+            KdPrint(("VHIDMINI - No. of report descriptor bytes copied: %d\n", (INT) bufferSize));
 
             //
             // Store the registry report descriptor in the device extension
@@ -1527,6 +1528,8 @@ GetPrimaryMonitorInfo(
     _In_ PDEVICE_CONTEXT DeviceContext
 )
 {
+    KdPrint(("VHIDMINI - GetPrimaryMonitorInfo\n"));
+
     HDEVINFO devInfo = SetupDiGetClassDevsEx(&GUID_CLASS_MONITOR, NULL, NULL, DIGCF_PRESENT | DIGCF_PROFILE, NULL, NULL, NULL);
 
     if (NULL == devInfo)
@@ -1595,6 +1598,8 @@ SendGazeReport(
     PMANUAL_QUEUE_CONTEXT queueContext;
     WDFREQUEST request;
 
+    KdPrint(("VHIDMINI - SendGazeReport\n"));
+
     queueContext = GetManualQueueContext(DeviceContext->ManualQueue);
     status = WdfIoQueueRetrieveNextRequest(queueContext->Queue, &request);
     if (NT_SUCCESS(status))
@@ -1613,6 +1618,8 @@ SendTrackerStatusReport(
     NTSTATUS status;
     PMANUAL_QUEUE_CONTEXT queueContext;
     WDFREQUEST request;
+
+    KdPrint(("VHIDMINI - SendTrackerStatusReport\n"));
 
     DeviceContext->TrackerStatusReport.ConfigurationStatus = TrackerStatus;
 
