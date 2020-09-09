@@ -412,9 +412,22 @@ Return Value:
 
     GetPrimaryMonitorInfo(deviceContext);
 
+
+    /*
+    Windows has this currently, which doesn't match the HID spec
+
+    enum GazeConfigurationStatus
+    {
+        GazeConfigurationStatus_ScreenSetupNeeded,          <-- 0
+        GazeConfigurationStatus_UserCalibrationNeeded,      <-- 1
+        GazeConfigurationStatus_Ready,                      <-- 2
+    };
+    This is wrong, but needed to make it work with existing windows builds
+    */
+
     PTRACKER_STATUS_REPORT trackerStatus = &deviceContext->TrackerStatusReport;
     trackerStatus->ReportId = HID_USAGE_TRACKER_STATUS;
-    trackerStatus->ConfigurationStatus = TRACKER_STATUS_READY;
+    trackerStatus->ConfigurationStatus = 2; // TRACKER_STATUS_READY;
     trackerStatus->SamplingFrequency = 100;
 
     if (!InitializeEyeTracker(deviceContext))
@@ -1572,6 +1585,7 @@ GetPrimaryMonitorInfo(
             continue;
         }
 
+        DeviceContext->ConfigurationReport.ReportId = HID_USAGE_CONFIGURATION;
         DeviceContext->ConfigurationReport.DisplayManufacturerId = (EDIDdata[0x08] << 8) + EDIDdata[0x09];
         DeviceContext->ConfigurationReport.DisplayProductId = (EDIDdata[0x0A] << 8) + EDIDdata[0x0B];
         DeviceContext->ConfigurationReport.DisplaySerialNumber = (EDIDdata[0x0C] << 24) + (EDIDdata[0x0D] << 16) + (EDIDdata[0x0E] << 8) + EDIDdata[0x0F];
