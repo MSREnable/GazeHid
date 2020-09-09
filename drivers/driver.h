@@ -15,6 +15,7 @@ Environment:
     Windows Driver Framework (WDF)
 
 --*/
+#pragma once
 
 #ifdef _KERNEL_MODE
 #include <ntddk.h>

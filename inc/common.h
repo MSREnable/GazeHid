@@ -16,6 +16,7 @@ Environment:
     User mode
 
 --*/
+#pragma once
 
 #ifndef __VHIDMINI_COMMON_H__
 #define __VHIDMINI_COMMON_H__

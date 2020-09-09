@@ -35,8 +35,8 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] =
             HID_LOGICAL_MINIMUM_BYTE(0x00),
             HID_LOGICAL_MAXIMUM_WORD(0x00FF),
             HID_REPORT_SIZE_UINT8(),
-            HID_REPORT_COUNT(7),
-            HID_INPUT_STATIC_VALUE(),
+            //HID_REPORT_COUNT(7),
+            //HID_INPUT_STATIC_VALUE(),                 // Reserved bytes
 
             HID_USAGE(HID_USAGE_TIMESTAMP),
             HID_UNIT_WORD(0x1001),                      // SI Linear
@@ -123,7 +123,7 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] =
             HID_LOGICAL_MINIMUM_BYTE(0x00),
             HID_LOGICAL_MAXIMUM_WORD(0x00FF),
             HID_REPORT_COUNT(1),
-            HID_FEATURE_STATIC_VALUE(),
+            //HID_FEATURE_STATIC_VALUE(),               // Reserved
 
             HID_REPORT_SIZE_UINT16(),
             HID_LOGICAL_MAXIMUM_DWORD(0x0000FFFF),
@@ -1591,7 +1591,7 @@ GetPrimaryMonitorInfo(
 void
 SendGazeReport(
     _In_ PDEVICE_CONTEXT DeviceContext,
-    _In_ PGAZE_REPORT    GazeReport
+    _In_ PGAZE_REPORT    pGazeReport
 )
 {
     NTSTATUS status;
@@ -1604,7 +1604,7 @@ SendGazeReport(
     status = WdfIoQueueRetrieveNextRequest(queueContext->Queue, &request);
     if (NT_SUCCESS(status))
     {
-        status = RequestCopyFromBuffer(request, GazeReport, sizeof(*GazeReport));
+        status = RequestCopyFromBuffer(request, pGazeReport, sizeof(*pGazeReport));
         WdfRequestComplete(request, status);
     }
 }
