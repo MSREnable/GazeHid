@@ -105,6 +105,8 @@ typedef struct _GAZE_REPORT
     POINT2D     GazePoint;
     POINT3D     LeftEyePosition;
     POINT3D     RightEyePosition;
+    //POINT3D     HeadPosition;
+    //POINT3D     HeadDirection;
 } GAZE_REPORT, *PGAZE_REPORT;
 
 typedef struct _CAPABILITIES_REPORT

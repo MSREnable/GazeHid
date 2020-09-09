@@ -73,10 +73,12 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] =
             //HID_REPORT_COUNT(3),
             HID_USAGE(HID_USAGE_POSITION_X),
             HID_USAGE(HID_USAGE_POSITION_Y),
-            HID_USAGE(HID_USAGE_POSITION_Z),
-            HID_INPUT_STATIC_VALUE(),
+                HID_USAGE(HID_USAGE_POSITION_Z),
+                HID_INPUT_STATIC_VALUE(),
+            HID_END_COLLECTION_EX(),
+            //HID_REPORT_COUNT(6),
+            //HID_INPUT_STATIC_VALUE(),                 // 6x 32-bit fields, for head position/rotation
         HID_END_COLLECTION_EX(),
-    HID_END_COLLECTION_EX(),
 #pragma endregion
 #pragma region HID_USAGE_CAPABILITIES
         HID_USAGE(HID_USAGE_CAPABILITIES),
