@@ -126,8 +126,8 @@ typedef struct _CONFIGURATION_REPORT
     uint16_t        DisplayProductId;
     uint32_t        DisplaySerialNumber;
     uint16_t        DisplayManufacturerDate;
-    int32_t         CalibratedScreenWidth;
-    int32_t         CalibratedScreenHeight;
+    uint32_t        CalibratedScreenWidth;
+    uint32_t        CalibratedScreenHeight;
 } CONFIGURATION_REPORT, *PCONFIGURATION_REPORT;
 
 typedef struct _TRACKER_STATUS_REPORT
