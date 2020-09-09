@@ -210,3 +210,7 @@ void ShutdownEyeTracker(PDEVICE_CONTEXT deviceContext);
 #define HIDMINI_PID             0xFEED
 #define HIDMINI_VID             0xDEED
 #define HIDMINI_VERSION         0x0101
+
+BOOL IsTrackerEnabled();
+UINT32 GetMonitorWidth(); 
+UINT32 GetMonitorHeight();

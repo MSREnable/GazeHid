@@ -35,8 +35,6 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] =
             HID_LOGICAL_MINIMUM_BYTE(0x00),
             HID_LOGICAL_MAXIMUM_WORD(0x00FF),
             HID_REPORT_SIZE_UINT8(),
-            //HID_REPORT_COUNT(7),
-            //HID_INPUT_STATIC_VALUE(),                 // Reserved bytes
 
             HID_USAGE(HID_USAGE_TIMESTAMP),
             HID_UNIT_WORD(0x1001),                      // SI Linear
@@ -70,14 +68,14 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] =
 
             HID_USAGE(HID_USAGE_RIGHT_EYE_POSITION),
             HID_BEGIN_PHYSICAL_COLLECTION(),
-            //HID_REPORT_COUNT(3),
-            HID_USAGE(HID_USAGE_POSITION_X),
-            HID_USAGE(HID_USAGE_POSITION_Y),
+                HID_REPORT_COUNT(3),
+                HID_USAGE(HID_USAGE_POSITION_X),
+                HID_USAGE(HID_USAGE_POSITION_Y),
                 HID_USAGE(HID_USAGE_POSITION_Z),
                 HID_INPUT_STATIC_VALUE(),
             HID_END_COLLECTION_EX(),
-            //HID_REPORT_COUNT(6),
-            //HID_INPUT_STATIC_VALUE(),                 // 6x 32-bit fields, for head position/rotation
+            HID_REPORT_COUNT(6),
+            HID_INPUT_STATIC_VALUE(),                 // 6x 32-bit fields, for head position/rotation
         HID_END_COLLECTION_EX(),
 #pragma endregion
 #pragma region HID_USAGE_CAPABILITIES
@@ -96,7 +94,7 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] =
 
             HID_REPORT_COUNT(1),
             HID_REPORT_SIZE_UINT16(),
-            //HID_LOGICAL_MINIMUM_BYTE(0x00),
+            HID_LOGICAL_MINIMUM_BYTE(0x00),
             HID_LOGICAL_MAXIMUM_DWORD(0x0000FFFF),
             HID_FEATURE_STATIC_VALUE(),
 
@@ -125,7 +123,6 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] =
             HID_LOGICAL_MINIMUM_BYTE(0x00),
             HID_LOGICAL_MAXIMUM_WORD(0x00FF),
             HID_REPORT_COUNT(1),
-            //HID_FEATURE_STATIC_VALUE(),               // Reserved
 
             HID_REPORT_SIZE_UINT16(),
             HID_LOGICAL_MAXIMUM_DWORD(0x0000FFFF),
@@ -143,7 +140,7 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] =
             HID_FEATURE_STATIC_VALUE(),
 
             HID_REPORT_SIZE_UINT16(),
-            //HID_LOGICAL_MINIMUM_BYTE(0x00),
+            HID_LOGICAL_MINIMUM_BYTE(0x00),
             HID_LOGICAL_MAXIMUM_DWORD(0x0000FFFF),
             HID_USAGE_WORD(HID_USAGE_DISPLAY_MANUFACTURER_DATE),
             HID_FEATURE_STATIC_VALUE(),
@@ -188,8 +185,8 @@ HID_REPORT_DESCRIPTOR EyeTrackerReportDescriptor[] =
             HID_REPORT_ID(HID_USAGE_TRACKER_STATUS),
 
             HID_REPORT_SIZE_UINT8(),
-            //HID_UNIT_BYTE(0x00),                        // None
-            //HID_UNIT_EXPONENT_BYTE(0x00),               // 0
+            HID_UNIT_BYTE(0x00),                        // None
+            HID_UNIT_EXPONENT_BYTE(0x00),               // 0
             HID_LOGICAL_MAXIMUM_BYTE(0x04),
             HID_USAGE_WORD(HID_USAGE_CONFIGURATION_STATUS),
             HID_INPUT_DYNAMIC_VALUE(),
@@ -236,6 +233,10 @@ HID_DESCRIPTOR              EyeTrackerHidDescriptor = {
         sizeof(EyeTrackerReportDescriptor)   //total length of report descriptor
     }
 };
+
+BOOL g_SendGazeReports = FALSE;
+UINT32 g_MonitorWidth = 0;
+UINT32 g_MonitorHeight = 0;
 
 NTSTATUS
 DriverEntry(
@@ -1128,7 +1129,16 @@ Return Value:
     trackerControl = (PTRACKER_CONTROL_REPORT)packet.reportBuffer;
     KdPrint(("VHIDMINI - SetFeature: ReportId %d ModeRequest 0x%02X\n", trackerControl->ReportId, trackerControl->ModeRequest));
 
-    // TODO: Handle mode request
+    if (trackerControl->ModeRequest != 0)
+    {
+        KdPrint(("VHIDMINI - SetFeature: g_SendGazeReports TRUE\n"));
+        g_SendGazeReports = TRUE;
+    }
+    else
+    {
+        KdPrint(("VHIDMINI - SetFeature: g_SendGazeReports FALSE\n"));
+        g_SendGazeReports = FALSE;
+    }
 
     return STATUS_SUCCESS;
 }
@@ -1593,6 +1603,9 @@ GetPrimaryMonitorInfo(
         DeviceContext->ConfigurationReport.CalibratedScreenWidth = (((EDIDdata[68] & 0xF0) << 4) + EDIDdata[66]) * 1000; // width in micrometers
         DeviceContext->ConfigurationReport.CalibratedScreenHeight = (((EDIDdata[68] & 0x0F) << 8) + EDIDdata[67]) * 1000; // height in micrometers
 
+        g_MonitorWidth = DeviceContext->ConfigurationReport.CalibratedScreenWidth;
+        g_MonitorHeight = DeviceContext->ConfigurationReport.CalibratedScreenHeight;
+
         KdPrint(("VHIDMINI - Calibrated Screen W %dum H %dum\n", DeviceContext->ConfigurationReport.CalibratedScreenWidth, 
                                                              DeviceContext->ConfigurationReport.CalibratedScreenHeight));
 
@@ -1647,3 +1660,7 @@ SendTrackerStatusReport(
         WdfRequestComplete(request, status);
     }
 }
+
+BOOL IsTrackerEnabled() { return g_SendGazeReports; }
+UINT32 GetMonitorWidth() { return g_MonitorWidth; }
+UINT32 GetMonitorHeight() { return g_MonitorHeight; }

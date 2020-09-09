@@ -100,13 +100,12 @@ typedef struct _POINT3D
 typedef struct _GAZE_REPORT
 {
     uint8_t     ReportId;
-    //uint8_t     Reserved[7];
     uint64_t    TimeStamp;
     POINT2D     GazePoint;
     POINT3D     LeftEyePosition;
     POINT3D     RightEyePosition;
-    //POINT3D     HeadPosition;
-    //POINT3D     HeadDirection;
+    POINT3D     HeadPosition;
+    POINT3D     HeadDirection;
 } GAZE_REPORT, *PGAZE_REPORT;
 
 typedef struct _CAPABILITIES_REPORT
@@ -123,7 +122,6 @@ typedef struct _CAPABILITIES_REPORT
 typedef struct _CONFIGURATION_REPORT
 {
     uint8_t         ReportId;
-    //uint8_t         Reserved;
     uint16_t        DisplayManufacturerId;
     uint16_t        DisplayProductId;
     uint32_t        DisplaySerialNumber;

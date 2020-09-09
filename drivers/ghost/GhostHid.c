@@ -34,7 +34,7 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
 	// such as load calibration
     int32_t x = 0;
     int32_t y = 0;
-    int32_t max = 300000; // ~12" in micrometers, typical for a surface device
+    int32_t max = GetMonitorHeight(); // ~12" in micrometers, typical for a surface device
     int32_t count = 0;
     while (TRUE)
     {
@@ -48,17 +48,34 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
         gazeReport.TimeStamp = (uint64_t)ltime;
         gazeReport.GazePoint.X = (int32_t)x;
         gazeReport.GazePoint.Y = (int32_t)y;
-        //KdPrint(("GhostHID - GazePoint = [%8d, %8d]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
-        SendGazeReport(deviceContext, &gazeReport);
 
-        // Draw a diagonal line, from upper left to lower right
-        if (count > max)
+        gazeReport.LeftEyePosition.X = 0;
+        gazeReport.LeftEyePosition.Y = 0;
+        gazeReport.LeftEyePosition.Z = 0;
+        gazeReport.RightEyePosition.X = 0;
+        gazeReport.RightEyePosition.Y = 0;
+        gazeReport.RightEyePosition.Z = 0;
+        gazeReport.HeadPosition.X = INT32_MAX;
+        gazeReport.HeadPosition.Y = INT32_MAX;
+        gazeReport.HeadPosition.Z = INT32_MAX;
+        gazeReport.HeadDirection.X = INT32_MAX;
+        gazeReport.HeadDirection.Y = INT32_MAX;
+        gazeReport.HeadDirection.Z = INT32_MAX;
+        
+        if (IsTrackerEnabled())
         {
-            count = 0;
-        }
+            //KdPrint(("GhostHID - GazePoint = [%8d, %8d]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
+            SendGazeReport(deviceContext, &gazeReport);
 
-        count += 250; // 2500; // ~0.125" in micrometers
-        x = y = count;
+            // Draw a diagonal line, from upper left to lower right
+            if (count > max)
+            {
+                count = 0;
+            }
+
+            count += 250; // 2500; // ~0.125" in micrometers
+            x = y = count;
+        }
 
         Sleep(10);
 
