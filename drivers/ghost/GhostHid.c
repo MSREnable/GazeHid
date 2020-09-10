@@ -8,6 +8,7 @@ static const bool True = 1;
 #endif
 
 #include <strsafe.h>
+#include <math.h>
 
 typedef struct _SENSOR_CONTEXT
 {
@@ -34,9 +35,12 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
 	// such as load calibration
     int32_t x = 0;
     int32_t y = 0;
-    int32_t max = GetMonitorHeight(); // ~12" in micrometers, typical for a surface device
-    int32_t step = 250; // 250 um
-    int32_t count = 0;
+    int32_t max_width = GetMonitorWidth();
+    int32_t max_height = GetMonitorHeight();
+    int32_t velocity = 250; // 250 um
+    float PI = 3.14159f;
+    float angle = 45.0f;
+
     while (TRUE)
     {
         GAZE_REPORT gazeReport = { 0 };
@@ -68,14 +72,17 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
             //KdPrint(("GhostHID - GazePoint = [%8d, %8d]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
             SendGazeReport(deviceContext, &gazeReport);
 
-            // Draw a diagonal line, from upper left to lower right
-            if (count > max)
-            {
-                count = 0;
-            }
+            x += (int32_t)(velocity * cos(angle * PI / 180));
+            y += (int32_t)(velocity * sin(angle * PI / 180));
 
-            count += step;
-            x = y = count;
+            if (x < 0 || x > max_width)
+            {
+                angle = 180 - angle;
+            }
+            else if (y < 0 || y > max_height)
+            {
+                angle = 360 - angle;
+            }
         }
 
         Sleep(10);
