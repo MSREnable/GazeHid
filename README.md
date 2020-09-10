@@ -14,7 +14,7 @@ After compiling one of the drivers, you must navigate to to the binary output di
 
 ## Running
 
-The sofware device driver (swdevice.exe) needs arguments to run. You can pass in the aruments as two seperate values, such as `VID_1234 PID_5678`. As a single value you could similarly use `VID_1234&PID_5678`. Change the VID and PID to match your device. Also note that `swdevice.exe` needs to be run from an administrative prompt or from Visual Studio running in administrator mode.
+The sofware device driver (swdevice.exe) needs no arguments to run. Also note that `swdevice.exe` needs to be run from an administrative prompt or from Visual Studio running in administrator mode.
 
 Once running, you will see a prompt similar to this:
 
