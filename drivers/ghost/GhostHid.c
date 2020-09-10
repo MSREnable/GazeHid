@@ -35,6 +35,7 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
     int32_t x = 0;
     int32_t y = 0;
     int32_t max = GetMonitorHeight(); // ~12" in micrometers, typical for a surface device
+    int32_t step = 250; // 250 um
     int32_t count = 0;
     while (TRUE)
     {
@@ -73,7 +74,7 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
                 count = 0;
             }
 
-            count += 250; // 2500; // ~0.125" in micrometers
+            count += step;
             x = y = count;
         }
 
