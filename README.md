@@ -40,6 +40,14 @@ If everything worked correctly, you should now be able to find your device has m
 
 ![Driver Installed](assets/images/Driver_Installed.png)
 
+## Testing
+
+An easy way to see the driver working is to install the [Windows Community Toolkit Sample App](https://www.microsoft.com/en-us/p/windows-community-toolkit-sample-app/9nblggh4tlcq). Once 
+installed, open the app and navitage to Gaze->Gaze Tracing. If prompted, be sure to authorize eye gaze for the application. If the everything is working properly
+you should see a series of dots bouncing around the screen. The dots represent the gaze data being sent from [GhostHidFrameProc](drivers/ghost/GhostHid.c).
+
+![Windows Community Toolkit - Test](assets/images/Windows_Community_Toolkit_Test.png)
+
 ## Related Topics
 
 [Creating UMDF-based HID Minidrivers](http://msdn.microsoft.com/en-us/library/windows/hardware/hh439579)

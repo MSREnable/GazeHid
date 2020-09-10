@@ -72,6 +72,7 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
             //KdPrint(("GhostHID - GazePoint = [%8d, %8d]\n", gazeReport.GazePoint.X, gazeReport.GazePoint.Y));
             SendGazeReport(deviceContext, &gazeReport);
 
+            // Make the gaze point bounce around the screen, similar to Pong
             x += (int32_t)(velocity * cos(angle * PI / 180));
             y += (int32_t)(velocity * sin(angle * PI / 180));
 
