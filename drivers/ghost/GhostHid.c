@@ -37,7 +37,7 @@ DWORD WINAPI GhostHidFrameProc(PVOID startParam)
     int32_t y = 0;
     int32_t max_width = GetMonitorWidth();
     int32_t max_height = GetMonitorHeight();
-    int32_t velocity = 250; // 250 um
+    int32_t velocity = 125; // step size in micrometers
     float PI = 3.14159f;
     float angle = 45.0f;
 
