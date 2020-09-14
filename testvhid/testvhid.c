@@ -335,8 +335,7 @@ GetFeatureCapabilities(
             m_capabilitiesReport.TrackerQuality = (uint8_t)ulUsageValue;
         }
 
-        // The Tracking Distance and Screen Plane Width/Height are in a child physical collection
-        /*
+        usCollectionIdx = GetLinkCollectionIndex(HidP_Input, HID_USAGE_CAPABILITIES, 0);
         status = HidP_GetUsageValue(
             HidP_Feature,
             HID_USAGE_PAGE_EYE_HEAD_TRACKER,
@@ -406,7 +405,6 @@ GetFeatureCapabilities(
         {
             m_capabilitiesReport.MaximumScreenPlaneHeight = (uint32_t)ulUsageValue;
         }
-        */
     }
 
     free(pbBuffer);
@@ -513,8 +511,7 @@ GetFeatureConfiguration(
             m_configurationReport.DisplayManufacturerDate = (uint16_t)ulUsageValue;
         }
 
-        // The Calibrated Screen Width/Height are in a child physical collection
-        /*
+        usCollectionIdx = GetLinkCollectionIndex(HidP_Input, HID_USAGE_CONFIGURATION, 0);
         status = HidP_GetUsageValue(
             HidP_Feature,
             HID_USAGE_PAGE_EYE_HEAD_TRACKER,
@@ -542,7 +539,6 @@ GetFeatureConfiguration(
         {
             m_configurationReport.CalibratedScreenHeight = (uint32_t)ulUsageValue;
         }
-        */
     }
 
     free(pbBuffer);
@@ -556,10 +552,10 @@ PrintFeatureConfiguration(
 {
     printf("ReportID:   0x%04X %s\n", m_configurationReport.ReportId, GetUsageString(m_configurationReport.ReportId));
 
-    printf("EDID Display Manufacturer Id %d\n", m_configurationReport.DisplayManufacturerId);
-    printf("EDID Display Product Id %d\n", m_configurationReport.DisplayProductId);
-    printf("EDID Display Manufacturer Date %d\n", m_configurationReport.DisplayManufacturerDate);
-    printf("EDID Display Serial Number %d\n", m_configurationReport.DisplaySerialNumber);
+    printf("EDID Display Manufacturer Id 0x%04X\n", m_configurationReport.DisplayManufacturerId);
+    printf("EDID Display Product Id 0x%04X\n", m_configurationReport.DisplayProductId);
+    printf("EDID Display Manufacturer Date 0x%04X\n", m_configurationReport.DisplayManufacturerDate);
+    printf("EDID Display Serial Number 0x%08X\n", m_configurationReport.DisplaySerialNumber);
 
     printf("Calibrated Screen Width %d micrometers\n", m_configurationReport.CalibratedScreenWidth);
     printf("Calibrated Screen Height %d micrometers\n", m_configurationReport.CalibratedScreenHeight);
@@ -636,7 +632,7 @@ PrintFeatureTrackerStatus(
 )
 {
     printf("ReportID:   0x%04X %s\n", m_trackerStatusReport.ReportId, GetUsageString(m_trackerStatusReport.ReportId));
-    printf("0x%04X %s\n", m_trackerStatusReport.ConfigurationStatus, GetConfigurationStatusString(m_trackerStatusReport.ConfigurationStatus));
+    printf("0x%02X %s\n", m_trackerStatusReport.ConfigurationStatus, GetConfigurationStatusString(m_trackerStatusReport.ConfigurationStatus));
     printf("0x%04X Sensor Sampling Frequency %d Hz\n", m_trackerStatusReport.SamplingFrequency, m_trackerStatusReport.SamplingFrequency);
 
     printf("\n");
@@ -867,10 +863,9 @@ ReadInputData(
 
                     SetCursorPos(posX, posY);
 
-                    printf("%lld - GazePoint (%d,%d) (%0.3f%%, %0.3f%%) - Eye Position L(%d,%d,%d) R(%d,%d,%d)\n",
+                    printf("%lld - GazePoint (%d,%d) - Eye Position L(%d,%d,%d) R(%d,%d,%d)\n",
                         m_gazeReport.TimeStamp,
                         posX, posY,
-                        dX, dY,
                         m_gazeReport.LeftEyePosition.X, m_gazeReport.LeftEyePosition.Y, m_gazeReport.LeftEyePosition.Z,
                         m_gazeReport.RightEyePosition.X, m_gazeReport.RightEyePosition.Y, m_gazeReport.RightEyePosition.Z
                         );
