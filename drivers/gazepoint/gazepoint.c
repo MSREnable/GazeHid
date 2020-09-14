@@ -296,7 +296,7 @@ void ProcessGazeRecords(PDEVICE_CONTEXT deviceContext, PSTR recordStr)
 
         if (result != 7)
         {
-            KdPrint(("GazePointFrameProc: Invalid record received\n", result));
+            KdPrint(("GazePointFrameProc: Invalid record received %d\n", result));
             break;
         }
 

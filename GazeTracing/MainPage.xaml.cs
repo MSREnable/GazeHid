@@ -2,14 +2,6 @@
 using Windows.Devices.Input.Preview;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
-using Windows.Devices.Enumeration;
-using Windows.Devices.HumanInterfaceDevice;
-using System;
-using Windows.UI.Xaml;
-using Windows.ApplicationModel;
-using System.Collections.Generic;
-using Windows.UI.Core;
-using Windows.Storage.Streams;
 
 namespace GazeTracing
 {

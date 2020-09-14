@@ -224,7 +224,7 @@ InitializeConfigurationData(
         {
             return;
         }
-        TCHAR Instance[MAX_DEVICE_ID_LEN];
+        TCHAR Instance[MAX_DEVICE_ID_LEN + 60]; // SetupDiGetDeviceInstanceId claims to return 260 chars, not 200 as specified by MAX_DEVICE_ID_LEN 
         if (!SetupDiGetDeviceInstanceId(devInfo, &devInfoData, Instance, MAX_PATH, NULL))
         {
             return;

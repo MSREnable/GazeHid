@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Devices.Enumeration;
+using Windows.Devices.HumanInterfaceDevice;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Windows.Devices.Enumeration;
-using Windows.Devices.HumanInterfaceDevice;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -40,7 +33,7 @@ namespace GazeHidTest
 
         const int HID_USAGE_TRACKING_DATA = 0x10;
         const int HID_USAGE_CAPABILITIES = 0x11;
-        const int HID_USAGE_CONFIGURATION  = 0x12;
+        const int HID_USAGE_CONFIGURATION = 0x12;
         const int HID_USAGE_TRACKER_STATUS = 0x13;
         const int HID_USAGE_TRACKER_CONTROL = 0x14;
 
@@ -176,7 +169,7 @@ namespace GazeHidTest
         {
             Debug.WriteLine($"{(sender as Button).Name}");
         }
-            
+
 
         void HandleGazeData(GazeData gazeData)
         {

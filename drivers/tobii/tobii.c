@@ -31,8 +31,10 @@ void OnGazeEvent(tobii_gaze_point_t const* gazePoint, void* userData)
     PDEVICE_CONTEXT deviceContext = (PDEVICE_CONTEXT)userData;
     GAZE_REPORT gazeReport;
 
-    KdPrint(("OnGazeEvent: Timestamp=0x%p x=%e y=%e, valid=%d\n", 
-        gazePoint->timestamp_us, gazePoint->position_xy[0], gazePoint->position_xy[1], gazePoint->validity));
+    KdPrint(("OnGazeEvent: x=%f y=%f, valid=%s\n", 
+        gazePoint->position_xy[0],
+        gazePoint->position_xy[1],
+        gazePoint->validity == TOBII_VALIDITY_VALID ? "TOBII_VALIDITY_VALID" : "TOBII_VALIDITY_INVALID"));
 
     if (gazePoint->validity == TOBII_VALIDITY_VALID)
     {

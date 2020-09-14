@@ -68,7 +68,8 @@ main(
         while (!_kbhit())
         {
         }
-        _getch();
+        
+        int charval = _getch();
 
         //
         // Read/Write report loopback
@@ -92,7 +93,8 @@ cleanup:
     while (!_kbhit())
     {
     }
-    _getch();
+    
+    int charval = _getch();
 
     Dispose();
 
@@ -577,52 +579,59 @@ GetFeatureTrackerStatus(
 
     pbBuffer = calloc(cbBuffer, sizeof(CHAR));
 
-    pbBuffer[0] = (CHAR)reportID;
-
-    usCollectionIdx = GetLinkCollectionIndex(HidP_Feature, reportID, 0);
-
-    ZeroMemory(&m_trackerStatusReport, sizeof(TRACKER_STATUS_REPORT));
-
-    if (HidD_GetFeature(m_file, pbBuffer, cbBuffer))
+    if (pbBuffer == NULL)
     {
-        printf("TRACKER_STATUS_REPORT\n");
-        PrintBuffer(pbBuffer, sizeof(TRACKER_STATUS_REPORT));
-        printf("\n");
-
-        m_trackerStatusReport.ReportId = (uint8_t)reportID;
-
-        status = HidP_GetUsageValue(
-            HidP_Feature,
-            HID_USAGE_PAGE_EYE_HEAD_TRACKER,
-            usCollectionIdx,
-            HID_USAGE_CONFIGURATION_STATUS,
-            &ulUsageValue,
-            m_pPpd,
-            pbBuffer,
-            cbBuffer);
-        if (status == HIDP_STATUS_SUCCESS)
-        {
-            m_trackerStatusReport.ConfigurationStatus = (uint8_t)ulUsageValue;
-        }
-
-        status = HidP_GetUsageValue(
-            HidP_Feature,
-            HID_USAGE_PAGE_EYE_HEAD_TRACKER,
-            usCollectionIdx,
-            HID_USAGE_SAMPLING_FREQUENCY,
-            &ulUsageValue,
-            m_pPpd,
-            pbBuffer,
-            cbBuffer);
-        if (status == HIDP_STATUS_SUCCESS)
-        {
-            m_trackerStatusReport.SamplingFrequency = (uint16_t)ulUsageValue;
-        }
-
-
+        bSuccess = FALSE;
     }
+    else
+    {
+        pbBuffer[0] = (CHAR)reportID;
 
-    free(pbBuffer);
+        usCollectionIdx = GetLinkCollectionIndex(HidP_Feature, reportID, 0);
+
+        ZeroMemory(&m_trackerStatusReport, sizeof(TRACKER_STATUS_REPORT));
+
+        if (HidD_GetFeature(m_file, pbBuffer, cbBuffer))
+        {
+            printf("TRACKER_STATUS_REPORT\n");
+            PrintBuffer(pbBuffer, sizeof(TRACKER_STATUS_REPORT));
+            printf("\n");
+
+            m_trackerStatusReport.ReportId = (uint8_t)reportID;
+
+            status = HidP_GetUsageValue(
+                HidP_Feature,
+                HID_USAGE_PAGE_EYE_HEAD_TRACKER,
+                usCollectionIdx,
+                HID_USAGE_CONFIGURATION_STATUS,
+                &ulUsageValue,
+                m_pPpd,
+                pbBuffer,
+                cbBuffer);
+            if (status == HIDP_STATUS_SUCCESS)
+            {
+                m_trackerStatusReport.ConfigurationStatus = (uint8_t)ulUsageValue;
+            }
+
+            status = HidP_GetUsageValue(
+                HidP_Feature,
+                HID_USAGE_PAGE_EYE_HEAD_TRACKER,
+                usCollectionIdx,
+                HID_USAGE_SAMPLING_FREQUENCY,
+                &ulUsageValue,
+                m_pPpd,
+                pbBuffer,
+                cbBuffer);
+            if (status == HIDP_STATUS_SUCCESS)
+            {
+                m_trackerStatusReport.SamplingFrequency = (uint16_t)ulUsageValue;
+            }
+
+
+        }
+
+        free(pbBuffer);
+    }
 
     return bSuccess;
 }
@@ -887,7 +896,7 @@ ReadInputData(
 
     if (_kbhit())
     {
-        _getch();
+        int charval = _getch();
     }
 
     free(pbBuffer);
@@ -1008,12 +1017,16 @@ GetValueCaps(
     {
         *ppValueCaps = calloc(valueCapsLength, sizeof(HIDP_VALUE_CAPS));
 
-        HidP_GetValueCaps(
+        NTSTATUS status = HidP_GetValueCaps(
             reportType,
             *ppValueCaps,
             &valueCapsLength,
             m_pPpd
         );
+        if (status != HIDP_STATUS_SUCCESS)
+        {
+            bSuccess = FALSE;
+        }
     }
 
     return bSuccess;
@@ -1106,12 +1119,16 @@ GetButtonCaps(
     {
         *ppButtonCaps = calloc(buttonCapsLength, sizeof(HIDP_BUTTON_CAPS));
 
-        HidP_GetButtonCaps(
+        NTSTATUS status = HidP_GetButtonCaps(
             reportType,
             *ppButtonCaps,
             &buttonCapsLength,
             m_pPpd
         );
+        if (status != HIDP_STATUS_SUCCESS)
+        {
+            bSuccess = FALSE;
+        }
     }
 
     return bSuccess;
@@ -1163,20 +1180,29 @@ BOOLEAN
 GetLinkCollectionNodes(
 )
 {
+    BOOLEAN bSuccess = TRUE;
+
     ULONG ulLinkCollectionNodesLength = m_Caps.NumberLinkCollectionNodes;
 
     if (ulLinkCollectionNodesLength > 0)
     {
         m_pLinkCollectionNodes = calloc(ulLinkCollectionNodesLength, sizeof(HIDP_LINK_COLLECTION_NODE));
 
-        HidP_GetLinkCollectionNodes(
-            m_pLinkCollectionNodes,
-            &ulLinkCollectionNodesLength,
-            m_pPpd
-        );
+        if (m_pLinkCollectionNodes != 0)
+        {
+            NTSTATUS status = HidP_GetLinkCollectionNodes(
+                m_pLinkCollectionNodes,
+                &ulLinkCollectionNodesLength,
+                m_pPpd
+            );
+            if (status != HIDP_STATUS_SUCCESS)
+            {
+                bSuccess = FALSE;
+            }
+        }
     }
 
-    return TRUE;
+    return bSuccess;
 }
 
 BOOLEAN
