@@ -123,8 +123,7 @@ namespace GazeHidTest
             var devices = DeviceInformation.FindAllAsync(selector).GetResults();
             if (devices.Count <= 0)
             {
-                // TODO: Show appropriate error message
-                return;
+                throw new Exception($"Unable to find EyeTracker with Selector {selector}");
             }
 
             _eyeTracker = HidDevice.FromIdAsync(devices.ElementAt(0).Id, Windows.Storage.FileAccessMode.Read).GetResults();
@@ -134,7 +133,7 @@ namespace GazeHidTest
             }
             else
             {
-                throw new FileNotFoundException($"Unable to find EyeTracker with ID {devices.ElementAt(0).Id}");
+                throw new Exception($"Unable to find EyeTracker with ID {devices.ElementAt(0).Id}");
             }
         }
 
@@ -211,6 +210,7 @@ namespace GazeHidTest
             num = report.GetNumericControl(HID_USAGE_PAGE_EYE_HEAD_TRACKER, HID_USAGE_TIMESTAMP);
             var timestamp = (int)num.Value;
 
+            // TODO This needs to be pulled from the proper collection
             num = report.GetNumericControl(HID_USAGE_PAGE_EYE_HEAD_TRACKER, HID_USAGE_POSITION_X);
             var x = num.Value;
 
