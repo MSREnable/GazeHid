@@ -1,62 +1,17 @@
-# HID Minidriver Eye Tracker Sample (UMDF V2)
+# Eye Tracker HID Reference Implementation
 
-The *HID minidriver* sample demonstrates how to write a HID minidriver using User-Mode Driver Framework (UMDF) for eye trackers. This is a reference implementation to match the HID specification for eye trackers.
+This is a reference implementation to match the HID specification for eye trackers. The code 
+presents both a DMF/VHF based implementation as well as a UMDF2 VHIDMINI based implementation. 
+There are also a number of sample driver implementations as well as test tools to assist in 
+understanding and further development.
 
-## Compiling
+[EyeGazeIoctl](Documentation/EyeGazeIoctl.md) - This implementation uses modern frameworks to 
+produce a driver which can be sent data from a User Mode application. This implementation allows
+for data to easily be provided from a number of sources.
 
-To compile, you must install the [Windows Driver Kit](https://docs.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk) and you must [install Spectre mitigation libraries](https://devblogs.microsoft.com/cppblog/spectre-mitigations-in-msvc/).
-
-## Driver Installation
-
-After compiling one of the drivers, you must navigate to to the binary output directory of the built drivers. Right click on the `.inf` file and select install, then follow the prompts.
-
-![Driver Install](assets/images/Driver_Install.png)
-
-## Running
-
-The sofware device driver (swdevice.exe) needs no arguments to run. Also note that `swdevice.exe` needs to be run from an administrative prompt or from Visual Studio running in administrator mode.
-
-Once running, you will see a prompt similar to this:
-
-![swdevice running](assets/images/Running_Swdevice.png)
-
-Once the swdevice is running, change the driver to the one you installed previously. First, open the device manager and open the `Software Devices` section. There you should see an entry for a `HID Eye Tracker Device`. Right click on it and select properties.
-
-![HID Eye Tracker Device](assets/images/HID_Eye_Tracker_Device.png)
-
-On the driver tab, select `Update Driver`.
-
-![Update Driver](assets/images/Update_Driver.png)
-
-In the subsequent dialog, first select `Browse my computer for driver software`.
-
-![Browse my computer for driver software](assets/images/Browse_for_Driver.png)
-
-On the following dialog, you should see the UMDF driver that was installed in the prior section. Select it and hit `Next`.
-
-![Select Driver](assets/images/Select_Driver.png)
-
-If everything worked correctly, you should now be able to find your device has moved to the `Human Interface Device` section and has been renamed to match your selected driver.
-
-![Driver Installed](assets/images/Driver_Installed.png)
-
-## Testing
-
-An easy way to see the driver working is to install the [Windows Community Toolkit Sample App](https://www.microsoft.com/en-us/p/windows-community-toolkit-sample-app/9nblggh4tlcq). Once 
-installed, open the app and navitage to Gaze->Gaze Tracing. If prompted, be sure to authorize eye gaze for the application. If the everything is working properly
-you should see a series of dots bouncing around the screen. The dots represent the gaze data being sent from [GhostHidFrameProc](drivers/ghost/GhostHid.c).
-
-![Windows Community Toolkit - Test](assets/images/Windows_Community_Toolkit_Test.png)
-
-## Related Topics
-
-[Creating UMDF-based HID Minidrivers](http://msdn.microsoft.com/en-us/library/windows/hardware/hh439579)
-
-[Human Input Devices Design Guide](http://msdn.microsoft.com/en-us/library/windows/hardware/ff539952)
-
-[Human Input Devices Reference](http://msdn.microsoft.com/en-us/library/windows/hardware/ff539956)
-
-[UMDF HID Minidriver IOCTLs](http://msdn.microsoft.com/en-us/library/windows/hardware/hh463977)
+[swdevice/vhidmini](Documentation/swdevice_vhidmini.md) - This implementation is based on the [VHIDMINI2 
+sample](https://github.com/microsoft/Windows-driver-samples/tree/master/hid/vhidmini2). It provides a
+number of sample driver implementations for various eye tracker manufacturers.
 
 ## Contributing
 
