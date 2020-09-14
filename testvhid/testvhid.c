@@ -284,7 +284,10 @@ CheckIfOurDevice(
     {
         ZeroMemory(&m_Attr, sizeof(HIDD_ATTRIBUTES));
         ZeroMemory(&m_Caps, sizeof(HIDP_CAPS));
-        HidD_FreePreparsedData(m_pPpd);
+        if (m_pPpd != NULL)
+        {
+            HidD_FreePreparsedData(m_pPpd);
+        }
     }
 
     return bSuccess;
@@ -312,6 +315,10 @@ GetFeatureCapabilities(
 
     if (HidD_GetFeature(m_file, pbBuffer, cbBuffer))
     {
+        printf("CAPABILITIES_REPORT\n");
+        PrintBuffer(pbBuffer, sizeof(CAPABILITIES_REPORT));
+        printf("\n");
+
         m_capabilitiesReport.ReportId = (uint8_t)reportID;
 
         status = HidP_GetUsageValue(
@@ -328,20 +335,8 @@ GetFeatureCapabilities(
             m_capabilitiesReport.TrackerQuality = (uint8_t)ulUsageValue;
         }
 
-        status = HidP_GetUsageValue(
-            HidP_Feature,
-            HID_USAGE_PAGE_EYE_HEAD_TRACKER,
-            usCollectionIdx,
-            HID_USAGE_TRACKER_QUALITY,
-            &ulUsageValue,
-            m_pPpd,
-            pbBuffer,
-            cbBuffer);
-        if (status == HIDP_STATUS_SUCCESS)
-        {
-            m_capabilitiesReport.TrackerQuality = (uint8_t)ulUsageValue;
-        }
-
+        // The Tracking Distance and Screen Plane Width/Height are in a child physical collection
+        /*
         status = HidP_GetUsageValue(
             HidP_Feature,
             HID_USAGE_PAGE_EYE_HEAD_TRACKER,
@@ -411,6 +406,7 @@ GetFeatureCapabilities(
         {
             m_capabilitiesReport.MaximumScreenPlaneHeight = (uint32_t)ulUsageValue;
         }
+        */
     }
 
     free(pbBuffer);
@@ -423,9 +419,7 @@ PrintFeatureCapabilities(
 )
 {
     printf("ReportID:   0x%04X %s\n", m_capabilitiesReport.ReportId, GetUsageString(m_capabilitiesReport.ReportId));
-
     printf("0x%04X %s\n", m_capabilitiesReport.TrackerQuality, GetTrackerQualityString(m_capabilitiesReport.TrackerQuality));
-
     printf("0x%08X Miniumum Tracking Distance %d micrometers\n", m_capabilitiesReport.MinimumTrackingDistance, m_capabilitiesReport.MinimumTrackingDistance);
     printf("0x%08X Optimum Tracking Distance %d micrometers\n", m_capabilitiesReport.OptimumTrackingDistance, m_capabilitiesReport.OptimumTrackingDistance);
     printf("0x%08X Maximum Tracking Distance %d micrometers\n", m_capabilitiesReport.MaximumTrackingDistance, m_capabilitiesReport.MaximumTrackingDistance);
@@ -457,6 +451,10 @@ GetFeatureConfiguration(
 
     if (HidD_GetFeature(m_file, pbBuffer, cbBuffer))
     {
+        printf("CONFIGURATION_REPORT\n");
+        PrintBuffer(pbBuffer, sizeof(CONFIGURATION_REPORT));
+        printf("\n");
+
         m_configurationReport.ReportId = (uint8_t)reportID;
 
         status = HidP_GetUsageValue(
@@ -515,6 +513,8 @@ GetFeatureConfiguration(
             m_configurationReport.DisplayManufacturerDate = (uint16_t)ulUsageValue;
         }
 
+        // The Calibrated Screen Width/Height are in a child physical collection
+        /*
         status = HidP_GetUsageValue(
             HidP_Feature,
             HID_USAGE_PAGE_EYE_HEAD_TRACKER,
@@ -542,6 +542,7 @@ GetFeatureConfiguration(
         {
             m_configurationReport.CalibratedScreenHeight = (uint32_t)ulUsageValue;
         }
+        */
     }
 
     free(pbBuffer);
@@ -588,6 +589,10 @@ GetFeatureTrackerStatus(
 
     if (HidD_GetFeature(m_file, pbBuffer, cbBuffer))
     {
+        printf("TRACKER_STATUS_REPORT\n");
+        PrintBuffer(pbBuffer, sizeof(TRACKER_STATUS_REPORT));
+        printf("\n");
+
         m_trackerStatusReport.ReportId = (uint8_t)reportID;
 
         status = HidP_GetUsageValue(
@@ -722,6 +727,10 @@ ReadInputData(
                 {
                     ZeroMemory(&m_gazeReport, sizeof(GAZE_REPORT));
 
+                    printf("GAZE_REPORT\n");
+                    PrintBuffer(pbBuffer, sizeof(GAZE_REPORT));
+                    printf("\n");
+
                     usCollectionIdx = GetLinkCollectionIndex(HidP_Input, HID_USAGE_TRACKING_DATA, 0);
 
                     status = HidP_GetUsageValueArray(
@@ -739,6 +748,7 @@ ReadInputData(
                         m_gazeReport.TimeStamp = ullUsageValue;
                     }
 
+                    // All of the below are contained in physical collections
                     usCollectionIdx = GetLinkCollectionIndex(HidP_Input, HID_USAGE_TRACKING_DATA, HID_USAGE_GAZE_LOCATION);
                     status = HidP_GetUsageValue(
                         HidP_Input,
@@ -1377,6 +1387,10 @@ GetUsageString(
     case HID_USAGE_LEFT_EYE_POSITION:               retval = "HID_USAGE_LEFT_EYE_POSITION"; break;
     case HID_USAGE_RIGHT_EYE_POSITION:              retval = "HID_USAGE_RIGHT_EYE_POSITION"; break;
     case HID_USAGE_HEAD_POSITION:                   retval = "HID_USAGE_HEAD_POSITION"; break;
+    case HID_USAGE_HEAD_DIRECTION:                  retval = "HID_USAGE_HEAD_DIRECTION"; break;
+    case HID_USAGE_ROTATION_ABOUT_X_AXIS:           retval = "HID_USAGE_ROTATION_ABOUT_X_AXIS"; break;
+    case HID_USAGE_ROTATION_ABOUT_Y_AXIS:           retval = "HID_USAGE_ROTATION_ABOUT_Y_AXIS"; break;
+    case HID_USAGE_ROTATION_ABOUT_Z_AXIS:           retval = "HID_USAGE_ROTATION_ABOUT_Z_AXIS"; break;
 
         // HID_USAGE_CAPABILITIES - Feature Collection 
     case HID_USAGE_TRACKER_QUALITY:                 retval = "HID_USAGE_TRACKER_QUALITY"; break;
@@ -1487,47 +1501,9 @@ GetTrackerQualityString(
 
     switch (trackerQuality)
     {
-    case 1:     retval = "Foveated Rendering"; break;
-    case 2:     retval = "Interaction Gaze"; break;
-    case 3:     retval = "Medium Gaze"; break;
-    case 4:     retval = "Rough Gaze"; break;
+    case TRACKER_QUALITY_RESERVED:     retval = "TRACKER_QUALITY_RESERVED"; break;
+    case TRACKER_QUALITY_FINE_GAZE:    retval = "TRACKER_QUALITY_FINE_GAZE"; break;
     default:    retval = "Error: Invalid Quality Level!";
-    }
-
-    return retval;
-}
-
-CHAR*
-GetCoordinateSystemString(
-    uint8_t coordinateSystem
-)
-{
-    CHAR* retval = NULL;
-
-    switch (coordinateSystem)
-    {
-    case 1:  retval = "Upper Left Origin"; break;
-    case 2:  retval = "Lower Left Origin"; break;
-    case 3:  retval = "Center Origin"; break;
-    case 4:  retval = "Geometrical Center of Eye Tracker"; break;
-    default: retval = "Error: Invalid Coordinate System!";
-    }
-
-    return retval;
-}
-
-CHAR*
-GetDeviceStatusString(
-    uint8_t deviceStatus
-)
-{
-    CHAR* retval = NULL;
-
-    switch (deviceStatus)
-    {
-    case 0:     retval = "Eye tracking is disabled"; break;
-    case 1:     retval = "Eye tracking is enabled"; break;
-    default:    retval = "Error: Invalid device status!";
     }
 
     return retval;
@@ -1542,11 +1518,11 @@ GetConfigurationStatusString(
 
     switch (configurationStatus)
     {
-    case 0:     retval = "Undefined"; break;
-    case 1:     retval = "Ready"; break;
-    case 2:     retval = "Configuring"; break;
-    case 3:     retval = "Screen Setup Needed"; break;
-    case 4:     retval = "User Calibration Needed"; break;
+    case TRACKER_STATUS_RESERVED:                   retval = "TRACKER_STATUS_RESERVED"; break;
+    case TRACKER_STATUS_READY:                      retval = "TRACKER_STATUS_READY"; break;
+    case TRACKER_STATUS_CONFIGURING:                retval = "TRACKER_STATUS_CONFIGURING"; break;
+    case TRACKER_STATUS_SCREEN_SETUP_NEEDED:        retval = "TRACKER_STATUS_SCREEN_SETUP_NEEDED"; break;
+    case TRACKER_STATUS_USER_CALIBRATION_NEEDED:    retval = "TRACKER_STATUS_USER_CALIBRATION_NEEDED"; break;
     default:    retval = "Error: Invalid configuration status!";
     }
 
@@ -1606,7 +1582,7 @@ UnitsToString(
 
     switch (units)
     {
-    case 0x0000:    retval = ""; break;
+    case 0x0000:    retval = "none"; break;
     case 0x0011:    retval = "centimeters"; break;
     case 0x1001:    retval = "seconds"; break;
     case 0xF001:    retval = "Hz"; break;
@@ -1631,4 +1607,22 @@ GetDesktopResolution(
     // (horizontal, vertical)
     *plHorizontal = desktop.right;
     *plVertical = desktop.bottom;
+}
+
+VOID
+PrintBuffer(
+    PCHAR pbBuffer,
+    USHORT cbBuffer
+)
+{
+    for (UINT idx = 0; idx < cbBuffer; ++idx)
+    {
+        printf("%02X,", (UCHAR)pbBuffer[idx]);
+
+        if (idx % 16 == 15)
+        {
+            printf("\n");
+        }
+    }
+    printf("\n");
 }

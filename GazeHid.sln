@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2041
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 12.0
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TobiiHid", "drivers\tobii\TobiiHid.vcxproj", "{CD1D0FA6-08E7-46FC-B119-D65B8D52C2E1}"
 EndProject
@@ -13,11 +13,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EyeTechHid", "drivers\eyete
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testvhid", "testvhid\testvhid.vcxproj", "{52B4AF60-09E2-4C74-804C-08E5BF7ACA1E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "virtualhid", "virtualhid\virtualhid.vcxproj", "{0074760D-42FC-47B4-8C07-4A6C7228816F}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GazePointHid", "drivers\gazepoint\gazepoint.vcxproj", "{53C2BBAA-6832-404A-BB1C-354942879EFD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GhostHid", "drivers\ghost\GhostHid.vcxproj", "{fbc3934a-9969-4d56-a62f-ee43ed80d750}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GhostHid", "drivers\ghost\GhostHid.vcxproj", "{FBC3934A-9969-4D56-A62F-EE43ED80D750}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,18 +83,6 @@ Global
 		{52B4AF60-09E2-4C74-804C-08E5BF7ACA1E}.Release|x64.ActiveCfg = Release|x64
 		{52B4AF60-09E2-4C74-804C-08E5BF7ACA1E}.Release|x64.Build.0 = Release|x64
 		{52B4AF60-09E2-4C74-804C-08E5BF7ACA1E}.Release|x86.ActiveCfg = Release|x64
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Debug|ARM.ActiveCfg = Debug|Win32
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Debug|ARM64.ActiveCfg = Debug|Win32
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Debug|x64.ActiveCfg = Debug|x64
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Debug|x64.Build.0 = Debug|x64
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Debug|x86.ActiveCfg = Debug|Win32
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Debug|x86.Build.0 = Debug|Win32
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Release|ARM.ActiveCfg = Release|Win32
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Release|ARM64.ActiveCfg = Release|Win32
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Release|x64.ActiveCfg = Release|x64
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Release|x64.Build.0 = Release|x64
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Release|x86.ActiveCfg = Release|Win32
-		{0074760D-42FC-47B4-8C07-4A6C7228816F}.Release|x86.Build.0 = Release|Win32
 		{53C2BBAA-6832-404A-BB1C-354942879EFD}.Debug|ARM.ActiveCfg = Debug|x64
 		{53C2BBAA-6832-404A-BB1C-354942879EFD}.Debug|ARM64.ActiveCfg = Debug|x64
 		{53C2BBAA-6832-404A-BB1C-354942879EFD}.Debug|x64.ActiveCfg = Debug|x64
@@ -109,18 +95,18 @@ Global
 		{53C2BBAA-6832-404A-BB1C-354942879EFD}.Release|x64.Build.0 = Release|x64
 		{53C2BBAA-6832-404A-BB1C-354942879EFD}.Release|x64.Deploy.0 = Release|x64
 		{53C2BBAA-6832-404A-BB1C-354942879EFD}.Release|x86.ActiveCfg = Release|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Debug|ARM.ActiveCfg = Debug|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Debug|ARM64.ActiveCfg = Debug|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Debug|x64.ActiveCfg = Debug|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Debug|x64.Build.0 = Debug|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Debug|x64.Deploy.0 = Debug|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Debug|x86.ActiveCfg = Debug|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Release|ARM.ActiveCfg = Release|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Release|ARM64.ActiveCfg = Release|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Release|x64.ActiveCfg = Release|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Release|x64.Build.0 = Release|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Release|x64.Deploy.0 = Release|x64
-		{fbc3934a-9969-4d56-a62f-ee43ed80d750}.Release|x86.ActiveCfg = Release|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Debug|ARM.ActiveCfg = Debug|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Debug|ARM64.ActiveCfg = Debug|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Debug|x64.ActiveCfg = Debug|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Debug|x64.Build.0 = Debug|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Debug|x64.Deploy.0 = Debug|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Debug|x86.ActiveCfg = Debug|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Release|ARM.ActiveCfg = Release|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Release|ARM64.ActiveCfg = Release|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Release|x64.ActiveCfg = Release|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Release|x64.Build.0 = Release|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Release|x64.Deploy.0 = Release|x64
+		{FBC3934A-9969-4D56-A62F-EE43ED80D750}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -210,16 +210,6 @@ GetTrackerQualityString(
 );
 
 CHAR*
-GetCoordinateSystemString(
-    uint8_t coordinateSystem
-);
-
-CHAR*
-GetDeviceStatusString(
-    uint8_t deviceStatus
-);
-
-CHAR*
 GetConfigurationStatusString(
     uint8_t configurationStatus
 );
@@ -232,4 +222,10 @@ GetDesktopResolution(
 
 VOID
 Dispose(
+);
+
+VOID
+PrintBuffer(
+    PCHAR pbBuffer,
+    USHORT cbBuffer
 );

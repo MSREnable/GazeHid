@@ -96,6 +96,10 @@ namespace GazeHidTest
             {
                 _numRows = (_numRows > 1) ? _numRows-- : _numRows;
             }
+            else if (e.Key == Windows.System.VirtualKey.Escape)
+            {
+                App.Current.Exit();
+            }
             InitializeGrid(_numRows, _numCols);
         }
 
@@ -113,18 +117,25 @@ namespace GazeHidTest
             _screenHeight = (int)(this.ActualHeight * (float)scale / 100);
         }
 
-        async void InitializeHid()
+        void InitializeHid()
         {
             string selector = HidDevice.GetDeviceSelector(HID_USAGE_PAGE_EYE_HEAD_TRACKER, HID_USAGE_EYE_TRACKER);
-            var devices = await DeviceInformation.FindAllAsync(selector);
+            var devices = DeviceInformation.FindAllAsync(selector).GetResults();
             if (devices.Count <= 0)
             {
                 // TODO: Show appropriate error message
                 return;
             }
 
-            _eyeTracker = await HidDevice.FromIdAsync(devices.ElementAt(0).Id, Windows.Storage.FileAccessMode.Read);
-            _eyeTracker.InputReportReceived += OnGazeReportReceived;
+            _eyeTracker = HidDevice.FromIdAsync(devices.ElementAt(0).Id, Windows.Storage.FileAccessMode.Read).GetResults();
+            if (_eyeTracker != null)
+            {
+                _eyeTracker.InputReportReceived += OnGazeReportReceived;
+            }
+            else
+            {
+                throw new FileNotFoundException($"Unable to find EyeTracker with ID {devices.ElementAt(0).Id}");
+            }
         }
 
         void InitializeGrid(int rows, int cols)
