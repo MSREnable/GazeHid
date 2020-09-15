@@ -54,6 +54,12 @@ as well as higher level implementations using the [Gaze Interaction Library](htt
 *[Gaze Interactions and Eye Tracking in Windows Apps](https://docs.microsoft.com/en-us/windows/uwp/design/input/gaze-interactions)* - Additional documentation
 regarding the use of the [GazeInputSourcePreview](https://docs.microsoft.com/en-us/uwp/api/windows.devices.input.preview.gazeinputsourcepreview?view=winrt-19041) apis.
 
+## Debugging Resources
+
+Debugging drivers can be be difficult. However, through the process of developing these drivers we found a number 
+of tools and strategies which helped. Please see the [debugging resources](Documentation/debugging_resources.md) document
+for more information.
+
 ## Contributing
 
 This project welcomes contributions and suggestions. Most contributions require you to

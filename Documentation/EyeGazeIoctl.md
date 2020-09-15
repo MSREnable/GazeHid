@@ -20,7 +20,7 @@ Finally, build *EyeGazeIoctlTestApp*.
 
 ## Driver Installation
 
-In an administrator prompt, run "devcon install EyeGazeIoctl.inf root\EyeGazeIoctl" from the output directory of *Dmf\DmfSamples\EyeGazeIoctl*. If *devcon.exe* is not in your path, then it is located at *C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe* or similar.
+In an administrator prompt, run `devcon install EyeGazeIoctl.inf root\EyeGazeIoctl` from the output directory of *Dmf\DmfSamples\EyeGazeIoctl*. If *devcon.exe* is not in your path, then it is located at *C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe* or similar.
 
 NOTE: Devcon WILL FAIL unless you have a kernel debugger running. Local kernel debugging is NOT sufficient. 
 
