@@ -187,30 +187,58 @@ Return Value:
     return hDev;
 }
 
-void
+BOOL
 InitializeCapabilitiesData(
+    _In_ HANDLE deviceHandle,
     _In_ PCAPABILITIES_DATA pCapabilitiesData
 )
 {
+    DWORD code;
+    ULONG index;
+    BOOL success = TRUE;
+
     ZeroMemory(pCapabilitiesData, sizeof(CAPABILITIES_DATA));
     pCapabilitiesData->TrackerQuality = TRACKER_QUALITY_FINE_GAZE;
     pCapabilitiesData->MinimumTrackingDistance = 50000;
     pCapabilitiesData->OptimumTrackingDistance = 65000;
     pCapabilitiesData->MaximumTrackingDistance = 90000;
+
+    if (!DeviceIoControl(deviceHandle,
+        IOCTL_EYEGAZE_CAPABILITIES_REPORT,
+        &g_CapabilitiesData,
+        sizeof(CAPABILITIES_DATA),
+        NULL,
+        0,
+        &index,
+        0))
+    {
+        code = GetLastError();
+
+        printf("DeviceIoControl failed with error 0x%x\n", code);
+
+        success = FALSE;
+    }
+
+    return success;
 }
 
-void
+BOOL
 InitializeConfigurationData(
+    _In_ HANDLE deviceHandle,
     _In_ PCONFIGURATION_DATA pConfigurationData
 )
 {
+    DWORD code;
+    ULONG index;
+    BOOL success = TRUE;
+
     ZeroMemory(pConfigurationData, sizeof(CONFIGURATION_DATA));
 
     HDEVINFO devInfo = SetupDiGetClassDevsEx(&GUID_CLASS_MONITOR, NULL, NULL, DIGCF_PRESENT | DIGCF_PROFILE, NULL, NULL, NULL);
 
     if (NULL == devInfo)
     {
-        return;
+        return FALSE;
     }
 
     for (ULONG i = 0; ERROR_NO_MORE_ITEMS != GetLastError(); ++i)
@@ -222,12 +250,12 @@ InitializeConfigurationData(
 
         if (!SetupDiEnumDeviceInfo(devInfo, i, &devInfoData))
         {
-            return;
+            return FALSE;
         }
         TCHAR Instance[MAX_DEVICE_ID_LEN + 60]; // SetupDiGetDeviceInstanceId claims to return 260 chars, not 200 as specified by MAX_DEVICE_ID_LEN 
         if (!SetupDiGetDeviceInstanceId(devInfo, &devInfoData, Instance, MAX_PATH, NULL))
         {
-            return;
+            return FALSE;
         }
 
         HKEY hEDIDRegKey = SetupDiOpenDevRegKey(devInfo, &devInfoData, DICS_FLAG_GLOBAL, 0, DIREG_DEV, KEY_READ);
@@ -259,6 +287,52 @@ InitializeConfigurationData(
         break;
     }
     SetupDiDestroyDeviceInfoList(devInfo);
+
+    if (!DeviceIoControl(deviceHandle,
+        IOCTL_EYEGAZE_CONFIGURATION_REPORT,
+        &g_ConfigurationData,
+        sizeof(CONFIGURATION_DATA),
+        NULL,
+        0,
+        &index,
+        0))
+    {
+        code = GetLastError();
+
+        printf("DeviceIoControl failed with error 0x%x\n", code);
+
+        success = FALSE;
+    }
+
+    return success;
+}
+
+BOOL
+SendGazeReport(
+    _In_ HANDLE deviceHandle,
+    _In_ PGAZE_DATA pGazeData)
+{
+    DWORD code;
+    ULONG index;
+    BOOL success = TRUE;
+
+    if (!DeviceIoControl(deviceHandle,
+        IOCTL_EYEGAZE_GAZE_DATA,
+        pGazeData,
+        sizeof(GAZE_DATA),
+        NULL,
+        0,
+        &index,
+        0))
+    {
+        code = GetLastError();
+
+        printf("DeviceIoControl failed with error 0x%x\n", code);
+
+        success = FALSE;
+    }
+
+    return success;
 }
 
 int
@@ -287,8 +361,6 @@ Return Value:
     int    retValue = 0;
 
     HANDLE          deviceHandle;
-    DWORD           code;
-    ULONG           index;
 
     deviceHandle = OpenDevice(FALSE);
 
@@ -296,41 +368,16 @@ Return Value:
 
         printf("Unable to find any EyeGazeIoctl device!\n");
 
-        return FALSE;
-
-    }
-
-    InitializeCapabilitiesData(&g_CapabilitiesData);
-    if (!DeviceIoControl(deviceHandle,
-        IOCTL_EYEGAZE_CAPABILITIES_REPORT,
-        &g_CapabilitiesData,
-        sizeof(CAPABILITIES_DATA),
-        NULL,
-        0,
-        &index,
-        0))
-    {
-        code = GetLastError();
-
-        printf("DeviceIoControl failed with error 0x%x\n", code);
-
         goto Error;
     }
 
-    InitializeConfigurationData(&g_ConfigurationData);
-    if (!DeviceIoControl(deviceHandle,
-        IOCTL_EYEGAZE_CONFIGURATION_REPORT,
-        &g_ConfigurationData,
-        sizeof(CONFIGURATION_DATA),
-        NULL,
-        0,
-        &index,
-        0))
+    if (!InitializeCapabilitiesData(deviceHandle, &g_CapabilitiesData))
     {
-        code = GetLastError();
+        goto Error;
+    }
 
-        printf("DeviceIoControl failed with error 0x%x\n", code);
-
+    if (!InitializeConfigurationData(deviceHandle, &g_ConfigurationData))
+    {
         goto Error;
     }
 
@@ -385,23 +432,7 @@ Return Value:
 
         //if (IsTrackerEnabled())
         {
-            // SendGazeReport
-            if (!DeviceIoControl(deviceHandle,
-                IOCTL_EYEGAZE_GAZE_DATA,
-                &gaze_data,
-                sizeof(GAZE_DATA),
-                NULL,
-                0,
-                &index,
-                0))
-            {
-                code = GetLastError();
-
-                printf("DeviceIoControl failed with error 0x%x\n", code);
-
-                goto Error;
-            }
-            else
+            if (SendGazeReport(deviceHandle, &gaze_data))
             {
                 printf("Original (%8dum, %8dum) Noise (%8dum) Sent (%8d, %8d) Source: %11s\r",
                     x, y,
