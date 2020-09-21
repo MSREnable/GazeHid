@@ -4,7 +4,7 @@ This *HID minidriver* sample demonstrates how to write a HID minidriver for eye 
 
 ## Technical Notes
 
-The driver utilizes [I/O control codes (IOCTLs)](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/introduction-to-i-o-control-codes) to allow a user mode application to communicate with the driver. The included test app sends mouse coordinates to the driver, and includes commented code which would send a bouncing-line test pattern.
+The driver utilizes [I/O control codes (IOCTLs)](https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/introduction-to-i-o-control-codes) to allow a user mode application to communicate with the driver. The included test app is capable of sending either mouse coordinates to the driver or "fake data" which sends a bouncing-line test pattern.
 
 The use of the DMF brings a number of advantages. The driver itself has been built such that it can be used as is, extended, wrapped, etc. More documentation can be found at in the [announcement blog post](https://blogs.windows.com/windowsdeveloper/2018/08/15/introducing-driver-module-framework/) and [WinHEC 2018 presentation](https://www.microsoft.com/en-us/videoplayer/embed/RE2IIUT?pid=cx-video-1-oneplayer&postJsllMsg=true&autoplay=true&market=en-us).
 
