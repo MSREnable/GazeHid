@@ -58,7 +58,6 @@ typedef struct _CONFIGURATION_DATA
 
 typedef struct _CAPABILITIES_DATA
 {
-    UCHAR ReportId;
     UCHAR TrackerQuality;
     ULONG MinimumTrackingDistance;
     ULONG OptimumTrackingDistance;

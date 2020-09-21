@@ -14,7 +14,7 @@ For manufacturers this sample should provide the ultimate flexibility - use the 
 
 To compile, you must install the [Windows Driver Kit](https://docs.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk) and you must [install Spectre mitigation libraries](https://devblogs.microsoft.com/cppblog/spectre-mitigations-in-msvc/).
 
-You will need to download the most current [EyeGazeIoctl driver implementation](https://github.com/joncamp/DMF/tree/personal/satertza/Gaze). You will need to build the *Dmf.sln* followed by the *DmfSamples/DmfSamples.sln*. Be sure to build for the appropriate platform, such as x64 or x86.
+You will need to download the most current [EyeGazeIoctl driver implementation](https://github.com/microsoft/DMF/tree/personal/satertza/Gaze). You will need to build the *Dmf.sln* followed by the *DmfSamples/DmfSamples.sln*. Be sure to build for the appropriate platform, such as x64 or x86.
 
 Finally, build *EyeGazeIoctlTestApp*.
 
