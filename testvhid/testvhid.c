@@ -419,7 +419,7 @@ PrintFeatureCapabilities(
 )
 {
     printf("ReportID:   0x%04X %s\n", m_capabilitiesReport.ReportId, GetUsageString(m_capabilitiesReport.ReportId));
-    printf("0x%04X %s\n", m_capabilitiesReport.TrackerQuality, GetTrackerQualityString(m_capabilitiesReport.TrackerQuality));
+    printf("0x%02X %s\n", m_capabilitiesReport.TrackerQuality, GetTrackerQualityString(m_capabilitiesReport.TrackerQuality));
     printf("0x%08X Miniumum Tracking Distance %d micrometers\n", m_capabilitiesReport.MinimumTrackingDistance, m_capabilitiesReport.MinimumTrackingDistance);
     printf("0x%08X Optimum Tracking Distance %d micrometers\n", m_capabilitiesReport.OptimumTrackingDistance, m_capabilitiesReport.OptimumTrackingDistance);
     printf("0x%08X Maximum Tracking Distance %d micrometers\n", m_capabilitiesReport.MaximumTrackingDistance, m_capabilitiesReport.MaximumTrackingDistance);

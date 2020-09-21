@@ -190,7 +190,7 @@ Return Value:
 BOOL
 InitializeCapabilitiesData(
     _In_ HANDLE deviceHandle,
-    _In_ PCAPABILITIES_DATA pCapabilitiesData
+    _In_ CAPABILITIES_DATA* pCapabilitiesData
 )
 {
     DWORD code;
@@ -225,7 +225,7 @@ InitializeCapabilitiesData(
 BOOL
 InitializeConfigurationData(
     _In_ HANDLE deviceHandle,
-    _In_ PCONFIGURATION_DATA pConfigurationData
+    _In_ CONFIGURATION_DATA* pConfigurationData
 )
 {
     DWORD code;
@@ -310,7 +310,7 @@ InitializeConfigurationData(
 BOOL
 SendGazeReport(
     _In_ HANDLE deviceHandle,
-    _In_ PGAZE_DATA pGazeData)
+    _In_ GAZE_DATA* pGazeData)
 {
     DWORD code;
     ULONG index;

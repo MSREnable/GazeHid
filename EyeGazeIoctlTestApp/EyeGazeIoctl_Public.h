@@ -27,14 +27,14 @@ typedef struct _POINT2D
 {
     LONG X;
     LONG Y;
-} POINT2D, * PPOINT2D;
+} POINT2D;
 
 typedef struct _POINT3D
 {
     LONG X;
     LONG Y;
     LONG Z;
-} POINT3D, * PPOINT3D;
+} POINT3D;
 
 typedef struct _GAZE_DATA
 {
@@ -44,7 +44,7 @@ typedef struct _GAZE_DATA
     POINT3D RightEyePosition;
     POINT3D HeadPosition;
     POINT3D HeadDirection;
-} GAZE_DATA, * PGAZE_DATA;
+} GAZE_DATA;
 
 typedef struct _CONFIGURATION_DATA
 {
@@ -54,7 +54,7 @@ typedef struct _CONFIGURATION_DATA
     USHORT DisplayManufacturerDate;
     ULONG CalibratedScreenWidth;
     ULONG CalibratedScreenHeight;
-} CONFIGURATION_DATA, * PCONFIGURATION_DATA;
+} CONFIGURATION_DATA;
 
 typedef struct _CAPABILITIES_DATA
 {
@@ -64,7 +64,7 @@ typedef struct _CAPABILITIES_DATA
     ULONG MaximumTrackingDistance;
     ULONG MaximumScreenPlaneWidth;
     ULONG MaximumScreenPlaneHeight;
-} CAPABILITIES_DATA, * PCAPABILITIES_DATA;
+} CAPABILITIES_DATA;
 
 #pragma pack(pop)
 
