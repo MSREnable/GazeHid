@@ -261,13 +261,34 @@ InitializeConfigurationData(
     SetupDiDestroyDeviceInfoList(devInfo);
 }
 
-BOOL
-PlayWithDevice()
+int
+_cdecl
+main(
+    //_In_ int argc,
+    //_In_reads_(argc) LPSTR* argv
+)
+/*++
+Routine Description:
+
+    Entry point to rwbulk.exe
+    Parses cmdline, performs user-requested tests
+
+Arguments:
+
+    argc, argv  standard console  'c' app arguments
+
+Return Value:
+
+    Zero
+
+--*/
+
 {
+    int    retValue = 0;
+
     HANDLE          deviceHandle;
     DWORD           code;
     ULONG           index;
-    BOOL            result = FALSE;
 
     deviceHandle = OpenDevice(FALSE);
 
@@ -317,20 +338,22 @@ PlayWithDevice()
     INT32 y = 0;
     INT32 monitorWidthUm = GetMonitorWidth();
     INT32 monitorHeightUm = GetMonitorHeight();
-    //INT32 velocity = 125; // step size in micrometers
-    //FLOAT PI = 3.14159f;
-    //FLOAT angle = 45.0f;
+    INT32 velocity = 125; // step size in micrometers
+    FLOAT PI = 3.14159f;
+    FLOAT angle = 45.0f;
     INT32 noise = 1000;
     INT32 noise_step = 500;
     INT32 noiseX = 0;
     INT32 noiseY = 0;
+    BOOL  mouseMode = FALSE;
 
     GAZE_DATA gaze_data;
     ZeroMemory(&gaze_data, sizeof(GAZE_DATA));
 
     POINT mousePoint;
 
-    printf("\n\nPress + to increase noise by %dum\nPress - to decrease noise by %dum\n\nPress esc key to stop...\n\n", noise_step, noise_step);
+    printf("\n\nPress + to increase noise by %dum\nPress - to decrease noise by %dum\n\n", noise_step, noise_step);
+    printf("Press M to use mouse\nPress F to use fake data\n\nPress esc key to stop...\n\n");
 
     RECT desktopRect;
     HWND desktopHwnd = GetDesktopWindow();
@@ -380,35 +403,41 @@ PlayWithDevice()
             }
             else
             {
-                printf("Original (%8dum, %8dum) Noise (%8dum) Sent (%8d, %8d)\r", 
-                    x, y, 
-                    noise, 
-                    gaze_data.GazePoint.X, gaze_data.GazePoint.Y
+                printf("Original (%8dum, %8dum) Noise (%8dum) Sent (%8d, %8d) Source: %11s\r",
+                    x, y,
+                    noise,
+                    gaze_data.GazePoint.X, gaze_data.GazePoint.Y,
+                    mouseMode == TRUE ? "Mouse Data" : "Fake Data"
                 );
             }
         }
 
         Sleep(10);
 
-        if (GetCursorPos(&mousePoint))
+        if (mouseMode == TRUE)
         {
-            // mouse is returned in pixels, need to convert to um
-            x = (INT32)(mousePoint.x * xMonitorRatio);
-            y = (INT32)(mousePoint.y * yMonitorRatio);
+            if (GetCursorPos(&mousePoint))
+            {
+                // mouse is returned in pixels, need to convert to um
+                x = (INT32)(mousePoint.x * xMonitorRatio);
+                y = (INT32)(mousePoint.y * yMonitorRatio);
+            }
         }
+        else
+        {
+            // Generate bouncing test pattern
+            x += (INT32)(velocity * cos(angle * PI / 180));
+            y += (INT32)(velocity * sin(angle * PI / 180));
 
-        // Generate bouncing test pattern
-        //x += (INT32)(velocity * cos(angle * PI / 180));
-        //y += (INT32)(velocity * sin(angle * PI / 180));
-
-        //if (x < 0 || x > monitorWidthUm)
-        //{
-        //    angle = 180 - angle;
-        //}
-        //else if (y < 0 || y > monitorHeightUm)
-        //{
-        //    angle = 360 - angle;
-        //}
+            if (x < 0 || x > monitorWidthUm)
+            {
+                angle = 180 - angle;
+            }
+            else if (y < 0 || y > monitorHeightUm)
+            {
+                angle = 360 - angle;
+            }
+        }
 
         if (_kbhit())
         {
@@ -419,11 +448,19 @@ PlayWithDevice()
             {
                 break;
             }
-            else if (charval == 43) // +
+            else if (charval == 'm' || charval == 'M')
+            {
+                mouseMode = TRUE;
+            }
+            else if (charval == 'f' || charval == 'F')
+            {
+                mouseMode = FALSE;
+            }
+            else if (charval == '+')
             {
                 noise += noise_step;
             }
-            else if (charval == 45) // -
+            else if (charval == '-')
             {
                 noise -= noise_step;
                 if (noise < 0)
@@ -435,39 +472,7 @@ PlayWithDevice()
     }
 
 Error:
-
     CloseHandle(deviceHandle);
-    return result;
-}
-
-int
-_cdecl
-main(
-    //_In_ int argc,
-    //_In_reads_(argc) LPSTR* argv
-)
-/*++
-Routine Description:
-
-    Entry point to rwbulk.exe
-    Parses cmdline, performs user-requested tests
-
-Arguments:
-
-    argc, argv  standard console  'c' app arguments
-
-Return Value:
-
-    Zero
-
---*/
-
-{
-    int    retValue = 0;
-
-    PlayWithDevice();
-
-//exit:
 
     return retValue;
 }
