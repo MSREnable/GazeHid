@@ -66,21 +66,21 @@ GetDevicePath(
         CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
     if (cr != CR_SUCCESS) {
         printf("Error 0x%x retrieving device interface list size.\n", cr);
-        goto clean0;
+        goto Error;
     }
 
     if (deviceInterfaceListLength <= 1) {
         bRet = FALSE;
         printf("Error: No active device interfaces found.\n"
             " Is the sample driver loaded?");
-        goto clean0;
+        goto Error;
     }
 
     deviceInterfaceList = (PWSTR)malloc(deviceInterfaceListLength * sizeof(WCHAR));
     if (deviceInterfaceList == NULL) {
         bRet = FALSE;
         printf("Error allocating memory for device interface list.\n");
-        goto clean0;
+        goto Error;
     }
     ZeroMemory(deviceInterfaceList, deviceInterfaceListLength * sizeof(WCHAR));
 
@@ -92,7 +92,7 @@ GetDevicePath(
         CM_GET_DEVICE_INTERFACE_LIST_PRESENT);
     if (cr != CR_SUCCESS) {
         printf("Error 0x%x retrieving device interface list.\n", cr);
-        goto clean0;
+        goto Error;
     }
 
     nextInterface = deviceInterfaceList + wcslen(deviceInterfaceList) + 1;
@@ -105,10 +105,10 @@ GetDevicePath(
     if (FAILED(hr)) {
         bRet = FALSE;
         printf("Error: StringCchCopy failed with HRESULT 0x%x", hr);
-        goto clean0;
+        goto Error;
     }
 
-clean0:
+Error:
     if (deviceInterfaceList != NULL) {
         free(deviceInterfaceList);
     }
