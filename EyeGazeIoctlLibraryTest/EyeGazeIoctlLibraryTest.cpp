@@ -10,8 +10,8 @@ int main()
 
     INT32 x = 0;
     INT32 y = 0;
-    INT32 monitorWidthUm = GetPrimaryMonitorWidth();
-    INT32 monitorHeightUm = GetPrimaryMonitorHeight();
+    INT32 monitorWidthUm = GetPrimaryMonitorWidthUm();
+    INT32 monitorHeightUm = GetPrimaryMonitorHeightUm();
     INT32 velocity = 125; // step size in micrometers
     FLOAT PI = 3.14159f;
     FLOAT angle = 45.0f;
@@ -54,20 +54,41 @@ int main()
             noiseX = (rand() % noise) - rangeOffset;
             noiseY = (rand() % noise) - rangeOffset;
 
+            if (mouseMode == TRUE)
+            {
+                noiseX /= xMonitorRatio;
+                noiseY /= yMonitorRatio;
+            }
+
             gazePointX += noiseX;
             gazePointY += noiseY;
         }
 
         //if (IsTrackerEnabled())
         {
-            if (SendGazeReport(gazePointX, gazePointY, timestamp))
+            if (mouseMode == TRUE)
             {
-                printf("Original (%8dum, %8dum) Noise (%8dum) Sent (%8d, %8d) Source: %11s\r",
-                    x, y,
-                    noise,
-                    gazePointX, gazePointY,
-                    mouseMode == TRUE ? "Mouse Data" : "Fake Data"
-                );
+                if (SendGazeReportPixel(gazePointX, gazePointY, timestamp))
+                {
+                    printf("Original (%8dum, %8dum) Noise (%8dum) Sent (%8d, %8d) Source: %11s\r",
+                        x, y,
+                        noise,
+                        gazePointX, gazePointY,
+                        mouseMode == TRUE ? "Mouse Data" : "Fake Data"
+                    );
+                }
+            }
+            else
+            {
+                if (SendGazeReportUm(gazePointX, gazePointY, timestamp))
+                {
+                    printf("Original (%8dum, %8dum) Noise (%8dum) Sent (%8d, %8d) Source: %11s\r",
+                        x, y,
+                        noise,
+                        gazePointX, gazePointY,
+                        mouseMode == TRUE ? "Mouse Data" : "Fake Data"
+                    );
+                }
             }
         }
 
@@ -78,8 +99,8 @@ int main()
             if (GetCursorPos(&mousePoint))
             {
                 // mouse is returned in pixels, need to convert to um
-                x = (INT32)(mousePoint.x * xMonitorRatio);
-                y = (INT32)(mousePoint.y * yMonitorRatio);
+                x = mousePoint.x;
+                y = mousePoint.y;
             }
         }
         else

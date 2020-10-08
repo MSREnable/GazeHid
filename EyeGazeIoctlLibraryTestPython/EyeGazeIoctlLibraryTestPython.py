@@ -9,15 +9,21 @@ import math
 import time
 import pandas
 
+import os
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    eyeGazeIoctlDll = cdll.LoadLibrary("..\\x64\\Debug\\EyeGazeIoctlLibrary.dll")
+    dll_path = r"..\x64\Release\EyeGazeIoctlLibrary.dll"
+    if not os.path.exists(dll_path):
+        print("Dll Not Found!")
+
+    eyeGazeIoctlDll = cdll.LoadLibrary(dll_path)
     eyeGazeIoctlDll.InitializeEyeGaze()
 
     user32 = windll.user32
     screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-    monitorWidthUm = eyeGazeIoctlDll.GetPrimaryMonitorWidth()
-    monitorHeightUm = eyeGazeIoctlDll.GetPrimaryMonitorHeight()
+    monitorWidthUm = eyeGazeIoctlDll.GetPrimaryMonitorWidthUm()
+    monitorHeightUm = eyeGazeIoctlDll.GetPrimaryMonitorHeightUm()
 
     xMonitorRatio = monitorWidthUm / screensize[0]
     yMonitorRatio = monitorHeightUm / screensize[1]
@@ -31,7 +37,7 @@ if __name__ == '__main__':
         timestamp = c_int64(pandas.Timestamp.utcnow().to_datetime64())
 
         print("SendGazeReport[", x, ", ", y, ", ", timestamp, "]")
-        eyeGazeIoctlDll.SendGazeReport(int(x), int(y), timestamp)
+        eyeGazeIoctlDll.SendGazeReportUm(int(x), int(y), timestamp)
 
         time.sleep(0.01)
 

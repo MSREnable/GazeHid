@@ -14,9 +14,12 @@ DEFINE_GUID(GUID_CLASS_MONITOR, 0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x
 
 #define MAX_DEVPATH_LENGTH 256
 
-HANDLE g_deviceHandle;
-CONFIGURATION_DATA g_ConfigurationData;
-CAPABILITIES_DATA g_CapabilitiesData;
+HANDLE              g_deviceHandle;
+CONFIGURATION_DATA  g_ConfigurationData;
+CAPABILITIES_DATA   g_CapabilitiesData;
+RECT                g_desktopRect;
+FLOAT               g_xMonitorRatio;
+FLOAT               g_yMonitorRatio;
 
 _Success_(return)
 BOOL
@@ -210,6 +213,12 @@ FetchEDIDInfo()
     }
     SetupDiDestroyDeviceInfoList(devInfo);
 
+    HWND desktopHwnd = GetDesktopWindow();
+    GetWindowRect(desktopHwnd, &g_desktopRect);
+
+    g_xMonitorRatio = (FLOAT)g_ConfigurationData.CalibratedScreenWidth / (FLOAT)g_desktopRect.right;
+    g_yMonitorRatio = (FLOAT)g_ConfigurationData.CalibratedScreenHeight / (FLOAT)g_desktopRect.bottom;
+
     return TRUE;
 }
 
@@ -309,7 +318,7 @@ Error:
 }
 
 bool
-SendGazeReport(
+SendGazeReportUm(
     long X,
     long Y,
     unsigned long long timestamp)
@@ -343,8 +352,20 @@ SendGazeReport(
     return success;
 }
 
+bool
+SendGazeReportPixel(
+    long X,
+    long Y,
+    unsigned long long timestamp)
+{
+    long xInUm = (long)(X * g_xMonitorRatio);
+    long yInUm = (long)(Y * g_yMonitorRatio);
+
+    return SendGazeReportUm(xInUm, yInUm, timestamp);
+}
+
 int
-GetPrimaryMonitorWidth()
+GetPrimaryMonitorWidthUm()
 {
     if (g_ConfigurationData.CalibratedScreenWidth == 0)
         FetchEDIDInfo();
@@ -353,7 +374,7 @@ GetPrimaryMonitorWidth()
 }
 
 int
-GetPrimaryMonitorHeight()
+GetPrimaryMonitorHeightUm()
 {
     if (g_ConfigurationData.CalibratedScreenHeight == 0)
         FetchEDIDInfo();

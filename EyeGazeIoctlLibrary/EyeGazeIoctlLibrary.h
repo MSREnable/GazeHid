@@ -9,8 +9,10 @@
 
 extern "C" EYEGAZEIOCTLLIBRARY_API bool InitializeEyeGaze();
 
-extern "C" EYEGAZEIOCTLLIBRARY_API bool SendGazeReport(long X, long Y, unsigned long long timestamp);
+extern "C" EYEGAZEIOCTLLIBRARY_API bool SendGazeReportUm(long X, long Y, unsigned long long timestamp);
 
-extern "C" EYEGAZEIOCTLLIBRARY_API int GetPrimaryMonitorWidth();
+extern "C" EYEGAZEIOCTLLIBRARY_API bool SendGazeReportPixel(long X, long Y, unsigned long long timestamp);
 
-extern "C" EYEGAZEIOCTLLIBRARY_API int GetPrimaryMonitorHeight();
+extern "C" EYEGAZEIOCTLLIBRARY_API int GetPrimaryMonitorWidthUm();
+
+extern "C" EYEGAZEIOCTLLIBRARY_API int GetPrimaryMonitorHeightUm();
