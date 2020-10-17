@@ -22,7 +22,9 @@ provides a [GazeDevicePreview.RequestCalibrationAsync Method](https://docs.micro
 for this purpose. When the client calls this device, *RequestCalibrationAsync()* will make a request to the URI *eyegaze:calibrate*. 
 The OEM can use this request to launch their calibration application. Note that the HID specification provides for "TRACKER_STATUS_CONFIGURING", 
 such that during calibration it is advisable to change the status. Once calibration is complete, a similar status change back
-to TRACKER_STATUS_READY would be expected.
+to TRACKER_STATUS_READY would be expected. *EyeGazeProtocolHandler* is a simple example of how to have an application register for this
+protocol scheme. A simple way to test is to open a browser and put *eyegaze:calibrate* into the URI box - the browser (Edge, Chrome) will
+try to launch the associated application.
 
 *[GazeInputSourcePreview](https://docs.microsoft.com/en-us/uwp/api/windows.devices.input.preview.gazeinputsourcepreview?view=winrt-19041)/[GazeDevicePreview](https://docs.microsoft.com/en-us/uwp/api/windows.devices.input.preview.gazedevicepreview?view=winrt-19041)* - 
 Windows has lower level APIs available for accessing the raw X/Y coordinates from the Eye Tracker. 
