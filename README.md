@@ -60,7 +60,7 @@ Beyond supplying the gaze data stream, the other major function provided by the 
 is the ability to calibrate the eye tracking system. The windows APIs utilize the `eyegaze:calibrate`
 protocol scheme to launch a calibration experience.
 
-![Gaze Data Flow](/Documentation/assets/Gaze_Data_Flow.png)
+![Gaze Data Flow](/Documentation/assets/images/Gaze_Data_Flow.png)
 
 ## Driver State Flow Diagram
 
@@ -73,7 +73,7 @@ transition to other states. One such example is if the user requests recalibrati
 calibration experience should signal a state change to the driver when starting calibration
 as well as when it is complete.
 
-![Driver State Flow](/Documentation/assets/Driver_State_Flow.png)
+![Driver State Flow](/Documentation/assets/images/Driver_State_Flow.png)
 
 ## Testing Tools
 
