@@ -54,15 +54,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
     <None Include="packages.config" />
     <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
+    <None Include="readme.md" />
   </ItemGroup>
 </Project>

@@ -99,5 +99,8 @@
     <ClInclude Include="..\driver.h" />
     <ClInclude Include="..\hidconstants.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="readme.md" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

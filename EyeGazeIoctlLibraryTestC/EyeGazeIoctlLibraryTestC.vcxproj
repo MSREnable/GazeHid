@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{d95d4f4f-29c5-414e-8e34-9d9c5384f125}</ProjectGuid>
-    <RootNamespace>EyeGazeIoctlLibraryTest</RootNamespace>
+    <RootNamespace>EyeGazeIoctlLibraryTestC</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -163,7 +163,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="EyeGazeIoctlLibraryTest.cpp" />
+    <ClCompile Include="EyeGazeIoctlLibraryTestC.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="readme.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

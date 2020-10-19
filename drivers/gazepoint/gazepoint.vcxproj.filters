@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
+    <None Include="readme.md" />
   </ItemGroup>
 </Project>

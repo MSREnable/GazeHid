@@ -144,6 +144,7 @@
     <None Exclude="@(None)" Include="*.ico;*.cur;*.bmp;*.dlg;*.rct;*.gif;*.jpg;*.jpeg;*.wav;*.jpe;*.tiff;*.tif;*.png;*.rc2" />
     <None Exclude="@(None)" Include="*.def;*.bat;*.hpj;*.asmx" />
     <None Include="packages.config" />
+    <None Include="readme.md" />
     <None Include="Tobii\API-Reference.pdf" />
     <None Include="Tobii\SDK-License.pdf" />
   </ItemGroup>

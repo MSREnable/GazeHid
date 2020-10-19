@@ -51,11 +51,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
-    <None Include="@(NativeLibs)" />
+    <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\driver.h">

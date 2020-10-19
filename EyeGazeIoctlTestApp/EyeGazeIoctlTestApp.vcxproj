@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="readme.md" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{75543620-9418-47AF-BB1D-11F6523F79D3}</ProjectGuid>
