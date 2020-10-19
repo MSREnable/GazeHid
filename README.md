@@ -36,6 +36,45 @@ animations during gaze enter, fixation, dwell, and activation. The API uses filt
 dealing with X/Y coordinates directly, the *Gaze Interation Library* allows the developer to focus on control activation events
 such as *OnClick* similar to a typical application.
 
+## Data Flow Diagram
+
+Many eye tracking systems are based around commodity IR cameras such as those available
+from [FLIR (formerly Point Grey)](https://www.flir.com). The IR camera feed is passed to
+the camera driver before being processed by custom image processing software. The image 
+processing software is generally in the form of a windows service and provides an API for applications
+to consume. While each eye gaze system is unique, all provide a stream of X/Y coordinates
+to represent eye gaze data.
+
+The drivers in this repository represent two methods for communicating with the custom API.
+- The [EyeGazeIoctl](/Documentation/EyeGazeIoctl.md) exposes IOCTLs, which are essentially function
+calls. A seperate process, perhaps part of the same service providing the custom API, can hook into
+the driver and send IOCTLs.
+- The [swdevice/vhidmini](/Documentation/swdevice_vhidmini.md) solution has UMDF drivers which communicate 
+directly with the custom API. This method is more self-contained, but brings with it the challenges
+of UMDF driver development.
+
+Once the gaze data has been provided to the appropriate driver, Windows will then
+take that data and plumb it through the various internal structures to the consuming applications.
+
+Beyond supplying the gaze data stream, the other major function provided by the custom API 
+is the ability to calibrate the eye tracking system. The windows APIs utilize the `eyegaze:calibrate`
+protocol scheme to launch a calibration experience.
+
+![Gaze Data Flow](/Documentation/assets/Gaze_Data_Flow.png)
+
+## Driver State Flow Diagram
+
+The diagram below presents a general state flow of the driver during its lifetime. When initially
+booted the driver should initially start in a state that requires various setup data. Once the screen
+and user data have been provided it can transition to the *Ready* state.
+
+At various times in the lifecycle of the driver it may be necessary to 
+transition to other states. One such example is if the user requests recalibration. In that case, the
+calibration experience should signal a state change to the driver when starting calibration
+as well as when it is complete.
+
+![Driver State Flow](/Documentation/assets/Driver_State_Flow.png)
+
 ## Testing Tools
 
 *GazeTracing* - This tool uses the [GazeInputSourcePreview.GazeMoved Event](https://docs.microsoft.com/en-us/uwp/api/windows.devices.input.preview.gazeinputsourcepreview.gazemoved?view=winrt-19041)
