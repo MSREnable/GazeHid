@@ -1,6 +1,6 @@
 # EyeGazeIoctlLibrary
 
-This is a DLL that provides a simplified interface for the [EyeGazeIoctl Driver](../Documentation/EyeGazeIoctl.md). The DLL
+This is a DLL that provides a simplified interface for the [EyeGazeIoctl Driver](/Documentation/EyeGazeIoctl.md). The DLL
 allows consumers, such as other [C++](../EyeGazeIoctlLibraryTestC/readme.md) or [Python](../EyeGazeIoctlLibraryTestPython/readme.md) applications, to 
 easily send eye gaze data to the EyeGazeIoctl driver. 
 

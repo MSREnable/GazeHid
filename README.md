@@ -7,11 +7,11 @@ understanding and further development.
 
 ## Driver Implementations
 
-[EyeGazeIoctl](Documentation/EyeGazeIoctl.md) - This implementation uses modern frameworks to 
+[EyeGazeIoctl](/Documentation/EyeGazeIoctl.md) - This implementation uses modern frameworks to 
 produce a driver which can be sent data from a User Mode application. This implementation allows
 for data to easily be provided from a number of sources.
 
-[swdevice/vhidmini](Documentation/swdevice_vhidmini.md) - This implementation is based on the [VHIDMINI2 
+[swdevice/vhidmini](/Documentation/swdevice_vhidmini.md) - This implementation is based on the [VHIDMINI2 
 sample](https://github.com/microsoft/Windows-driver-samples/tree/master/hid/vhidmini2). It provides a
 number of sample driver implementations for various eye tracker manufacturers.
 
@@ -59,7 +59,7 @@ regarding the use of the [GazeInputSourcePreview](https://docs.microsoft.com/en-
 ## Debugging Resources
 
 Debugging drivers can be be difficult. However, through the process of developing these drivers we found a number 
-of tools and strategies which helped. Please see the [debugging resources](Documentation/debugging_resources.md) document
+of tools and strategies which helped. Please see the [debugging resources](/Documentation/debugging_resources.md) document
 for more information.
 
 ## Contributing
