@@ -22,6 +22,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GazeTracing", "GazeTracing\GazeTracing.csproj", "{421AFD8C-09F0-4594-9E10-705660090E76}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Drivers", "Drivers", "{DAB9B570-101C-4F5E-A46D-AD203FC06CA1}"
+	ProjectSection(SolutionItems) = preProject
+		drivers\readme.md = drivers\readme.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestTools", "TestTools", "{A979E696-56B7-410C-B0BF-E5F16DEF92B5}"
 EndProject
