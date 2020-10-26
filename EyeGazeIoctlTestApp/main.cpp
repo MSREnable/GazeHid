@@ -394,6 +394,9 @@ Return Value:
     INT32 noiseY = 0;
     BOOL  mouseMode = FALSE;
 
+    LARGE_INTEGER qpcTimestamp;
+    LARGE_INTEGER Frequency;
+
     GAZE_DATA gaze_data;
     ZeroMemory(&gaze_data, sizeof(GAZE_DATA));
 
@@ -417,7 +420,14 @@ Return Value:
     {
         gaze_data.GazePoint.X = x;
         gaze_data.GazePoint.Y = y;
-        _time64((__time64_t*)(&gaze_data.TimeStamp));
+        
+        QueryPerformanceFrequency(&Frequency);
+        QueryPerformanceCounter(&qpcTimestamp);
+
+        qpcTimestamp.QuadPart *= 1000000;
+        qpcTimestamp.QuadPart /= Frequency.QuadPart;
+
+        gaze_data.TimeStamp = qpcTimestamp.QuadPart;
 
         // Add noise
         if (noise > 0)
@@ -434,11 +444,12 @@ Return Value:
         {
             if (SendGazeReport(deviceHandle, &gaze_data))
             {
-                printf("Original (%8dum, %8dum) Noise (%8dum) Sent (%8d, %8d) Source: %11s\r",
+                printf("Orig(%8dum,%8dum) Noise(%8dum) Sent(%8d,%8d) Source: %11s Timestamp: %lld\r",
                     x, y,
                     noise,
                     gaze_data.GazePoint.X, gaze_data.GazePoint.Y,
-                    mouseMode == TRUE ? "Mouse Data" : "Fake Data"
+                    mouseMode == TRUE ? "Mouse Data" : "Fake Data",
+                    gaze_data.TimeStamp
                 );
             }
         }

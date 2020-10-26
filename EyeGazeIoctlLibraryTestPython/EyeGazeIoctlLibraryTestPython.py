@@ -34,7 +34,8 @@ if __name__ == '__main__':
     angle = 45.0
 
     while True:
-        timestamp = c_int64(pandas.Timestamp.utcnow().to_datetime64())
+        # timestamp = c_int64(pandas.Timestamp.utcnow().to_datetime64())
+        timestamp = 0 # passing 0 will let the dll provide the timestamp
 
         print("SendGazeReport[", x, ", ", y, ", ", timestamp, "]")
         eyeGazeIoctlDll.SendGazeReportUm(int(x), int(y), timestamp)

@@ -23,6 +23,8 @@ int main()
 
     INT32 gazePointX = 0;
     INT32 gazePointY = 0;
+    LARGE_INTEGER qpcTimestamp;
+    LARGE_INTEGER Frequency;
     INT64 timestamp;
 
     POINT mousePoint;
@@ -45,7 +47,14 @@ int main()
     {
         gazePointX = x;
         gazePointY = y;
-        _time64((__time64_t*)(&timestamp));
+
+        QueryPerformanceFrequency(&Frequency);
+        QueryPerformanceCounter(&qpcTimestamp);
+
+        qpcTimestamp.QuadPart *= 1000000;
+        qpcTimestamp.QuadPart /= Frequency.QuadPart;
+
+        timestamp = qpcTimestamp.QuadPart;
 
         // Add noise
         if (noise > 0)
@@ -70,11 +79,12 @@ int main()
             {
                 if (SendGazeReportPixel(gazePointX, gazePointY, timestamp))
                 {
-                    printf("Original (%8dum, %8dum) Noise (%8dum) Sent (%8d, %8d) Source: %11s\r",
+                    printf("Orig(%8dum,%8dum) Noise(%8dum) Sent(%8d,%8d) Source: %11s Timestamp: %lld\r",
                         x, y,
                         noise,
                         gazePointX, gazePointY,
-                        mouseMode == TRUE ? "Mouse Data" : "Fake Data"
+                        mouseMode == TRUE ? "Mouse Data" : "Fake Data",
+                        timestamp
                     );
                 }
             }
@@ -82,11 +92,12 @@ int main()
             {
                 if (SendGazeReportUm(gazePointX, gazePointY, timestamp))
                 {
-                    printf("Original (%8dum, %8dum) Noise (%8dum) Sent (%8d, %8d) Source: %11s\r",
+                    printf("Orig(%8dum,%8dum) Noise(%8dum) Sent(%8d,%8d) Source: %11s Timestamp: %lld\r",
                         x, y,
                         noise,
                         gazePointX, gazePointY,
-                        mouseMode == TRUE ? "Mouse Data" : "Fake Data"
+                        mouseMode == TRUE ? "Mouse Data" : "Fake Data",
+                        timestamp
                     );
                 }
             }

@@ -317,6 +317,21 @@ Error:
     return success;
 }
 
+unsigned long long
+GetTimestamp()
+{
+    LARGE_INTEGER qpcTimestamp;
+    LARGE_INTEGER Frequency;
+
+    QueryPerformanceFrequency(&Frequency);
+    QueryPerformanceCounter(&qpcTimestamp);
+
+    qpcTimestamp.QuadPart *= 1000000;
+    qpcTimestamp.QuadPart /= Frequency.QuadPart;
+
+    return qpcTimestamp.QuadPart;
+}
+
 bool
 SendGazeReportUm(
     long X,
@@ -328,6 +343,11 @@ SendGazeReportUm(
     bool success = true;
 
     GAZE_DATA gaze_data = { 0 };
+
+    if (timestamp == 0)
+    {
+        timestamp = GetTimestamp();
+    }
 
     gaze_data.GazePoint.X = X;
     gaze_data.GazePoint.Y = Y;
