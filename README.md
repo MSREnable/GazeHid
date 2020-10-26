@@ -1,6 +1,6 @@
 # Eye Tracker HID Reference Implementation
 
-This is a reference implementation to match the HID specification for eye trackers. The code 
+This is a reference implementation to match the [HID specification](https://www.usb.org/sites/default/files/hut1_2.pdf#page=183) for eye trackers. The code 
 presents both a DMF/VHF based implementation as well as a UMDF2 VHIDMINI based implementation. 
 There are also a number of sample driver implementations as well as test tools to assist in 
 understanding and further development.
@@ -100,6 +100,48 @@ regarding the use of the [GazeInputSourcePreview](https://docs.microsoft.com/en-
 Debugging drivers can be be difficult. However, through the process of developing these drivers we found a number 
 of tools and strategies which helped. Please see the [debugging resources](/Documentation/debugging_resources.md) document
 for more information.
+
+## Test Signing Drivers
+
+To use the drivers without the need for a kernel debugger, you can utilize [Test Signing](https://docs.microsoft.com/en-us/windows-hardware/drivers/install/installing-a-test-signed-driver-package-on-the-test-computer). The 
+documentation for test signing is extensive and includes important information regarding the path to releasing a driver. For simplicity, the steps
+below are provided for reference. The instructions below are used for the *EyeGazeIoctl* driver, but can be modified for use with the other drivers
+in this repository.
+
+To utilize test signing, you will need to enable it on your system. From an administrator command prompt run the following command and then restart. Note
+that you may need to [disable Secure Boot](https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/disabling-secure-boot) in order for the command to work.
+```
+Bcdedit.exe -set TESTSIGNING ON
+```
+
+Next we need to sign the driver. From a Visual Studio Developer Command prompt, run the following commands from the build output directory of the `EyeGazeIoctl` driver in `Dmf/DmfSamples`:
+```
+makecert -r -pe -ss PrivateCertStore -n CN=GazeHID_Test -eku 1.3.6.1.5.5.7.3.3 GazeHID_Test.cer
+certmgr /add GazeHID_Test.cer /s /r localMachine root
+stampinf -f .\EyeGazeIoctl.inf -d 10/23/2020 -v 1.0.0000.0
+inf2cat /driver:. /os:Vista_x64
+SignTool sign /v /s PrivateCertStore /n GazeHID_Test /t http://timestamp.digicert.com EyeGazeIoctl.sys
+Signtool sign /v /fd sha256 /s PrivateCertStore /n GazeHID_Test /t http://timestamp.digicert.com /a EyeGazeIoctl.cat
+Signtool verify /pa /v EyeGazeIoctl.cat
+```
+It is expected that you will get an error indicating `SignTool Error: A certificate chain processed, but terminated in a root certificate which is not trusted by the trust provider.` This
+is due to the certificate being self-signed. The error can be ignored for testing purposes.
+
+Finally, we need to install the driver. Visual Studio Developer Command prompt, run the following commands from the build output directory of the `EyeGazeIoctl` driver in `Dmf/DmfSamples`:
+```
+."C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe" install EyeGazeIoctl.inf root\EyeGazeIoctl
+```
+
+If successful, you should see `Drivers installed successfully` and can find the driver in device manager under *Sample Device->EyeGazeIoctl Device*.
+
+## Updating VID/PID
+
+The sample drivers utilize a sample Vendor ID of `0xFEED` and Product ID of `0xDEED`. These values *MUST* be updated as a part of any release
+process. 
+- If using the *EyeGazeIoctl* driver, please update `dmf\DmfSamples\EyeGazeIoctl\DmfInterface.c`.
+- If using the *VHIDMINI2* drivers, please update `GazeHid\drivers\driver.h` 
+
+
 
 ## Contributing
 
