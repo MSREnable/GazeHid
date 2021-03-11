@@ -75,6 +75,14 @@ as well as when it is complete.
 
 ![Driver State Flow](/Documentation/assets/images/Driver_State_Flow.png)
 
+## Sample Driver
+
+We have provided a signed copy of the *EyeGazeIoctl* driver compiled for x64 based machines in this repository. The driver, [EyeGazeIoctl Driver.zip](/EyeGazeIoctl%20Driver.zip) using the *devcon.exe* tool via the following command from an administrator prompt:
+
+```
+devcon install eyegazeioctl.inf root\EyeGazeIoctl
+```
+
 ## Testing Tools
 
 *GazeTracing* - This tool uses the [GazeInputSourcePreview.GazeMoved Event](https://docs.microsoft.com/en-us/uwp/api/windows.devices.input.preview.gazeinputsourcepreview.gazemoved?view=winrt-19041)
