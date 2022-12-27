@@ -3,5 +3,5 @@ pandas==1.1.2
 pip==21.1
 python-dateutil==2.8.1
 pytz==2020.1
-setuptools==47.1.0
+setuptools==65.5.1
 six==1.15.0
